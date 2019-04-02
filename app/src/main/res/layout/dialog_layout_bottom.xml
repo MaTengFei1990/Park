@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:background="@color/touming">
+
+    <TextView
+        android:id="@+id/tv_share"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/tv_save_local"
+        android:layout_marginBottom="1dp"
+        android:background="@color/baise"
+        android:gravity="center"
+        android:text="分享图片"
+        android:textColor="@color/lanse_bg"
+        android:textSize="@dimen/text_da" />
+
+    <TextView
+        android:id="@+id/tv_save_local"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/tv_cancel"
+        android:layout_marginBottom="5dp"
+        android:background="@color/baise"
+        android:gravity="center"
+        android:text="保存图片"
+        android:textColor="@color/lanse_bg"
+        android:textSize="@dimen/text_da" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/dialog_shape_bg"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="@color/lanse_bg"
+        android:textSize="@dimen/text_da" />
+</RelativeLayout>

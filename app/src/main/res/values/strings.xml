@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">北京公园在线</string>
+
+    <bool name="weixin">true</bool>
+    <string name="weixinAppId">wxc4ef9bc567c10da4</string>
+    <string name="weixinAppKey">76d6654cbcf6171e7c82459c7edf3e23</string>
+
+    <bool name="qq">true</bool>
+    <string name="qqAppId">1108234744</string>
+    <string name="qqAppKey">NZACzHBTMYK1vDGo</string>
+
+    <!--<bool name="qq">true</bool>-->
+    <!--App Key：1242430681-->
+    <!--App Secret：e1f837b0938f77df511b010a6aecf741-->
+    <!--<string name="qqAppId">1108234744</string>-->
+    <!--<string name="qqAppKey">NZACzHBTMYK1vDGo</string>-->
+
+</resources>

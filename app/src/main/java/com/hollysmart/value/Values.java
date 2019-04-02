@@ -1,0 +1,60 @@
+package com.hollysmart.value;
+
+import android.os.Environment;
+
+
+public class Values {
+//	public static final String SERVIXE_SHOUYE = "http://gy.bjylfw.cn:8011/xx.html";     //公园处 正式
+//	public static final String SERVICE_URL = "http://gy.bjylfw.cn:8010/";     //公园处 正式
+
+	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处 测试版本
+	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处 测试
+
+	public static final String SDCARD_ROOT = "smart_park";
+	public static final String RELOAD_DATA = "reload_data";
+	public static final String SDCARD_FUJIAN = "fujian";
+	public static final String SDCARD_PIC = "pic";
+	public static final String SDCARD_PIC_WODE = SDCARD_PIC + "/wode";//我的
+	public static final String SDCARD_DIR = Environment.getExternalStorageDirectory().toString() + "/" +SDCARD_ROOT + "/";
+
+	public static String SDCARD_FILE(String FILENAME) {
+		return SDCARD_DIR + FILENAME + "/";
+	}
+	public static final String CACHE_USER = "user";
+	public static final String CACHE_USERINFO = "userInfo";
+	public static final String CACHE_FUJIAN = "fuJianCache";
+	public static final String CACHE_FUJIAN_IDS = "fuJianIds";
+
+	public static final String CACHE_FRIST = "Frist";
+	public static final String CACHE_ISFRIST = "isFrist";
+
+	public static final String CACHE_SECOND = "Second";
+	public static final String CACHE_ISECOND = "isSecond";
+
+	public static final String CACHE_THRID = "Thrid";
+	public static final String CACHE_ISTHRID = "isThrid";
+
+	public static String QRCODEURL = "qrcode";
+
+
+	public static final String SUCCESS = "com.hollysmart.success.jinrong";
+	public static final String EXITLOGIN = "com.hollysmart.ExitApp";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
