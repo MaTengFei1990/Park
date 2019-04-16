@@ -53,7 +53,7 @@ public class App_Cai extends Application {
          * 参数4:设备类型，UMConfigure.DEVICE_TYPE_PHONE为手机、UMConfigure.DEVICE_TYPE_BOX为盒子，默认为手机
          * 参数5:Push推送业务的secret
          */
-        UMConfigure.init(this, "5c74e86ff1f556811d000813", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "467e0e340982ae78c4fc0b1fd2779e73");
+        UMConfigure.init(this, "5bcd6fb3f1f5564d5d000125", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "2d6e6b79ff73f9c18931bfba2e7d9b87");
 
         PushAgent mPushAgent = PushAgent.getInstance(this);
         //注册推送服务，每次调用register方法都会回调该接口
