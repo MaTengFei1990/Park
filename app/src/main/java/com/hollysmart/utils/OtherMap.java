@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.widget.Toast;
 
-
 import com.hollysmart.value.LocationInfo;
 import com.hollysmart.value.MapBean;
 

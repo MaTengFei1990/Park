@@ -3,7 +3,6 @@ package com.hollysmart.apis;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.hollysmart.beans.CaoGaoBean;
 import com.hollysmart.beans.ZhuanFaInfoBean;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.taskpool.INetModel;

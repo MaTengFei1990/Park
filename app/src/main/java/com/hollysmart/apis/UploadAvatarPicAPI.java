@@ -3,7 +3,6 @@ package com.hollysmart.apis;
 import com.hollysmart.beans.PicBean;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.taskpool.INetModel;
-import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.value.Values;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;

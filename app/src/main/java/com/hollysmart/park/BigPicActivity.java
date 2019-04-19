@@ -20,7 +20,6 @@ import com.hollysmart.beans.PicBean;
 import com.hollysmart.imageview.GestureImageView;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.Utils;
-import com.hollysmart.utils.loctionpic.ImageItem;
 import com.hollysmart.value.Values;
 
 import java.io.File;

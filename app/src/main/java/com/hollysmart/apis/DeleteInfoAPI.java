@@ -1,13 +1,10 @@
 package com.hollysmart.apis;
 
 import com.hollysmart.utils.Mlog;
-import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.builder.GetBuilder;
-import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;

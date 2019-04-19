@@ -1,7 +1,5 @@
 package com.hollysmart.apis;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.INetModel;
@@ -13,7 +11,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import okhttp3.Call;
 

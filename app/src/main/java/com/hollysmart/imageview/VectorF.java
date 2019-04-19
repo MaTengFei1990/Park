@@ -16,7 +16,6 @@
 package com.hollysmart.imageview;
 
 import android.graphics.PointF;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 
 public class VectorF {

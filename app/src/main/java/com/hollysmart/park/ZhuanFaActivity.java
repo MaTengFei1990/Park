@@ -3,17 +3,11 @@ package com.hollysmart.park;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.SpannedString;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.baidu.location.BDAbstractLocationListener;
@@ -30,13 +24,9 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.hollysmart.apis.GetZhuanFaInfoAPI;
-import com.hollysmart.apis.GetarticleInfoAPI;
 import com.hollysmart.apis.LoadTagListAPI;
-import com.hollysmart.apis.SaveInfoAPI;
 import com.hollysmart.apis.zhuanFaInfoAPI;
 import com.hollysmart.beans.BiaoQianBean;
-import com.hollysmart.beans.CaoGaoBean;
-import com.hollysmart.beans.PicBean;
 import com.hollysmart.beans.ZhuanFaInfoBean;
 import com.hollysmart.dialog.BsSelectDialog;
 import com.hollysmart.dialog.LoadingProgressDialog;
@@ -47,8 +37,6 @@ import com.hollysmart.value.Values;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ZhuanFaActivity extends StyleAnimActivity implements BsSelectDialog.BsSelectIF, LoadTagListAPI.LoadTagListIF, zhuanFaInfoAPI.SaveInfoIF, GetZhuanFaInfoAPI.getZhuanFaInfoIF {
     private final String TYPE_ID = "1";

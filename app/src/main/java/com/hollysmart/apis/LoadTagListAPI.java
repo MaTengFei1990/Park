@@ -10,10 +10,6 @@ import com.hollysmart.value.Values;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
 import java.util.List;
 
 import okhttp3.Call;

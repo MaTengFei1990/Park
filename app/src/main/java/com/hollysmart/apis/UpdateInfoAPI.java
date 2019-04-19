@@ -3,7 +3,6 @@ package com.hollysmart.apis;
 import com.hollysmart.beans.PicBean;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.taskpool.INetModel;
-import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -11,8 +10,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
 
 import okhttp3.Call;
 

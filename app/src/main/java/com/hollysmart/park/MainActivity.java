@@ -48,7 +48,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hollysmart.apis.UpDateImgInfoAPI;
 import com.hollysmart.apis.UpDateVersionAPI;
 import com.hollysmart.apis.UpdateDeviceTokenAPI;
 import com.hollysmart.apis.UpdateInfoAPI;
@@ -74,12 +73,7 @@ import com.hollysmart.utils.fastBlur.FastBlur;
 import com.hollysmart.utils.loctionpic.ImageItem;
 import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
-import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
-import com.umeng.socialize.UMShareListener;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.editorpage.ShareActivity;
-import com.umeng.socialize.media.UMWeb;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 

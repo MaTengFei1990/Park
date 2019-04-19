@@ -5,9 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -42,7 +39,6 @@ import com.hollysmart.dialog.LoadingProgressDialog;
 import com.hollysmart.interfaces.SelectIF;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.Utils;
-import com.hollysmart.utils.taskpool.TaskPool;
 import com.hollysmart.value.Values;
 
 import java.util.ArrayList;

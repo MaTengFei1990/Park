@@ -1,7 +1,6 @@
 package com.hollysmart.service;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 
 import com.hollysmart.value.Values;
 

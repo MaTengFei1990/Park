@@ -1,6 +1,5 @@
 package com.hollysmart.apis;
 
-import com.hollysmart.beans.PicBean;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.value.UserToken;
