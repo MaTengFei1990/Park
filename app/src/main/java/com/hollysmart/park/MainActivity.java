@@ -386,6 +386,21 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loginok(WebView webView, String url) {
+        webView.evaluateJavascript("javascript:app.loginInfo()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                value.toString();
+
+                if (value.contains("roleid")) {
+                    roleid = 0;
+
+                } else {
+                    roleid = 1;
+                }
+            }
+        });
+
+
         webView.evaluateJavascript("javascript:app.gettoken()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
@@ -445,9 +460,14 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
     private void my(WebView webView, String url) {
         webView.loadUrl(url);
         if (UserToken.getUserToken().getToken() != null) {
+            if (roleid == 0) {
+                iv_yindao.setImageResource(R.mipmap.yindao_wode);
+                iv_yindao.setVisibility(View.VISIBLE);
+            } else if(roleid==1) {
+                iv_yindao.setImageResource(R.mipmap.yindao_wode_waibu);
+                iv_yindao.setVisibility(View.VISIBLE);
+            }
 
-            iv_yindao.setImageResource(R.mipmap.yindao_wode);
-            iv_yindao.setVisibility(View.VISIBLE);
 
             String isFrist = ACache.get(getApplicationContext(), Values.CACHE_THRID).getAsString(Values.CACHE_ISTHRID);
             if (!Utils.isEmpty(isFrist)) {

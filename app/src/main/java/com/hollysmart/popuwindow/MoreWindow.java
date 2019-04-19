@@ -229,6 +229,7 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                 intent = new Intent(mContext, EditPicActivity.class);
                 intent.putExtra("roleid",roleid);
                 mContext.startActivity(intent);
+                dismiss();
                 break;
             case R.id.tv_qianDao:
                 if (isShowing()) {
