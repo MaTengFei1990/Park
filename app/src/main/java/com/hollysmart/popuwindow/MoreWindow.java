@@ -136,8 +136,26 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
     }
 
     private void showAnimation(ViewGroup layout) {
+        List<View> lsitView = new ArrayList<>();
         for (int i = 0; i < layout.getChildCount(); i++) {
-            final View child = layout.getChildAt(i);
+            final View childs = layout.getChildAt(i);
+
+            if (childs instanceof ViewGroup) {
+                for (int j = 0; j < ((ViewGroup) childs).getChildCount(); j++) {
+                    final View childView = ((ViewGroup) childs).getChildAt(j);
+                    lsitView.add(childView);
+                }
+
+            } else {
+                lsitView.add(childs);
+            }
+
+        }
+
+
+        for(int n=0;n<lsitView.size();n++) {
+            final View child = lsitView.get(n);
+
             if (child.getId() == R.id.iv_window_close) {
                 continue;
             }
@@ -155,7 +173,7 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                     fadeAnim.setEvaluator(kickAnimator);
                     fadeAnim.start();
                 }
-            }, i * 50);
+            }, n * 50);
         }
 
     }
@@ -167,7 +185,7 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
 
             if (childs instanceof ViewGroup) {
                 for (int j = 0; j < ((ViewGroup) childs).getChildCount(); j++) {
-                    final View childView = ((ViewGroup) childs).getChildAt(i);
+                    final View childView = ((ViewGroup) childs).getChildAt(j);
                     lsitView.add(childView);
                 }
 

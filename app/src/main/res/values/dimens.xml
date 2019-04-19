@@ -1,39 +1,10 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
 
 
-    <dimen name="text_teda">22dp</dimen>
     <dimen name="text_da">18dp</dimen>
     <dimen name="text_zhong">15dp</dimen>
     <dimen name="text_xiao">13dp</dimen>
-    <dimen name="text_texiao">10dp</dimen>
-
-    <dimen name="text_teda_Ma">22dp</dimen>
-    <dimen name="text_da_Ma">18dp</dimen>
-    <dimen name="text_zhong_Ma">15dp</dimen>
-    <dimen name="text_xiao_Ma">13dp</dimen>
-    <dimen name="text_texiao_Ma">10dp</dimen>
-
-
-    <dimen name="fengxi_xiao">3dp</dimen>
-    <dimen name="fengxi_zhong">10dp</dimen>
-    <dimen name="fengxi_da">20dp</dimen>
-
-
-
-    <dimen name="selectcity_group_item_padding">14dp</dimen>
-    <dimen name="bladeview_fontsize">12dp</dimen>
-    <dimen name="bladeview_popup_fontsize">20dp</dimen>
-    <dimen name="bladeview_popup_height">80dp</dimen>
-
-
-    <dimen name="tag_corner_radius">20.0dip</dimen>
-    <dimen name="tag_horizontal_dpacing">8.0dip</dimen>
-    <dimen name="tag_vertical_dpacing">6.0dip</dimen>
 
 
     <dimen name="more_window_item_margin">12.0dip</dimen>

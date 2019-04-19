@@ -1,89 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
 
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar"></style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="myNoTitleBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowAnimationStyle">@style/FeelyouWindowAnimTheme</item>
-    </style>
-
-    <style name="FeelyouWindowAnimTheme" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/activity_enter_right</item>
-        <item name="android:activityOpenExitAnimation">@anim/activity_yuandian</item>
-        <item name="android:activityCloseEnterAnimation">@anim/activity_yuandian</item>
-        <item name="android:activityCloseExitAnimation">@anim/activity_exit_right</item>
-    </style>
-
-
-    <style name="dialog_style" parent="@android:style/Theme.Dialog">
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-
-    <style name="cai_dialog_style">
-        <!--设置dialog的背景-->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!--设置Dialog的windowFrame框为无-->
-        <item name="android:windowFrame">@null</item>
-        <!--设置无标题-->
-        <item name="android:windowNoTitle">true</item>
-        <!--是否浮现在activity之上-->
-        <item name="android:windowIsFloating">true</item>
-        <!--是否半透明-->
-        <item name="android:windowIsTranslucent">true</item>
-        <!--设置窗口内容不覆盖-->
-        <item name="android:windowContentOverlay">@null</item>
-        <!--设置动画，在这里使用让它继承系统的Animation.Dialog-->
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <!--背景是否模糊显示-->
-        <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
-    <style name="Popupwindow">
-        <item name="android:windowEnterAnimation">@anim/window_out</item>
-        <item name="android:windowExitAnimation">@anim/window_back</item>
-    </style>
-
-    <style name="MyDialog1" parent="Base.AlertDialog.AppCompat.Light">
-        <!-- 背景颜色及透明程度 -->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!-- 是否半透明 -->
-        <item name="android:windowIsTranslucent">false</item>
-        <!-- 是否没有标题 -->
-        <item name="android:windowNoTitle">true</item>
-        <!-- 是否浮现在activity之上 -->
-        <item name="android:windowIsFloating">true</item>
-        <!-- 是否背景模糊 -->
-        <item name="android:backgroundDimEnabled">true</item>
-        <!-- 设置背景模糊的透明度-->
-        <item name="android:backgroundDimAmount">0.0</item>
-    </style>
-
-    <style name="BottomDialog" parent="android:Animation">
-        <item name="android:windowAnimationStyle">@style/BottomDialogAnimation</item>
-    </style>
-    <style name="BottomDialogAnimation">
-        <item name="android:windowEnterAnimation">@anim/dialog_slid_up</item>
-        <item name="android:windowExitAnimation">@anim/dialog_slid_down</item>
-    </style>
-
-    <style name="TopbarStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">50dp</item>
-        <item name="android:background">@drawable/drawable_topbar_bg</item>
     </style>
 
 
