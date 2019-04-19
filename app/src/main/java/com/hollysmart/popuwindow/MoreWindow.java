@@ -30,6 +30,9 @@ import com.hollysmart.park.EditTextActivity;
 import com.hollysmart.park.R;
 import com.hollysmart.utils.fastBlur.FastBlur;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 功能描述：弹出窗口
  * Created by AsiaLYF on 2018/3/22.
@@ -105,13 +108,14 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
         setContentView(layout);
 
         ImageView close = layout.findViewById(R.id.iv_window_close);
-        android.widget.RelativeLayout.LayoutParams params = new android.widget.RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.bottomMargin = bottomMargin;
-        params.addRule(RelativeLayout.BELOW, R.id.tv_photo);
-        params.addRule(RelativeLayout.RIGHT_OF, R.id.tv_text);
-        params.topMargin = 200;
-        params.leftMargin = 50;
-        close.setLayoutParams(params);
+//        android.widget.RelativeLayout.LayoutParams params = new android.widget.RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        params.bottomMargin = bottomMargin;
+//        params.addRule(RelativeLayout.BELOW, R.id.tv_photo);
+////        params.addRule(RelativeLayout.RIGHT_OF, R.id.tv_text);
+//        params.addRule(RelativeLayout.CENTER_IN_PARENT, R.id.tv_text);
+//        params.topMargin = 200;
+//        params.leftMargin = 50;
+//        close.setLayoutParams(params);
 
         close.setOnClickListener(new View.OnClickListener() {
 
@@ -157,8 +161,25 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
     }
 
     private void closeAnimation(ViewGroup layout) {
+        List<View> lsitView = new ArrayList<>();
         for (int i = 0; i < layout.getChildCount(); i++) {
-            final View child = layout.getChildAt(i);
+            final View childs = layout.getChildAt(i);
+
+            if (childs instanceof ViewGroup) {
+                for (int j = 0; j < ((ViewGroup) childs).getChildCount(); j++) {
+                    final View childView = ((ViewGroup) childs).getChildAt(i);
+                    lsitView.add(childView);
+                }
+
+            } else {
+                lsitView.add(childs);
+            }
+
+        }
+
+        for(int n=0;n<lsitView.size();n++) {
+           final View child = lsitView.get(n);
+
             if (child.getId() == R.id.iv_window_close) {
                 continue;
             }
@@ -200,7 +221,7 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                         }
                     });
                 }
-            }, (layout.getChildCount() - i - 1) * 30);
+            }, (layout.getChildCount() - n - 1) * 30);
 
             if (child.getId() == R.id.tv_text) {
                 mHandler.postDelayed(new Runnable() {
@@ -209,9 +230,10 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                     public void run() {
                         dismiss();
                     }
-                }, (layout.getChildCount() - i) * 30 + 80);
+                }, (layout.getChildCount() - n) * 30 + 80);
             }
         }
+
 
     }
 
@@ -231,11 +253,11 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                 mContext.startActivity(intent);
                 dismiss();
                 break;
-            case R.id.tv_qianDao:
-                if (isShowing()) {
-                    closeAnimation(layout);
-                }
-                break;
+//            case R.id.tv_qianDao:
+//                if (isShowing()) {
+//                    closeAnimation(layout);
+//                }
+//                break;
             default:
                 break;
         }

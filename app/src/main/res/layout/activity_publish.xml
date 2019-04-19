@@ -7,42 +7,55 @@
     android:background="#90ffffff"
     android:gravity="bottom|center">
 
-    <TextView
-        android:id="@+id/tv_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30.0dip"
-        android:clickable="true"
-        android:drawablePadding="10dp"
-        android:drawableTop="@mipmap/icon_wenzi"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/more_window_item_margin"
-        android:text="文字" />
 
-    <TextView
-        android:id="@+id/tv_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="30.0dip"
-        android:layout_toRightOf="@id/tv_text"
-        android:clickable="true"
-        android:drawableTop="@mipmap/icon_pic"
-        android:gravity="center_horizontal"
-        android:drawablePadding="10dp"
-        android:paddingBottom="@dimen/more_window_item_margin"
-        android:text="相册" />
 
-    <TextView
-        android:id="@+id/tv_qianDao"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tv_photo"
-        android:clickable="true"
-        android:drawablePadding="10dp"
-        android:drawableTop="@mipmap/icon_qiandao"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/more_window_item_margin"
-        android:text="签到" />
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom|center">
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60.0dip"
+            android:clickable="true"
+            android:drawablePadding="10dp"
+            android:drawableTop="@mipmap/icon_wenzi"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/more_window_item_margin"
+            android:text="文字" />
+
+        <TextView
+            android:id="@+id/tv_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_text"
+            android:clickable="true"
+            android:drawableTop="@mipmap/icon_pic"
+            android:gravity="center_horizontal"
+            android:drawablePadding="10dp"
+            android:paddingBottom="@dimen/more_window_item_margin"
+            android:text="相册" />
+
+    </RelativeLayout>
+
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_qianDao"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_toRightOf="@+id/tv_photo"-->
+        <!--android:clickable="true"-->
+        <!--android:visibility="gone"-->
+        <!--android:drawablePadding="10dp"-->
+        <!--android:drawableTop="@mipmap/icon_qiandao"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:paddingBottom="@dimen/more_window_item_margin"-->
+        <!--android:text="签到" />-->
 
 
 
@@ -51,8 +64,10 @@
         android:id="@+id/iv_window_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_qianDao"
-        android:layout_marginBottom="78.0dip"
-        android:layout_toRightOf="@+id/tv_text"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="60.0dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/rl_content"
+        android:layout_centerHorizontal="true"
         android:src="@mipmap/icon_close" />
 </RelativeLayout>
