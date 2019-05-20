@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
+import com.hollysmart.beans.DictionaryBean;
 import com.hollysmart.interfaces.SelectIF;
 
 import java.util.List;
@@ -41,6 +42,23 @@ public class BsSelectDialog {
     }
     public interface PositiveIF {
         void queDing();
+    }
+
+
+    public void showPopuWindow_DictListData(Context mContext, final int type, String title, List<DictionaryBean> beanList) {
+        String strs[] = new String[beanList.size()];
+        for (int i = 0; i < beanList.size(); i++) {
+            strs[i] = beanList.get(i).getLabel();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+
+        builder.setItems(strs, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                bsSelectIF.onBsSelect(type, which);
+            }
+        }).show();
     }
 
 

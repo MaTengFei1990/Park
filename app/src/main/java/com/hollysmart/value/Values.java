@@ -1,5 +1,6 @@
 package com.hollysmart.value;
 
+import android.Manifest;
 import android.os.Environment;
 
 
@@ -7,8 +8,16 @@ public class Values {
 //	public static final String SERVIXE_SHOUYE = "http://gy.bjylfw.cn:8011/xx.html";     //公园处 正式
 //	public static final String SERVICE_URL = "http://gy.bjylfw.cn:8010/";     //公园处 正式
 
-	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处 测试版本
-	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处 测试
+//	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处  正式
+//	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处  正式
+
+	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_beta/xx.html";     // 公园处 测试
+	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_beta/";     //公园处 测试
+
+	//集成表单需要的接口；
+	public static final String SERVICE_URL_FORM = "http://47.104.68.180:3011";//
+	public static final String SERVICE_URL_ADMIN_FORM = SERVICE_URL_FORM + "/admin";//
+	public static final String TOKEN = "Bearer f7aa6cb595154ffb4c4a70c938d6f2ff";
 
 	public static final String SDCARD_ROOT = "smart_park";
 	public static final String RELOAD_DATA = "reload_data";
@@ -35,6 +44,29 @@ public class Values {
 	public static final String CACHE_ISTHRID = "isThrid";
 
 	public static String QRCODEURL = "qrcode";
+
+
+
+	public static final String SDCARD_CACHE = "cache";
+
+
+	public static final String SDCARD_ICON = "icon";
+	public static final String SDCARD_DOWNLOAD = "download";
+	public static final String SDCARD_SOUNDS = "sounds";
+	public static final String SDCARD_FILE = "file";
+	public static final String SDCARD_LUXIAN = "luxian";
+
+	public static final String[] PERMISSION = new String[]{Manifest.permission.CAMERA,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE,// 写入权限
+			Manifest.permission.READ_EXTERNAL_STORAGE, // 读取权限
+			Manifest.permission.READ_PHONE_STATE,
+			Manifest.permission.VIBRATE,
+			Manifest.permission.INTERNET
+	};
+
+
+
+
 
 
 	public static final String SUCCESS = "com.hollysmart.success.jinrong";

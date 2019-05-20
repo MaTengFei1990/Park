@@ -661,5 +661,26 @@ public class CCM_DateTime {
 		}
 		return result;
 	}
+
+
+
+	/**
+	 * 2019-05-05 14:20:44
+	 * 返回：14:20
+	 * @param str
+	 * @return
+	 */
+	public String getMinAndSecond(String str) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d2 = null;
+		try {
+			d2 = sdf.parse(str);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}// 将String to Date类型
+		return d2.getHours()+":"+d2.getMinutes();
+
+	}
 	
 }

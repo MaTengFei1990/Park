@@ -9,6 +9,8 @@ android {
         versionCode 28
         versionName "1.0.28"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -78,6 +80,38 @@ dependencies {
     implementation files('libs/umeng-share-QQ-simplify-6.9.4.jar')
     implementation files('libs/umeng-share-sina-simplify-6.9.4.jar')
     implementation files('libs/umeng-share-wechat-simplify-6.9.4.jar')
+    implementation files('libs/ormlite-android-4.49-SNAPSHOT.jar')
+    implementation files('libs/ormlite-core-4.49-SNAPSHOT.jar')
+
+
+
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'com.google.zxing:core:3.3.0'
+    compile 'cn.bingoogolapple:bga-qrcodecore:1.1.8@aar'
+    compile 'cn.bingoogolapple:bga-zxing:1.1.8@aar'
+    implementation 'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2'
+    compile 'com.shizhefei:ViewPagerIndicator:1.1.6'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+
+
+
+    compile 'com.dsiner.lib:slidelayout:1.0.3'
+
+    compile 'com.lovedise:permissiongen:0.0.6'
+
+    compile 'com.qiniu:qiniu-android-sdk:7.3.15'
+
+
+    implementation ('com.qiniu:qiniu-java-sdk:7.2.+'){
+        exclude group: 'com.google.code.gson'
+    }
+
+    implementation 'com.dsiner.lib:xrv:1.1.2'
+    compile project(path: ':library:WheelPicker')
+    compile project(path: ':library:Audiolib')
 }
 
 

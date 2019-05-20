@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
+    <color name="colorPrimaryDark">#303F9F</color>
     <color name="lv_text">#4e7f11</color>
     <color name="baise">#FFFFFF</color>
     <color name="lanse_bg">#1283D3</color>
@@ -17,6 +17,10 @@
 
     <color name="titleBg">#39AEA8</color>
 
+
+    <color name="text_lan">#555A5C</color>
+    <color name="bg_lan">#39AEA8</color>
+
     <!--  新版界面 -->
 
 
@@ -25,6 +29,13 @@
 
     <color name="text_juhuang">#ff8901</color>
     <color name="text_hei">#333333</color>
+    <color name="chengse">#FF9000</color>
+
+    <color name="hongse_text">#b92222</color>
+
+
+    <color name="lv">#97d11a</color>
+    <color name="hui_q">#d2d2d0</color>
 
 
 </resources>

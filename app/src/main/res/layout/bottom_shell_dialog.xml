@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/design_bottom_sheet"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/dialog_shape_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_fenleiguanli"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="分类管理"
+            android:textColor="@color/lanse_bg"
+            android:textSize="@dimen/text_da" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/huise_line">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_yulan"
+            android:layout_width="match_parent"
+            android:layout_marginTop="1dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="预览"
+            android:textColor="@color/lanse_bg"
+            android:textSize="@dimen/text_da" />
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/dialog_shape_bg"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="取消"
+        android:textColor="@color/lanse_bg"
+        android:textSize="@dimen/text_da" />
+</LinearLayout>

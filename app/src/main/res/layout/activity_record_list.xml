@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ll_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_map"
+        android:layout_width="fill_parent"
+        android:background="@color/bg_lan"
+        android:layout_height="50dp" >
+
+        <ImageView
+            android:id="@+id/ib_back"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:src="@mipmap/icon_back"
+            android:padding="13dp"
+            android:background="@color/touming"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="录音"
+            android:textColor="@color/baise"
+            android:textSize="@dimen/tv_size_big"/>
+
+        <ImageView
+            android:id="@+id/iv_shure"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            android:src="@mipmap/icon_yes" />
+
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_record"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:divider="@color/touming"
+        android:dividerHeight="0sp">
+    </android.support.v7.widget.RecyclerView>
+
+
+    <ImageView
+        android:id="@+id/iv_luYin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:src="@mipmap/icon_cancel"/>
+
+
+
+    <com.hollysmart.record.RecordAudioButton
+        android:id="@+id/btn_record"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/community_btn_chat_press_normal"
+        android:text="按住 说话"
+        android:textColor="#7e7e7e" />
+
+
+
+
+</LinearLayout>

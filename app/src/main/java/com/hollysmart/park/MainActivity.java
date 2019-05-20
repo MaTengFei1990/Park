@@ -232,12 +232,25 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         } else if (url.contains("tel")) {
             tel(url);
 
+        } else if (url.contains("scada.html?")) {
+           startFormActivity();
+
         } else {
             webView.loadUrl(url);
 
         }
 
 
+    }
+
+    /**
+     * 进入项目管理页面;
+     */
+
+    private void startFormActivity() {
+
+        Intent intent = new Intent(mContext, ProjectManagerActivity.class);
+        startActivity(intent);
     }
 
     /***

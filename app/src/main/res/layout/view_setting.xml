@@ -1,0 +1,193 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+	<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/enter_back"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="设置"
+            android:textColor="@color/text_lan"
+            android:textSize="@dimen/tv_size" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/text_lan" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间间隔:"
+            android:textColor="@color/text_lan"
+            android:textSize="@dimen/tv_size_small" />
+
+        <Button
+            android:id="@+id/bn_lxtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/kuang01"
+            android:textColor="@color/text_lan"
+            android:text="5秒" />
+    	
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="路线颜色:"
+                android:textColor="@color/text_lan"
+                android:textSize="@dimen/tv_size_small" />
+        </LinearLayout>
+        <HorizontalScrollView
+                android:id="@+id/horizontalScrollView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                    <RadioGroup
+                		android:id="@+id/Radio_fenlei"
+                		android:layout_width="wrap_content"
+                		android:layout_height="wrap_content"
+                		android:orientation="horizontal" >
+				 		<RadioButton
+            				android:id="@+id/Radio_jingdian"
+            				android:layout_width="wrap_content"
+           					android:layout_height="wrap_content" />
+
+           					 <TextView
+                				android:layout_width="wrap_content"
+                				android:layout_height="wrap_content"
+                				android:textColor="@color/text_lan"
+            					android:textSize="@dimen/tv_size_small"
+                				android:text="红色" />
+        				<RadioButton
+            				android:id="@+id/Radio_zhusu"
+            				android:layout_width="wrap_content"
+           					 android:layout_height="wrap_content" />
+
+            				<TextView
+                				android:layout_width="wrap_content"
+                				android:layout_height="wrap_content"
+                				android:textColor="@color/text_lan"
+            					android:textSize="@dimen/tv_size_small"
+                				android:text="黑色" />
+        			<RadioButton
+           				 android:id="@+id/Radio_yule"
+            			 android:layout_width="wrap_content"
+            			 android:layout_height="wrap_content" />
+            			<TextView
+                			android:layout_width="wrap_content"
+                			android:layout_height="wrap_content"
+                			android:textColor="@color/text_lan"
+            				android:textSize="@dimen/tv_size_small"
+                			android:text="黄色" />
+          			<RadioButton
+           				 android:id="@+id/Radio_gouwu"
+            			 android:layout_width="wrap_content"
+            			 android:layout_height="wrap_content" />
+
+            			<TextView
+                			android:layout_width="wrap_content"
+                			android:layout_height="wrap_content"
+                			android:textColor="@color/text_lan"
+            				android:textSize="@dimen/tv_size_small"
+                			android:text="白色" />
+          			</RadioGroup>
+                </LinearLayout>
+            </HorizontalScrollView>
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="5dp"
+        android:background="@color/text_lan" />
+	<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/ll_add_jingdian"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="5dp" >
+
+            
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="确认"
+                android:textColor="@color/text_lan"
+                android:textSize="@dimen/tv_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_lan" />
+
+        <LinearLayout
+            android:id="@+id/ll_add_fenxiang"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="取消"
+                android:textColor="@color/text_lan"
+                android:textSize="@dimen/tv_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    
+	
+</LinearLayout>
+</RelativeLayout>

@@ -9,5 +9,9 @@
 
     <dimen name="more_window_item_margin">12.0dip</dimen>
 
+    <dimen name="tv_size">16sp</dimen>
+    <dimen name="tv_size_small">13sp</dimen>
+    <dimen name="tv_size_big">18sp</dimen>
+
 
 </resources>
