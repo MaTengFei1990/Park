@@ -163,6 +163,7 @@ public class EditPicActivity extends StyleAnimActivity implements
         lpd = new LoadingProgressDialog();
         lpd.setMessage("正在保存，请稍等...");
         lpd.create(this, lpd.STYLE_SPINNER);
+        lpd.setCancelable(false);
     }
 
     public LocationClient mLocationClient = null;
@@ -255,6 +256,7 @@ public class EditPicActivity extends StyleAnimActivity implements
 
             if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
                 //没有找到检索结果
+                return;
             }
 
             tv_location.setText(result.getAddressDetail().province + " " + result.getAddressDetail().district + " " + result.getAddressDetail().street);

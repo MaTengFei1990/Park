@@ -57,8 +57,13 @@ public class UpDateVersionAPI implements INetModel {
                         }
                         updateVersionIF.getUpdateVersion(true,downLoadURL, remark);
                     } else {
-                        String msg = object.getString("msg");
-                        updateVersionIF.getUpdateVersion(false,null, msg);
+                        if (object.has("msg")) {
+                            String msg = object.getString("msg");
+                            updateVersionIF.getUpdateVersion(false, null, msg);
+
+                        } else {
+                            updateVersionIF.getUpdateVersion(false, null, null);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

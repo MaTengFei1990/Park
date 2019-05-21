@@ -141,6 +141,7 @@ public class EditTextActivity extends StyleAnimActivity
         lpd = new LoadingProgressDialog();
         lpd.setMessage("正在保存，请稍等...");
         lpd.create(this, lpd.STYLE_SPINNER);
+        lpd.setCancelable(false);
     }
 
     public LocationClient mLocationClient = null;

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/huise_bg"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.hollysmart.park.EditTextActivity">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/titleBg">
+
+            <ImageView
+                android:id="@+id/tv_fanhui"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@color/baise"
+                android:padding="10dp"
+                android:src="@mipmap/fanhui_1"
+                android:textSize="@dimen/text_zhong" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="关于"
+                android:textColor="@color/baise"
+                android:textSize="@dimen/text_da" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_biaoQian"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_alignBottom="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tv_biaoQian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="北京公园在线"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/titleBg"
+            android:textSize="@dimen/text_da" />
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="版本："
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/titleBg"
+            android:textSize="@dimen/text_xiao" />
+
+    </LinearLayout>
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:id="@+id/ll_localMap"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@color/baise"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="@dimen/text_zhong"
+                android:textColor="@color/heise_text"
+                android:text="版权所有"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:textSize="@dimen/text_zhong"
+                android:text="北京市园林绿化局"/>
+
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/rl_updateVersion"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@color/baise"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="@dimen/text_zhong"
+                android:textColor="@color/heise_text"
+                android:text="App更新"/>
+
+            <TextView
+                android:id="@+id/tv_haveRes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/hongse_text"
+                android:textSize="@dimen/text_zhong"/>
+
+
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

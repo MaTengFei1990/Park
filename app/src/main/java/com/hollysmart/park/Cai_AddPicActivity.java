@@ -212,7 +212,17 @@ public class Cai_AddPicActivity extends StyleAnimActivity {
 
 
         List<ImageItem> xiangces = new ArrayList<>();
-        for (ImageBucket ibt : dataList) {
+//        for (ImageBucket ibt : dataList) {
+//            List<ImageItem> imageItems = ibt.imageList;
+//            for (ImageItem item : imageItems) {
+//                if (!Utils.isEmpty(item.imagePath))
+//                    item.isSelected = false;
+//                xiangces.add(item);
+//            }
+//        }
+
+        for(int i=dataList.size()-1;i>=0;i--) {
+            ImageBucket ibt = dataList.get(i);
             List<ImageItem> imageItems = ibt.imageList;
             for (ImageItem item : imageItems) {
                 if (!Utils.isEmpty(item.imagePath))

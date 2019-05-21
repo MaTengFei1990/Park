@@ -232,8 +232,12 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         } else if (url.contains("tel")) {
             tel(url);
 
-        } else if (url.contains("scada.html?")) {
+        } else if (url.contains("scada.html")) {
            startFormActivity();
+
+        } else if (url.contains("updateapp.html")) {
+            Intent intent = new Intent(mContext, AboutUsActivity.class);
+            startActivity(intent);
 
         } else {
             webView.loadUrl(url);
