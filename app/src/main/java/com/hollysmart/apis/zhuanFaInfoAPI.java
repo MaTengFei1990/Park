@@ -106,7 +106,7 @@ public class zhuanFaInfoAPI implements INetModel {
                 try {
                     JSONObject object = new JSONObject(response);
                     int status = object.getInt("resultid");
-                    if (status == 1) {
+                    if (status>0) {
                         saveInfoIFIF.saveResult(true, "msg");
                     } else {
                         saveInfoIFIF.saveResult(false, "msg");

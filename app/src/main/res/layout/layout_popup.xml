@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/baise">
+
     <ListView
         android:id="@+id/lv_popup"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="1px"
-        android:layout_height="300dp"
-        android:paddingBottom="10dp"
         android:background="@color/baise"
-        />
+        android:paddingBottom="10dp" />
 </LinearLayout>

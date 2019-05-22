@@ -7,6 +7,7 @@ import android.provider.MediaStore.Images.Media;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -214,6 +215,9 @@ public class AlbumHelper {
                 imageItem.imagePath = path;
 //                imageItem.thumbnailPath = thumbnailList.get(_id);
                 bucket.imageList.add(imageItem);
+
+                Collections.reverse(bucket.imageList);
+
             } while (cur.moveToNext());
         }
 

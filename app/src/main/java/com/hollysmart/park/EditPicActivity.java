@@ -921,8 +921,8 @@ public class EditPicActivity extends StyleAnimActivity implements
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 150);
-        intent.putExtra("outputY", 150);
+        intent.putExtra("outputX", 800);
+        intent.putExtra("outputY", 800);
         intent.putExtra("return-data", true);
         //裁剪后的图片Uri路径，uritempFile为Uri类变量
         uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "wodeIcon.jpg");

@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -210,23 +211,21 @@ public class Cai_AddPicActivity extends StyleAnimActivity {
         helper.init(getApplicationContext());
         dataList = helper.getImagesBucketList(false);
 
+        for(int i=0;i<dataList.size();i++) {
+            if (dataList.get(i).bucketName.equals("Camera")) {
+                dataList.add(0, dataList.remove(i));
+            }
+        }
+
 
         List<ImageItem> xiangces = new ArrayList<>();
-//        for (ImageBucket ibt : dataList) {
-//            List<ImageItem> imageItems = ibt.imageList;
-//            for (ImageItem item : imageItems) {
-//                if (!Utils.isEmpty(item.imagePath))
-//                    item.isSelected = false;
-//                xiangces.add(item);
-//            }
-//        }
-
-        for(int i=dataList.size()-1;i>=0;i--) {
-            ImageBucket ibt = dataList.get(i);
+        for (ImageBucket ibt : dataList) {
             List<ImageItem> imageItems = ibt.imageList;
             for (ImageItem item : imageItems) {
-                if (!Utils.isEmpty(item.imagePath))
+                if (!Utils.isEmpty(item.imagePath)) {
+
                     item.isSelected = false;
+                }
                 xiangces.add(item);
             }
         }
