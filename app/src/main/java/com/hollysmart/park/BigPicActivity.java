@@ -49,8 +49,15 @@ public class BigPicActivity extends StyleAnimActivity {
 	public void init() {
 		context = this;
 		isLoction = getIntent().getBooleanExtra("isLoction", false);
-		infos = (List<PicBean>)getIntent().getSerializableExtra("infos");
+		infos = (List<PicBean>) getIntent().getSerializableExtra("infos");
 		int index = getIntent().getIntExtra("index", 0);
+		for(int i=0;i<infos.size();i++) {
+			PicBean bean = infos.get(i);
+			if (bean.getIsAddFlag() == 1 && Utils.isEmpty(bean.getPath())) {
+				infos.remove(i);
+			}
+		}
+
 		tv_page.setText("(" + (index + 1) + "/" + infos.size() + ")");
 
 		ViewPager vp_pic = (ViewPager) findViewById(R.id.vp_pic_detail);
