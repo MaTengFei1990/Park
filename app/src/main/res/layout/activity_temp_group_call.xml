@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/baise"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whole_bg" >
+
+        <TextView
+            android:id="@+id/tv_out"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/selector_btn_bg"
+            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:singleLine="true"
+            android:text="@string/back"
+            android:textColor="@color/font_color3"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_group_call_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/temp_group_call_name"
+            android:textColor="@color/font_color3"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/rl_title"
+        android:gravity="center"
+        android:textColor="@color/font_color3" />
+    
+    <ImageView 
+        android:id="@+id/status_underline"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/tv_status"
+        android:background="@android:color/darker_gray"/>
+
+    <Button
+        android:id="@+id/btn_temp_grp_ptt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/loginoutstyle"
+        android:text="@string/press_and_speak"
+        android:textColor="@color/tab_wihte" />
+
+    <GridView
+        android:id="@+id/gv_members"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/btn_temp_grp_ptt"
+        android:layout_below="@id/status_underline"
+        android:numColumns="4" />
+
+</RelativeLayout>

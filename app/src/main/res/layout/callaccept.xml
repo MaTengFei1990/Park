@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#999999"
+    android:gravity="bottom"
+    android:orientation="vertical" >
+
+    <!-- 2014-9-15 修改视频单户来电界面 -->
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <!-- 显示区 -->
+
+            <FrameLayout
+                android:id="@+id/photoUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#999999" >
+
+                <!-- 头像部分 -->
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dip"
+                    android:orientation="vertical" >
+
+                    <Chronometer
+                        android:id="@+id/elapsedTime"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingRight="20dip"
+                        android:textColor="#ffffffff"
+                        android:textSize="36sp" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2" >
+
+                        <ToggleButton
+                            android:id="@+id/jingyin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textOff="静音打开"
+                            android:textOn="静音关闭" />
+
+                        <RadioGroup
+                            android:id="@+id/audiomode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <RadioButton
+                                 android:id="@+id/hook"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="听筒/耳机" />
+
+                            <RadioButton
+                                 android:id="@+id/speaker"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="扬声器" />
+
+                            <RadioButton
+                                 android:id="@+id/bluetooth"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="蓝牙" />
+                        </RadioGroup>
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- 控制区 -->
+
+
+            <!-- 呼出操作 -->
+
+
+            <!-- 2014-9-15 修改视频单户来电界面 -->
+
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dip"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/keyboard_show"
+                        android:layout_width="70dip"
+                        android:layout_height="70dip"
+                        android:layout_gravity="center"
+                        android:background="@drawable/loginoutstyle"
+                        android:clickable="true"
+                        android:src="@drawable/ic_dialpad_holo_dark_hide" />
+
+                    <LinearLayout
+                        android:id="@+id/hangupline"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/loginoutstyle"
+                        android:orientation="vertical" >
+
+                        <ImageView
+                            android:id="@+id/out_end_call"
+                            android:layout_width="60dip"
+                            android:layout_height="40dip"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:src="@drawable/ic_end_call" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:text="结束通话"
+                            android:textColor="#ffffff" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/keyboard_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/linearLayout1"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="5dp"
+                android:background="#999999"
+                android:orientation="vertical"
+                android:visibility="invisible" >
+
+                <include
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    layout="@layout/call_keyboard" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- 通话信息与连接状态 android:background="#99999999" -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical" >
+
+            <!-- 电话信息 与 通话时间 android:background="#FF000000" -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ff000000"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/callnum"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="top|left"
+                        android:maxWidth="25dip"
+                        android:paddingLeft="20dip"
+                        android:singleLine="true"
+                        android:textColor="#ffffffff"
+                        android:textSize="20dip" />
+                </LinearLayout>
+                <!-- 通话时间 : -->
+
+            </LinearLayout>
+            <!-- 连接状态android:background="@color/holo_blue_light" -->
+
+        </LinearLayout>
+        <!-- 黑屏 -->
+
+    </FrameLayout>
+
+</LinearLayout>

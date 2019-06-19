@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/whole_bg" >
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+			android:gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/custom_grp_cancel"
+            android:textSize="15sp"
+            android:textColor="@color/font_color3"
+            android:background="@drawable/selector_btn_bg" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:layout_centerInParent="true"
+            android:text="@string/custom_grp_add"
+            android:textColor="@color/font_color3"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:singleLine="true"
+            android:gravity="center"
+			android:paddingLeft="20dp"
+			android:paddingRight="20dp"
+            android:text="@string/custom_grp_ok"
+            android:textSize="15sp"
+            android:textColor="@color/font_color3"
+            android:background="@drawable/selector_btn_bg" />
+    </RelativeLayout>
+
+    <SearchView
+        android:id="@+id/sv_search_person"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:inputType="textFilter"
+        android:queryHint="@string/grp_search" 
+        android:visibility="visible">
+    </SearchView>
+    
+    <ImageView 
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#e3e6eb"/>
+
+    <ListView
+        android:id="@+id/lv_member_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#e3e6eb"
+        android:dividerHeight="1dp"
+        android:cacheColorHint="#00000000"
+        android:fadingEdge="none" >
+    </ListView>
+
+</LinearLayout>

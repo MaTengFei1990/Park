@@ -38,4 +38,32 @@
     <color name="hui_q">#d2d2d0</color>
 
 
+
+
+    <color name="onLine">#FF0000</color>
+    <color name="notOnLine">#ffffff</color>
+    <color name="white">#ffffffff</color>
+    <color name="exit_login_red">#aaFF0000</color>
+    <color name="dilog_title_red">#960807</color>
+    <color name="font_color">#c2c3c5</color>
+    <color name="font_color2">#969799</color>
+    <color name="font_color3">#565759</color>
+    <color name="font_color4">#D6d7DB</color>
+    <color name="black">#000000</color>
+    <color name="black_">#80000000</color>
+    <color name="bright_foreground_dark">#ffffffff</color>
+    <color name="light_white">#FFDEDEDE</color>
+    <color name="holo_green_dark">#FF008f00</color>
+    <color name="text_color">#FF000000</color>
+    <color name="tab_wihte">#ffffff</color>
+    <color name="disable_color">#90ffffff</color>
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="white_diy">#bbffffff</color>
+    <color name="loginoutnormal">#be0a0b</color>
+    <color name="loginoutpress">#76797f</color>
+    <color name="gray">#666666</color>
+    <color name="btn_click_bg">#969799</color>
+    <color name="whole_bg">#d6d7db</color>
+
+
 </resources>

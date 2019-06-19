@@ -7,8 +7,15 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Vibrator;
 
+import com.gqt.alarm.MyAlarmManager;
+import com.gqt.helper.GQTHelper;
+import com.gqt.net.util.NetChecker;
 import com.hollysmart.park.MainActivity;
+import com.hollysmart.park.MyBluetoothManager;
+import com.hollysmart.park.NetChangedReceiver;
 import com.hollysmart.park.R;
+import com.hollysmart.park.TipSoundPlayer;
+import com.hollysmart.tools.GQTUtils;
 import com.hollysmart.utils.Mlog;
 import com.squareup.leakcanary.LeakCanary;
 import com.umeng.commonsdk.UMConfigure;
@@ -25,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
-public class App_Cai extends Application {
+public class App_Cai extends Application implements NetChecker.NetCallback{
 
     private static App_Cai app_cai;
     private static Handler sHandler;
@@ -43,6 +50,15 @@ public class App_Cai extends Application {
         LeakCanary.install(this);
         Mlog.TAG = "com.test";
         Mlog.OPENLOG = true;
+
+
+        GQTHelper.getInstance().initAppContext(this);
+        GQTHelper.getInstance().setNetCallback(this);
+        TipSoundPlayer.getInstance().init(this);
+        MyAlarmManager.getInstance().init(getApplicationContext());
+//	    MyPowerManager.getInstance().init(getApplicationContext());
+        NetChangedReceiver.registerSelf();
+        MyBluetoothManager.getInstance(this);
 
         /**
          * 初始化common库
@@ -121,6 +137,13 @@ public class App_Cai extends Application {
 
     public static Handler getHandler() {
         return sHandler;
+    }
+
+
+    @Override
+    public boolean getNetAvailable() {
+        // TODO Auto-generated method stub
+        return GQTUtils.isNetworkAvailable(this);
     }
 
 }

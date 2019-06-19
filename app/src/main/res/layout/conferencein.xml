@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/baise"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/holo_blue_light"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="会议广播发其中"
+            android:layout_marginLeft="140dp"
+            android:textSize="20dp" />
+    </LinearLayout>
+
+    <View 
+    android:layout_width="fill_parent"
+    android:layout_height="20dp"
+        >
+    </View>
+    <LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" 
+        >
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/count1"
+            android:hint="账号1"
+            android:layout_weight="1"
+            />
+         <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/count2"
+            android:hint="账号2"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+    
+    <View 
+    android:layout_width="fill_parent"
+    android:layout_height="20dp"
+        >
+    </View>
+    
+    <!--  <LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" 
+        >
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/count3"
+            android:hint="账号3"
+            android:layout_weight="1"
+            />
+         <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/count4"
+            android:hint="账号4"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+    
+        <View 
+    android:layout_width="fill_parent"
+    android:layout_height="20dp"
+        >
+    </View>
+    
+    <LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" 
+        >
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/count5"
+            android:hint="账号5"
+            android:layout_weight="1"
+            />
+         <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/count6"
+            android:hint="账号6"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+    <View 
+    android:layout_width="fill_parent"
+    android:layout_height="20dp"
+       >
+    </View>-->
+    <Button 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:id="@+id/cancleconf"
+        android:background="@color/holo_blue_light"
+        />
+</LinearLayout>

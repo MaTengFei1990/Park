@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/baise"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/holo_blue_light"
+        >
+        <!--  <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="广播会议"
+             android:layout_marginLeft="10dp"
+             android:textSize="18dp"
+             />-->
+
+        <Button
+            android:id="@+id/sendconference"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="发起会议"
+            android:layout_marginLeft="20dp"
+            android:background="@color/holo_blue_light"/>
+        <Button
+            android:id="@+id/sendbroad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发起广播"
+            android:layout_marginLeft="120dp"
+            android:background="@color/holo_blue_light"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        >
+    </View>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user1"
+            android:hint="输入账号"
+            android:layout_weight="1"
+            android:inputType="number"
+            />
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user2"
+            android:hint="输入账号"
+            android:layout_weight="1"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        >
+    </View>
+
+    <!--  <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+        >
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user3"
+            android:hint="输入账号"
+            android:layout_weight="1"
+            android:inputType="number"
+            />
+         <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user4"
+            android:hint="输入账号"
+            android:layout_weight="1"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+        <View
+    android:layout_width="fill_parent"
+    android:layout_height="20dp"
+        >
+    </View>
+
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+        >
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user5"
+            android:hint="输入账号"
+            android:layout_weight="1"
+            android:inputType="number"
+            />
+         <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user6"
+            android:hint="输入账号"
+            android:layout_weight="1"
+            android:inputType="number"
+            />
+    </LinearLayout>-->
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        >
+    </View>
+    <!--  <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:id="@+id/cancleconf"
+        android:background="@color/holo_blue_light"
+        />-->
+</LinearLayout>

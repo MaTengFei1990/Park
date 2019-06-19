@@ -25,6 +25,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.hollysmart.animtor.KickBackAnimator;
+import com.hollysmart.conference.ConferenceSendActivity;
 import com.hollysmart.park.EditPicActivity;
 import com.hollysmart.park.EditTextActivity;
 import com.hollysmart.park.R;
@@ -271,11 +272,12 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                 mContext.startActivity(intent);
                 dismiss();
                 break;
-//            case R.id.tv_qianDao:
-//                if (isShowing()) {
-//                    closeAnimation(layout);
-//                }
-//                break;
+            case R.id.tv_chat:
+                intent = new Intent(mContext, ConferenceSendActivity.class);
+                intent.putExtra("roleid",roleid);
+                mContext.startActivity(intent);
+                dismiss();
+                break;
             default:
                 break;
         }
