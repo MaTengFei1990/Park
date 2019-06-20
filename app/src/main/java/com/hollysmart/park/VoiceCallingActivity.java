@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCallListener, CustomGroupParserListener, View.OnClickListener {
+public class VoiceCallingActivity extends StyleAnimActivity  implements  View.OnClickListener {
 
 
     @Override
@@ -55,10 +55,10 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
 
     boolean isAddressBook = false;
 
-    BaseVisualizerView mBaseVisualizerView;
+//    BaseVisualizerView mBaseVisualizerView;
 
 
-    GroupEngine groupEngine = null;
+//    GroupEngine groupEngine = null;
     CallEngine callEngine = null;
 
 
@@ -115,11 +115,11 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
             });
             GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
 
-            groupEngine = GQTHelper.getInstance().getGroupEngine();
+//            groupEngine = GQTHelper.getInstance().getGroupEngine();
             callEngine = GQTHelper.getInstance().getCallEngine();
 
         } else {
-            groupEngine = GQTHelper.getInstance().getGroupEngine();
+//            groupEngine = GQTHelper.getInstance().getGroupEngine();
             callEngine = GQTHelper.getInstance().getCallEngine();
         }
 
@@ -128,7 +128,7 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
         registerReceiver(broadcastReceiver, new IntentFilter("com.gqt.loginout"));
 
 
-        initMusicLine();
+//        initMusicLine();
     }
     @Override
     public void init(){
@@ -168,13 +168,13 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
                     Utils.showToast(mContext,"msg.what=====" + msg.what);
                     Mlog.d( "callHander--------msg.what=="+msg.what );
                     if (msg.arg1 == CallType.VIDEOCALL || msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.TRANSCRIBE || msg.arg1 == CallType.MONITORVIDEO || msg.arg1 == CallType.DISPATCH) {
-                        sendBroadcast(new Intent("com.gqt.videoaccept"));
-                        //弹出通话接听界面
-                        if (msg.arg1 == CallType.VIDEOCALL) {
-                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_CALL).setVideoSize();
-                        } else {
-                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_UPLOAD).setVideoSize();
-                        }
+//                        sendBroadcast(new Intent("com.gqt.videoaccept"));
+//                        //弹出通话接听界面
+//                        if (msg.arg1 == CallType.VIDEOCALL) {
+//                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_CALL).setVideoSize();
+//                        } else {
+//                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_UPLOAD).setVideoSize();
+//                        }
                     } else if (msg.arg1 == CallType.VOICECALL) {
                         sendBroadcast(new Intent("com.gqt.accept"));
                     } else if (msg.arg1 == CallType.BROADCAST) {
@@ -208,15 +208,15 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
                         Intent voiceIntent = new Intent(VoiceCallingActivity.this, VoiceCallOutGoingActivity.class);
                         voiceIntent.putExtra("num", mname);
                         startActivity(voiceIntent);
-                    } else if (msg.arg1 == CallType.TRANSCRIBE || msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.MONITORVIDEO) {
-                        if (msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.TRANSCRIBE) {
-                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_UPLOAD).setVideoSize();
-                        }
-                        Intent videoIntent = new Intent(VoiceCallingActivity.this, TranscribeActivity.class);
-                        videoIntent.putExtra("type", msg.arg1);
-                        videoIntent.putExtra("num", mname);
-                        videoIntent.putExtra("state", 1);
-                        startActivity(videoIntent);
+//                    } else if (msg.arg1 == CallType.TRANSCRIBE || msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.MONITORVIDEO) {
+//                        if (msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.TRANSCRIBE) {
+//                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_UPLOAD).setVideoSize();
+//                        }
+//                        Intent videoIntent = new Intent(VoiceCallingActivity.this, TranscribeActivity.class);
+//                        videoIntent.putExtra("type", msg.arg1);
+//                        videoIntent.putExtra("num", mname);
+//                        videoIntent.putExtra("state", 1);
+//                        startActivity(videoIntent);
                     }
 
                     new SharedPreferenceTools(VoiceCallingActivity.this).putValues(mname);
@@ -232,27 +232,27 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
                         invoiceIntent.putExtra("name", name);
                         invoiceIntent.putExtra("num", num);
                         startActivity(invoiceIntent);
-                    } else if (msg.arg1 == CallType.VIDEOCALL) {
-                        VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_CALL).setVideoSize();
-                        Intent invideoIntent = new Intent(VoiceCallingActivity.this, VoiceCallComingActivity.class);
-                        invideoIntent.putExtra("name", name);
-                        invideoIntent.putExtra("num", num);
-                        startActivity(invideoIntent);
+//                    } else if (msg.arg1 == CallType.VIDEOCALL) {
+//                        VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_CALL).setVideoSize();
+//                        Intent invideoIntent = new Intent(VoiceCallingActivity.this, VoiceCallComingActivity.class);
+//                        invideoIntent.putExtra("name", name);
+//                        invideoIntent.putExtra("num", num);
+//                        startActivity(invideoIntent);
                     } else if (msg.arg1 == CallType.SENDONLY_VOICECALL) {
                         GQTHelper.getInstance().getCallEngine().answerCall(CallType.VOICECALL, "");
-                    } else if (msg.arg1 == CallType.SENDONLY_VIDEOCALL) {
-                        VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_MONITOR).setVideoSize();
-                        startService(new Intent(VoiceCallingActivity.this, MonitorServer.class));
-                    } else if (msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.MONITORVIDEO || msg.arg1 == CallType.DISPATCH) {
-                        Intent videoIntent = new Intent(VoiceCallingActivity.this, TranscribeActivity.class);
-                        if (msg.arg1 == CallType.MONITORVIDEO) {
-                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_MONITOR).setVideoSize();
-                        }
-                        videoIntent.putExtra("name", name);
-                        videoIntent.putExtra("type", msg.arg1);
-                        videoIntent.putExtra("num", num);
-                        videoIntent.putExtra("state", 0);
-                        startActivity(videoIntent);
+//                    } else if (msg.arg1 == CallType.SENDONLY_VIDEOCALL) {
+//                        VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_MONITOR).setVideoSize();
+//                        startService(new Intent(VoiceCallingActivity.this, MonitorServer.class));
+//                    } else if (msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.MONITORVIDEO || msg.arg1 == CallType.DISPATCH) {
+//                        Intent videoIntent = new Intent(VoiceCallingActivity.this, TranscribeActivity.class);
+//                        if (msg.arg1 == CallType.MONITORVIDEO) {
+//                            VideoSizeSetting.getVideoSizeSetting(VideoManagerService.ACTION_VIDEO_MONITOR).setVideoSize();
+//                        }
+//                        videoIntent.putExtra("name", name);
+//                        videoIntent.putExtra("type", msg.arg1);
+//                        videoIntent.putExtra("num", num);
+//                        videoIntent.putExtra("state", 0);
+//                        startActivity(videoIntent);
                     }
                     break;
                 case 99:
@@ -297,108 +297,108 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
     }
 
 
-    @Override
-    public void onPttRequestSuccess() {
-        TipSoundPlayer.getInstance().play(TipSoundPlayer.Sound.PTT_ACCEPT);
-    }
+//    @Override
+//    public void onPttRequestSuccess() {
+//        TipSoundPlayer.getInstance().play(TipSoundPlayer.Sound.PTT_ACCEPT);
+//    }
+//
+//    @Override
+//    public void onPttRequestFailed(String reason) {
+//        myHandler.sendMessage(myHandler.obtainMessage(8, reason));
+//    }
+//
+//    @Override
+//    public void onPttReleaseSuccess() {
+//
+//        TipSoundPlayer.getInstance().play(TipSoundPlayer.Sound.PTT_RELEASE);
+//
+//    }
+//
+//    @Override
+//    public void onGroupCallInComing(PttGroup grp) {
+//        myHandler.sendMessage(myHandler.obtainMessage(GroupIncoming, grp));
+//    }
+//
+//    @Override
+//    public void onGrpChanged(PttGroup grp) {
+//        myHandler.sendMessage(myHandler.obtainMessage(GroupChanged, grp));
+//        myHandler.sendMessage(myHandler.obtainMessage(GroupMemChanged, groupEngine.getGrpMembers(grp)));
+//    }
+//
+//    @Override
+//    public void onAllGrpsChanged(List<PttGroup> groups) {
+//        if (groups.size() == 0) {
+//            myHandler.sendMessage(myHandler.obtainMessage(GroupChanged, null));
+//        } else {
+//            myHandler.sendMessage(myHandler.obtainMessage(GroupListChanged, groups));
+//        }
+//    }
+//
+//    @Override
+//    public void onCurGrpMemberChanged(PttGroup grp, List<GrpMember> members) {
+//        if (!grp.equals(groupEngine.getCurGrp())) {
+//            myHandler.sendMessage(myHandler.obtainMessage(GroupMemChanged, groupEngine.getGrpMembers(groupEngine.getCurGrp())));
+//        } else {
+//            myHandler.sendMessage(myHandler.obtainMessage(GroupMemChanged, members));
+//        }
+//    }
+//
+//    @Override
+//    public void groupStateChanged(PttGroup group) {
+//
+//        PttGroup curGrp = groupEngine.getCurGrp();
+//        if (curGrp == null) {
+//            //do nothing
+//        } else {
+//            if (!curGrp.equals(group)) return;
+//            myHandler.sendMessage(myHandler.obtainMessage(GroupStatusChanged, group));
+//        }
+//    }
 
-    @Override
-    public void onPttRequestFailed(String reason) {
-        myHandler.sendMessage(myHandler.obtainMessage(8, reason));
-    }
-
-    @Override
-    public void onPttReleaseSuccess() {
-
-        TipSoundPlayer.getInstance().play(TipSoundPlayer.Sound.PTT_RELEASE);
-
-    }
-
-    @Override
-    public void onGroupCallInComing(PttGroup grp) {
-        myHandler.sendMessage(myHandler.obtainMessage(GroupIncoming, grp));
-    }
-
-    @Override
-    public void onGrpChanged(PttGroup grp) {
-        myHandler.sendMessage(myHandler.obtainMessage(GroupChanged, grp));
-        myHandler.sendMessage(myHandler.obtainMessage(GroupMemChanged, groupEngine.getGrpMembers(grp)));
-    }
-
-    @Override
-    public void onAllGrpsChanged(List<PttGroup> groups) {
-        if (groups.size() == 0) {
-            myHandler.sendMessage(myHandler.obtainMessage(GroupChanged, null));
-        } else {
-            myHandler.sendMessage(myHandler.obtainMessage(GroupListChanged, groups));
-        }
-    }
-
-    @Override
-    public void onCurGrpMemberChanged(PttGroup grp, List<GrpMember> members) {
-        if (!grp.equals(groupEngine.getCurGrp())) {
-            myHandler.sendMessage(myHandler.obtainMessage(GroupMemChanged, groupEngine.getGrpMembers(groupEngine.getCurGrp())));
-        } else {
-            myHandler.sendMessage(myHandler.obtainMessage(GroupMemChanged, members));
-        }
-    }
-
-    @Override
-    public void groupStateChanged(PttGroup group) {
-
-        PttGroup curGrp = groupEngine.getCurGrp();
-        if (curGrp == null) {
-            //do nothing
-        } else {
-            if (!curGrp.equals(group)) return;
-            myHandler.sendMessage(myHandler.obtainMessage(GroupStatusChanged, group));
-        }
-    }
-
-    Handler myHandler = new Handler() {
-        @SuppressWarnings("unchecked")
-        public void handleMessage(final android.os.Message msg) {
-            switch (msg.what) {
-                case GroupStatusChanged: {
-                    PttGroup grp = (PttGroup) (msg.obj);
-
-                }
-                break;
-                case GroupChanged: {
-                    PttGroup grp = (PttGroup) (msg.obj);
-                }
-                break;
-                case GroupListChanged: {
-                }
-                break;
-                case GroupMemChanged:
-                    break;
-                case 8:
-                    Toast.makeText(VoiceCallingActivity.this, (String) msg.obj, Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
-
-        ;
-    };
-
-
-    private void initMusicLine() {
-        mBaseVisualizerView = new BaseVisualizerView(this);
-        mBaseVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-//		new_music.addView(mBaseVisualizerView);
-    }
+//    Handler myHandler = new Handler() {
+//        @SuppressWarnings("unchecked")
+//        public void handleMessage(final android.os.Message msg) {
+//            switch (msg.what) {
+//                case GroupStatusChanged: {
+//                    PttGroup grp = (PttGroup) (msg.obj);
+//
+//                }
+//                break;
+//                case GroupChanged: {
+//                    PttGroup grp = (PttGroup) (msg.obj);
+//                }
+//                break;
+//                case GroupListChanged: {
+//                }
+//                break;
+//                case GroupMemChanged:
+//                    break;
+//                case 8:
+//                    Toast.makeText(VoiceCallingActivity.this, (String) msg.obj, Toast.LENGTH_LONG).show();
+//                    break;
+//            }
+//        }
+//
+//        ;
+//    };
 
 
+//    private void initMusicLine() {
+//        mBaseVisualizerView = new BaseVisualizerView(this);
+//        mBaseVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT));
+////		new_music.addView(mBaseVisualizerView);
+//    }
 
-    private static final int GroupStatusChanged = 1;
-    private static final int GroupChanged = 2;
-    private static final int GroupListChanged = 3;
-    private static final int GroupMemChanged = 4;
-    private static final int GroupIncoming = 5;
-    boolean showMemList = false;
+
+
+//    private static final int GroupStatusChanged = 1;
+//    private static final int GroupChanged = 2;
+//    private static final int GroupListChanged = 3;
+//    private static final int GroupMemChanged = 4;
+//    private static final int GroupIncoming = 5;
+//    boolean showMemList = false;
 
 
 
@@ -423,7 +423,7 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
     @Override
     public void onPause() {
         // TODO Auto-generated method stub
-        groupEngine.makeGroupCall(false);
+//        groupEngine.makeGroupCall(false);
         isPaused = true;
         super.onPause();
     }
@@ -432,111 +432,111 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (groupEngine != null) {
-            groupEngine.regGroupEngineListener(this);
-        }
+//        if (groupEngine != null) {
+//            groupEngine.regGroupEngineListener(this);
+//        }
     }
 
-    @Override
-    public void showCurrentVolume(int time) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void onAddressBook(boolean isSuccess) {
-        // TODO Auto-generated method stub
-        isAddressBook = isSuccess;
-
-    }
-
-    @Override
-    public void onAddressBookUpdateVersion(String version) {
-        // TODO Auto-generated method stub
-        String olderVersion = GQTHelper.getInstance().getGroupEngine().getAddressBookVersion();
-        if (Integer.parseInt(version) > Integer.parseInt(olderVersion)) {
-            isAddressBook = false;
-            GQTHelper.getInstance().getGroupEngine().getAddressBook();
-        }
-    }
-
-    @Override
-    public void onTempGroupCallState(int state) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    public void onTempGrpMemberChanged(List<String> members) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onTempGroupCallInComing(String grpname, List<String> members) {
+//    @Override
+//    public void showCurrentVolume(int time) {
 //        // TODO Auto-generated method stub
-//        Intent intent = new Intent(VoiceCallingActivity.this, GroupIncomingNotifyActivity.class);
-//        intent.putExtra("incomingGroupName", grpname);
-//        intent.putStringArrayListExtra("members", (ArrayList<String>) members);
-//        intent.putExtra("istmp", true);
-//        startActivity(intent);
-    }
-
-    @Override
-    public void onCustomGroupResultState(CustomGroupResult result, int code, String groupNum, List<GrpMember> members) {
-        // TODO Auto-generated method stub
-    }
-
-
-    @Override
-    public void parseDeleteMemberInfoCompleted(String groupCreatorName,
-                                               String groupNum, String groupName, List<String> memberList) {
-        // TODO Auto-generated method stub
-        String ss = "";
-        ss += groupCreatorName + "将";
-        for (String num : memberList) {
-            if (num.equals(Constant.userName)) {
-                ss += "我 ";
-            } else {
-                ss += num + " ";
-            }
-        }
-        ss += " 移出  " + groupName;
-        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void parseDestroyCustomGroupInfoCompleted(String groupCreatorName,
-                                                     String groupNum, String groupName) {
-        // TODO Auto-generated method stub
-        String ss = "";
-        ss += groupCreatorName + " 解散组 " + groupName;
-        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void parseAddMemberInfoCompleted(String groupCreatorName,
-                                            String groupName, List<String> memberList) {
-        // TODO Auto-generated method stub
-        String ss = "";
-        ss += groupCreatorName + "将";
-        for (String num : memberList) {
-            if (num.equals(Constant.userName)) {
-                ss += " 我 ";
-            } else {
-                ss += num + " ";
-            }
-        }
-        ss += " 邀请进  " + groupName;
-        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void parseLeaveCustomGroupInfoCompleted(String groupCreatorName,
-                                                   String groupName, String leaveNumber) {
-        // TODO Auto-generated method stub
-        String ss = "";
-        ss += leaveNumber + " 退出 " + groupName;
-        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
-    }
+//    }
+//
+//    @Override
+//    public void onAddressBook(boolean isSuccess) {
+//        // TODO Auto-generated method stub
+//        isAddressBook = isSuccess;
+//
+//    }
+//
+//    @Override
+//    public void onAddressBookUpdateVersion(String version) {
+//        // TODO Auto-generated method stub
+//        String olderVersion = GQTHelper.getInstance().getGroupEngine().getAddressBookVersion();
+//        if (Integer.parseInt(version) > Integer.parseInt(olderVersion)) {
+//            isAddressBook = false;
+//            GQTHelper.getInstance().getGroupEngine().getAddressBook();
+//        }
+//    }
+//
+//    @Override
+//    public void onTempGroupCallState(int state) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//
+//    public void onTempGrpMemberChanged(List<String> members) {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//    @Override
+//    public void onTempGroupCallInComing(String grpname, List<String> members) {
+////        // TODO Auto-generated method stub
+////        Intent intent = new Intent(VoiceCallingActivity.this, GroupIncomingNotifyActivity.class);
+////        intent.putExtra("incomingGroupName", grpname);
+////        intent.putStringArrayListExtra("members", (ArrayList<String>) members);
+////        intent.putExtra("istmp", true);
+////        startActivity(intent);
+//    }
+//
+//    @Override
+//    public void onCustomGroupResultState(CustomGroupResult result, int code, String groupNum, List<GrpMember> members) {
+//        // TODO Auto-generated method stub
+//    }
+//
+//
+//    @Override
+//    public void parseDeleteMemberInfoCompleted(String groupCreatorName,
+//                                               String groupNum, String groupName, List<String> memberList) {
+//        // TODO Auto-generated method stub
+//        String ss = "";
+//        ss += groupCreatorName + "将";
+//        for (String num : memberList) {
+//            if (num.equals(Constant.userName)) {
+//                ss += "我 ";
+//            } else {
+//                ss += num + " ";
+//            }
+//        }
+//        ss += " 移出  " + groupName;
+//        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void parseDestroyCustomGroupInfoCompleted(String groupCreatorName,
+//                                                     String groupNum, String groupName) {
+//        // TODO Auto-generated method stub
+//        String ss = "";
+//        ss += groupCreatorName + " 解散组 " + groupName;
+//        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void parseAddMemberInfoCompleted(String groupCreatorName,
+//                                            String groupName, List<String> memberList) {
+//        // TODO Auto-generated method stub
+//        String ss = "";
+//        ss += groupCreatorName + "将";
+//        for (String num : memberList) {
+//            if (num.equals(Constant.userName)) {
+//                ss += " 我 ";
+//            } else {
+//                ss += num + " ";
+//            }
+//        }
+//        ss += " 邀请进  " + groupName;
+//        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public void parseLeaveCustomGroupInfoCompleted(String groupCreatorName,
+//                                                   String groupName, String leaveNumber) {
+//        // TODO Auto-generated method stub
+//        String ss = "";
+//        ss += leaveNumber + " 退出 " + groupName;
+//        Toast.makeText(this, ss, Toast.LENGTH_SHORT).show();
+//    }
 
 }
