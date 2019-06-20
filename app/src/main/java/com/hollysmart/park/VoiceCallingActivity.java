@@ -97,7 +97,7 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
 
         if (!registerEngine.isRegister()) {
 
-            registerEngine.initRegisterInfo("8017", "8017", "39.106.172.189", 7080, null);
+            registerEngine.initRegisterInfo("8016", "8016", "39.106.172.189", 7080, null);
 
             registerEngine.register(VoiceCallingActivity.this, new RegisterListener() {
                 @Override
@@ -138,7 +138,7 @@ public class VoiceCallingActivity extends StyleAnimActivity  implements GroupCal
         registerReceiver(br, filter);
 
 
-        String num1 = "8016";
+        String num1 = "8017";
         String num2 = "8018";
 
 

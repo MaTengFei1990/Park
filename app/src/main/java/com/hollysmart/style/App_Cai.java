@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.multidex.MultiDex;
 
 import com.gqt.alarm.MyAlarmManager;
 import com.gqt.helper.GQTHelper;
@@ -144,6 +145,13 @@ public class App_Cai extends Application implements NetChecker.NetCallback{
     public boolean getNetAvailable() {
         // TODO Auto-generated method stub
         return GQTUtils.isNetworkAvailable(this);
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
     }
 
 }
