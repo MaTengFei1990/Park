@@ -1,51 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hollysmart.park">
-
-    <!--<uses-sdk android:minSdkVersion="9" />-->
-
+    <!-- <uses-sdk android:minSdkVersion="9" /> -->
     <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!-- 这个权限用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- 这个权限用于访问GPS定位 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!-- 用于读取手机当前的状态 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!-- 访问网络，网络定位需要上网 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- SD卡读取权限，用户写入离线定位数据 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 访问网络，网络定位需要上网 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- SD卡读取权限，用户写入离线定位数据 -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
-
-
-
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-
-    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE"/>
-    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
 
     <application
@@ -55,6 +38,26 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
+        <activity android:name="com.hollysmart.voicecall.VocieCallInCall2Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".VoiceCallComingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VoiceCallInCallActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VoiceCallingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -126,12 +129,12 @@
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
             android:launchMode="singleTask"
@@ -164,22 +167,7 @@
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:name=".AboutUsActivity"/>
-
-        <activity
-            android:name="com.hollysmart.conference.ConferenceCallInCallActivity"
-            android:configChanges="keyboardHidden|locale|orientation"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name="com.hollysmart.conference.ConferenceSendActivity"
-            android:configChanges="keyboardHidden|locale|orientation"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
-
-
-
-
+        <activity android:name=".AboutUsActivity" />
 
         <service android:name="com.gqt.video.SensorCheckService" />
 
@@ -188,74 +176,27 @@
         <service android:name="com.gqt.sipua.ui.RegisterService" />
         <service android:name="com.hollysmart.videocall.MonitorServer" />
 
-
-        <activity
-            android:name="com.hollysmart.videocall.VideoCallInComingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-
         <activity
             android:name="com.hollysmart.voicecall.VoiceCallInCallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.hollysmart.voicecall.VoiceCallInComingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-
-        <activity
-            android:name="com.hollysmart.videocall.VideoCallOutGoingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.hollysmart.groupcall.GroupCallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity
-            android:name="com.hollysmart.groupcall.SelectPersonsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity
-            android:name="com.hollysmart.groupcall.TempGrpCallActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.hollysmart.groupcall.GroupIncomingNotifyActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog">
-
-        </activity>
-
-
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>

@@ -25,10 +25,10 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.hollysmart.animtor.KickBackAnimator;
-import com.hollysmart.conference.ConferenceSendActivity;
 import com.hollysmart.park.EditPicActivity;
 import com.hollysmart.park.EditTextActivity;
 import com.hollysmart.park.R;
+import com.hollysmart.park.VoiceCallingActivity;
 import com.hollysmart.utils.fastBlur.FastBlur;
 
 import java.util.ArrayList;
@@ -273,7 +273,8 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                 dismiss();
                 break;
             case R.id.tv_chat:
-                intent = new Intent(mContext, ConferenceSendActivity.class);
+//                intent = new Intent(mContext, ConferenceSendActivity.class);
+                intent = new Intent(mContext, VoiceCallingActivity.class);
                 intent.putExtra("roleid",roleid);
                 mContext.startActivity(intent);
                 dismiss();

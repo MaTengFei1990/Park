@@ -229,6 +229,9 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         } else if (url.contains("shareimg.html?")) {
             shareImag(webView, url);
 
+        } else if (url.contains("voicecall.html?")) {
+            voiceCall(webView, url);
+
         } else if (url.contains("tel")) {
             tel(url);
 
@@ -295,6 +298,47 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
             }
         });
+
+    }
+
+    /**
+     * 语音会议
+     * @param webView
+     * @param url
+     */
+    private void voiceCall(WebView webView, String url) {
+
+        String[] shareids = url.split("shareimg.html\\?");
+        if (shareids!=null&&shareids.length>1) {
+
+            shareimgUrl = shareids[1];
+        }
+
+        webView.evaluateJavascript("javascript:app.gettoken()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                if (!Utils.isEmpty(value)) {
+                    String substring = value.substring(1, value.length() - 1);
+                    String token = "Bearer " + substring;
+                    UserToken.getUserToken().setToken(token);
+
+                    new UpdateDeviceTokenAPI(App_Cai.deviceToken, new UpdateDeviceTokenAPI.UpdateDeviceTokenIF() {
+                        @Override
+                        public void updateDeviceTokenResult(boolean isOk) {
+
+                        }
+                    }).request();
+                }
+
+               buttomDialogView.show();
+
+
+            }
+        });
+
+        Intent intent = new Intent(MainActivity.this, VoiceCallingActivity.class);
+        intent.putExtra("num", 1);
+        startActivityForResult(intent, 90);
 
     }
 

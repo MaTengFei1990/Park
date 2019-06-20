@@ -42,7 +42,7 @@ public class VoiceCallInComingActivity extends Activity {
 				VoiceCallInComingActivity.this.finish();
 
 		}else if("com.gqt.accept".equals(intent.getAction())){
-			Intent voiceIntent = new Intent(VoiceCallInComingActivity.this,VoiceCallInCallActivity.class);
+			Intent voiceIntent = new Intent(VoiceCallInComingActivity.this,VocieCallInCall2Activity.class);
 			voiceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			Log.v("huangfujian", "0000000000000");
             startActivity(voiceIntent);

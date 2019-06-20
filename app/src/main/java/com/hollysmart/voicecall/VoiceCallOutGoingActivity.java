@@ -30,7 +30,7 @@ public class VoiceCallOutGoingActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if("com.gqt.accept".equals(intent.getAction())){
-				Intent voiceIntent = new Intent(VoiceCallOutGoingActivity.this,VoiceCallInCallActivity.class);
+				Intent voiceIntent = new Intent(VoiceCallOutGoingActivity.this,VocieCallInCall2Activity.class);
 				voiceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(voiceIntent);
 				VoiceCallOutGoingActivity.this.finish();

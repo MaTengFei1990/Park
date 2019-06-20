@@ -44,4 +44,13 @@
     </declare-styleable>
 
 
+
+    <declare-styleable name="CircleView">
+        <attr name="textSize" format="dimension" />
+        <attr name="text" format="string" />
+        <attr name="circleColor" format="color" />
+        <attr name="textColor" format="color" />
+    </declare-styleable>
+
+
 </resources>
