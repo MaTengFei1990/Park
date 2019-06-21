@@ -43,6 +43,11 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
         nummber = (TextView) this.findViewById(R.id.callnum);
         hangupLine = (LinearLayout) findViewById(R.id.hangupline);
         mElapsedTime = (Chronometer) findViewById(R.id.elapsedTime);
+        findViewById(R.id.speaker).setOnClickListener(this);
+        findViewById(R.id.jingyin).setOnClickListener(this);
+       String num= getIntent().getStringExtra("num");
+        nummber.setText(num);
+
 //        mAudioModeGroup = (RadioGroup)findViewById(R.id.audiomode);
 //        switch (GQTHelper.getInstance().getCallEngine().getAudioMode()) {
 //            case HOOK:
@@ -96,9 +101,9 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
 
     @Override
     public void init() {
-        String callnumber = new SharedPreferenceTools(this).getValues();
-        Log.v("huangfujian", "callnumber=" + callnumber);
-        nummber.setText(callnumber);
+//        String callnumber = new SharedPreferenceTools(this).getValues();
+//        Log.v("huangfujian", "callnumber=" + callnumber);
+//        nummber.setText(callnumber);
         registerReceiver(br, new IntentFilter("com.gqt.hangup"));
         if (mElapsedTime != null) {
             mElapsedTime.setBase(SystemClock.elapsedRealtime());
@@ -162,6 +167,26 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
+            case R.id.speaker:
+
+
+                GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.HOOK);
+
+                new Thread(){
+
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        super.run();
+                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+                    }
+                }.start();
+                break;
+
+            case R.id.jingyin:
+                GQTHelper.getInstance().getCallEngine().mute();
+                break;
+
         }
     }
 

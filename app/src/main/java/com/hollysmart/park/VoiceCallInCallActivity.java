@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.gqt.bean.AudioMode;
 import com.gqt.bean.CallType;
 import com.gqt.helper.GQTHelper;
 import com.hollysmart.style.StyleAnimActivity;
@@ -51,6 +52,9 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
 
         btncacel =  this.findViewById(R.id.layoutGuaDuan);
         btncacel.setOnClickListener(this);
+
+        findViewById(R.id.ib_back).setOnClickListener(this);
+        findViewById(R.id.spaker).setOnClickListener(this);
 
 
         recy_view = findViewById(R.id.recy_view);
@@ -103,7 +107,30 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                 GQTHelper.getInstance().getCallEngine()
                         .hangupCall(CallType.CONFERENCE, " ");
 
+                this.finish();
+
                 break;
+            case R.id.ib_back:
+
+                GQTHelper.getInstance().getCallEngine()
+                        .hangupCall(CallType.CONFERENCE, " ");
+
+                this.finish();
+
+                break;
+            case R.id.spaker:
+
+                new Thread(){
+
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        super.run();
+                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+                    }
+                }.start();
+                break;
+
         }
 
     }

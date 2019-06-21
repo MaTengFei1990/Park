@@ -59,9 +59,13 @@ public class VoiceCallComingActivity extends StyleAnimActivity {
                 VoiceCallComingActivity.this.finish();
 
             } else if ("com.gqt.accept".equals(intent.getAction())) {
+               String name= intent.getStringExtra("name");
+               String num= intent.getStringExtra("num");
                 Intent voiceIntent = new Intent(VoiceCallComingActivity.this, VocieCallInCall2Activity.class);
                 voiceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Log.v("huangfujian", "0000000000000");
+                voiceIntent.putExtra("name", name);
+                voiceIntent.putExtra("num", num);
                 startActivity(voiceIntent);
                 VoiceCallComingActivity.this.finish();
             }
