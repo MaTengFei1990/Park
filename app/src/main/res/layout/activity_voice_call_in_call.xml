@@ -33,6 +33,7 @@
             android:id="@+id/iv_shure"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:visibility="gone"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
@@ -66,6 +67,7 @@
             android:textSize="@dimen/text_zhong"
             android:textColor="@color/text_hei"
             android:padding="10dp"
+            android:lineSpacingMultiplier="1.5"
             android:text="关于统计2019年元宵节期间全市公园风景区灯会等文化活动的通知"/>
 
     </LinearLayout>
@@ -97,6 +99,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/ll_jingyin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="18dp"
@@ -104,6 +107,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/iv_chat_jingyin"
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:src="@mipmap/chat_video_jingyin_img_normal" />
@@ -155,6 +159,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/iv_chat_mianti"
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:src="@mipmap/chat_video_mianti_img_normal" />
@@ -173,15 +178,15 @@
         </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/textTime"
+        <Chronometer
+            android:id="@+id/elapsedTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/layoutMenu"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="26dp"
             android:text="30:22"
-            android:textColor="@color/heise_text"
+            android:textColor="@color/text_hei"
             android:textSize="16dp" />
 
 

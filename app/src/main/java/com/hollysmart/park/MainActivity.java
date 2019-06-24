@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -48,6 +49,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gqt.bean.CallType;
+import com.gqt.bean.RegisterListener;
+import com.gqt.helper.CallEngine;
+import com.gqt.helper.GQTHelper;
+import com.gqt.helper.RegisterEngine;
 import com.hollysmart.apis.UpDateVersionAPI;
 import com.hollysmart.apis.UpdateDeviceTokenAPI;
 import com.hollysmart.apis.UpdateInfoAPI;
@@ -55,6 +61,7 @@ import com.hollysmart.apis.UploadAvatarPicAPI;
 import com.hollysmart.apis.UploadParkCoverPicAPI;
 import com.hollysmart.beans.PicBean;
 import com.hollysmart.beans.UserInfoBean;
+import com.hollysmart.conference.MyCallListener;
 import com.hollysmart.dialog.ButtomDialogView;
 import com.hollysmart.imgdownLoad.DownLoadImageService;
 import com.hollysmart.imgdownLoad.ImageDownLoadCallBack;
@@ -62,6 +69,7 @@ import com.hollysmart.popuwindow.MoreWindow;
 import com.hollysmart.service.DownloadService;
 import com.hollysmart.style.App_Cai;
 import com.hollysmart.style.StyleAnimActivity;
+import com.hollysmart.tools.SharedPreferenceTools;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.BaiDuLatLng;
 import com.hollysmart.utils.CCM_Bitmap;
@@ -73,6 +81,8 @@ import com.hollysmart.utils.fastBlur.FastBlur;
 import com.hollysmart.utils.loctionpic.ImageItem;
 import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
+import com.hollysmart.videocall.MonitorServer;
+import com.hollysmart.voicecall.VoiceCallOutGoingActivity;
 import com.umeng.socialize.UMShareAPI;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
@@ -81,7 +91,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import okhttp3.Call;
@@ -96,6 +109,135 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
     private static final int DRAFT_RESULT_CODE = 8;
     private OtherMap otherMap;
     private ButtomDialogView buttomDialogView;
+
+    RegisterEngine registerEngine = null;
+    boolean isAddressBook = false;
+    CallEngine callEngine = null;
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if("com.gqt.accept".equals(intent.getAction())){
+
+            }else if("com.gqt.hangup".equals(intent.getAction())){
+            }
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context arg0, Intent intent) {
+            // TODO Auto-generated method stub
+            if("com.gqt.loginout".equals(intent.getAction())){
+                MainActivity.this.finish();
+            }
+        }
+
+    };
+
+
+
+
+    Handler callHander = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+
+                case 0://incall
+                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+                    Mlog.d( "callHander--------msg.what=="+msg.what );
+                    if (msg.arg1 == CallType.VIDEOCALL || msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.TRANSCRIBE || msg.arg1 == CallType.MONITORVIDEO || msg.arg1 == CallType.DISPATCH) {
+                    } else if (msg.arg1 == CallType.VOICECALL) {
+                        sendBroadcast(new Intent("com.gqt.accept"));
+                    } else if (msg.arg1 == CallType.CONFERENCE) {
+                        Toast.makeText(MainActivity.this, "conference incall", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 1:
+                    Mlog.d( "callHander--------msg.what=="+msg.what );
+                    stopService(new Intent(MainActivity.this, MonitorServer.class));
+                    Toast.makeText(MainActivity.this, "state idle", Toast.LENGTH_SHORT).show();
+                    sendBroadcast(new Intent("com.gqt.hangup"));
+                    break;
+                //呼出trt312
+                case 2:
+                    Mlog.d( "callHander--------msg.what=="+msg.what );
+                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+
+                    Map<String, String> member = null;
+                    String mname = "";
+                    if (isAddressBook) {
+                        member = GQTHelper.getInstance().getGroupEngine().getMember((String) msg.obj);
+                    }
+                    if (member != null) {
+                        mname = member.get("mname");
+                    } else {
+                        mname = (String) msg.obj;
+                    }
+                    if (msg.arg1 == CallType.VOICECALL) {
+                        Intent voiceIntent = new Intent(MainActivity.this, VoiceCallOutGoingActivity.class);
+                        voiceIntent.putExtra("num", mname);
+                        startActivity(voiceIntent);
+                    }
+
+                    new SharedPreferenceTools(MainActivity.this).putValues(mname);
+                    break;
+                //呼入
+                case 3:
+                    Mlog.d( "callHander--------msg.what=="+msg.what );
+                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+                    String name = msg.getData().getString("name");
+                    String num = msg.getData().getString("num");
+                    if (msg.arg1 == CallType.VOICECALL) {
+                        Intent invoiceIntent = new Intent(MainActivity.this, VoiceCallComingActivity.class);
+                        invoiceIntent.putExtra("name", name);
+                        invoiceIntent.putExtra("num", num);
+                        startActivity(invoiceIntent);
+                    } else if (msg.arg1 == CallType.SENDONLY_VOICECALL) {
+                        GQTHelper.getInstance().getCallEngine().answerCall(CallType.VOICECALL, "");
+                    }
+                    break;
+                case 99:
+                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+                    Toast.makeText(MainActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+                    break;
+                case 98:
+                    switch ((Integer) msg.obj) {
+                        case 480:
+                            Toast.makeText(MainActivity.this, "用户不在线或无人接听", Toast.LENGTH_SHORT).show();
+                            break;
+
+                        default:
+                            break;
+                    }
+                    sendBroadcast(new Intent("com.gqt.hangup"));
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
+
+
+
+
+
+    // 获取当前时间格式HH:mm:ss  jibingeng 2015-09-23
+    public String getTime() {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(" HHmmss ");
+            Date curDate = new Date(System.currentTimeMillis());
+            String strTime = formatter.format(curDate);
+            return strTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
     @Override
@@ -229,8 +371,8 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         } else if (url.contains("shareimg.html?")) {
             shareImag(webView, url);
 
-        } else if (url.contains("voicecall.html?")) {
-            voiceCall(webView, url);
+        } else if (url.contains("chat.html?")) {
+            chat(webView, url);
 
         } else if (url.contains("tel")) {
             tel(url);
@@ -306,9 +448,9 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
      * @param webView
      * @param url
      */
-    private void voiceCall(WebView webView, String url) {
+    private void chat(WebView webView, String url) {
 
-        String[] shareids = url.split("shareimg.html\\?");
+        String[] shareids = url.split("chat.html\\?");
         if (shareids!=null&&shareids.length>1) {
 
             shareimgUrl = shareids[1];
@@ -336,9 +478,19 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
             }
         });
 
-        Intent intent = new Intent(MainActivity.this, VoiceCallingActivity.class);
-        intent.putExtra("num", 1);
-        startActivityForResult(intent, 90);
+        String num1 = "8016";
+        String num2 = "8018";
+
+        GQTHelper.getInstance().getCallEngine().makeCall(CallType.CONFERENCE, num1+" "+num2);
+
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, VoiceCallInCallActivity.class);
+        Bundle bundle = new Bundle();
+        intent.putExtra("num1", num1);
+        intent.putExtra("num2", num2);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        this.finish();
 
     }
 
@@ -473,6 +625,39 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                 }
             }
         });
+
+
+        registerEngine = GQTHelper.getInstance().getRegisterEngine();
+
+        if (!registerEngine.isRegister()) {
+
+            registerEngine.initRegisterInfo("8017", "8017", "39.106.172.189", 7080, null);
+
+            registerEngine.register(MainActivity.this, new RegisterListener() {
+                @Override
+                public void onRegisterSuccess() {
+                    Mlog.d("registerEngine.register--------onRegisterSuccess==");
+                }
+
+                @Override
+                public void onRegisterFailded(String s) {
+
+                    Mlog.d("registerEngine.register--------onRegisterFailded==" + s);
+
+                }
+            });
+            GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
+
+            callEngine = GQTHelper.getInstance().getCallEngine();
+
+        } else {
+            callEngine = GQTHelper.getInstance().getCallEngine();
+        }
+
+        GQTHelper.getInstance().getSetEngine().setOutGroupOnCallClosed(true);
+
+
+
         webView.loadUrl(url);
     }
 
@@ -1666,12 +1851,29 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         IntentFilter filter = new IntentFilter(Values.RELOAD_DATA);
         getContext().registerReceiver(receiver, filter);
 
+
+        registerReceiver(broadcastReceiver, new IntentFilter("com.gqt.loginout"));
+
+        IntentFilter filter2 = new IntentFilter();
+        filter2.addAction("com.gqt.accept");
+        filter2.addAction("com.gqt.hangup");
+        registerReceiver(br, filter2);
+
     }
 
 
     private void unRegisterBR() {
-        if (receiver != null)
+        if (receiver != null){
             getContext().unregisterReceiver(receiver);
+
+        }
+
+        if (br != null) {
+            MainActivity.this.unregisterReceiver(br);
+        }
+        if (broadcastReceiver != null) {
+            MainActivity.this.unregisterReceiver(broadcastReceiver);
+        }
     }
 
 

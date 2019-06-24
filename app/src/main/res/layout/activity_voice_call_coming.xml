@@ -117,7 +117,7 @@
                 <ImageView
                     android:layout_width="68dp"
                     android:layout_height="68dp"
-                    android:src="@mipmap/chat_video_mianti_img_normal" />
+                    android:src="@mipmap/chat_video_jieting_img" />
 
                 <TextView
                     android:id="@+id/textMianti"

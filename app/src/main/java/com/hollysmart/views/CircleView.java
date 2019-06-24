@@ -52,7 +52,7 @@ public class CircleView extends View {
         TypedArray ta = context.obtainStyledAttributes(attrs,
                 R.styleable.CircleView);
         if (ta != null) {
-            textSize = ta.getFloat(R.styleable.CircleView_textSize, 16);
+            textSize = ta.getFloat(R.styleable.CircleView_textSize, 35);
             centerText = ta.getString(R.styleable.CircleView_text);
             circleColor = ta.getInt(R.styleable.CircleView_circleColor, 6);
             textColor = ta.getInt(R.styleable.CircleView_textColor, 6);
@@ -85,14 +85,33 @@ public class CircleView extends View {
         this.centerText = centerText;
     }
 
+
+    public int getCircleColor() {
+        return circleColor;
+    }
+
+    public void setCircleColor(int circleColor) {
+        this.circleColor = circleColor;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mPaint.setColor(circleColor);
-        canvas.drawCircle(outHeight/2,outHeight/2,50,mPaint);
+        canvas.drawCircle(outHeight/2,outHeight/2,40,mPaint);
         mPaint.setColor(textColor);
 
-        canvas.drawText(centerText,outHeight/2,outHeight/2,mPaint);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTextSize(textSize);
+
+        //计算baseline
+        Paint.FontMetrics fontMetrics=mPaint.getFontMetrics();
+        float distance=(fontMetrics.bottom - fontMetrics.top)/2 - fontMetrics.bottom;
+        float baseline=outHeight/2+distance;
+        canvas.drawText(centerText,outHeight/2,baseline,mPaint);
+
+
+
     }
 
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.gqt.bean.AudioMode;
@@ -20,6 +23,7 @@ import com.gqt.helper.GQTHelper;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.views.CircleView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +46,14 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
     private LocalAdapter localAdapter;
     private List<Object> localList = new ArrayList<>();
 
+    private ImageView iv_chat_jingyin;
+    private ImageView iv_chat_mianti;
+
+    private Chronometer mElapsedTime;
+
+    private boolean isPackerLoad=false;
+    private boolean isSelence=false;
+
     @Override
     public int layoutResID() {
         return R.layout.activity_voice_call_in_call;
@@ -50,12 +62,16 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
     @Override
     public void findView() {
 
-        btncacel =  this.findViewById(R.id.layoutGuaDuan);
+        btncacel =  findViewById(R.id.layoutGuaDuan);
+         findViewById(R.id.ll_jingyin).setOnClickListener(this);
         btncacel.setOnClickListener(this);
 
         findViewById(R.id.ib_back).setOnClickListener(this);
         findViewById(R.id.spaker).setOnClickListener(this);
 
+        iv_chat_jingyin=findViewById(R.id.iv_chat_jingyin);
+        iv_chat_mianti=findViewById(R.id.iv_chat_mianti);
+        mElapsedTime = findViewById(R.id.elapsedTime);
 
         recy_view = findViewById(R.id.recy_view);
 
@@ -92,6 +108,10 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
         localAdapter = new LocalAdapter(mContext, localList);
 
         recy_view.setAdapter(localAdapter);
+        if (mElapsedTime != null) {
+            mElapsedTime.setBase(SystemClock.elapsedRealtime());
+            mElapsedTime.start();
+        }
 
 
     }
@@ -120,6 +140,40 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                 break;
             case R.id.spaker:
 
+                if (isPackerLoad) {
+
+                    iv_chat_mianti.setImageResource(R.mipmap.chat_video_mianti_img_normal);
+
+                } else {
+
+                    iv_chat_mianti.setImageResource(R.mipmap.chat_video_mianti_img_select);
+
+                }
+                isPackerLoad = !isPackerLoad;
+
+                new Thread(){
+
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        super.run();
+                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+                    }
+                }.start();
+                break;
+            case R.id.ll_jingyin:
+
+                if (isSelence) {
+
+                    iv_chat_jingyin.setImageResource(R.mipmap.chat_video_jingyin_img_normal);
+
+                } else {
+
+                    iv_chat_jingyin.setImageResource(R.mipmap.chat_video_jingyin_img_select);
+
+                }
+                isSelence = !isSelence;
+
                 new Thread(){
 
                     @Override
@@ -147,6 +201,9 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
         if (br != null) {
             VoiceCallInCallActivity.this.unregisterReceiver(br);
         }
+        if (mElapsedTime != null) {
+            mElapsedTime.stop();
+        }
         super.onDestroy();
     }
 
@@ -167,6 +224,21 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
         private List<Object> localList ;
         private Context context;
 
+        int[] colors = new int[]{
+                getResources().getColor(R.color.chengse),
+                getResources().getColor(R.color.bg_lan),
+                getResources().getColor(R.color.onLine),
+                getResources().getColor(R.color.heise),
+                getResources().getColor(R.color.bg_lan2)
+        };
+        String[] strings = new String[]{
+                "朝",
+                "海",
+                "丰",
+                "石",
+                "门"
+        };
+
         public LocalAdapter(Context context,List<Object> localList ) {
             this.context = context;
             this.localList = localList;
@@ -182,8 +254,10 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
 
+
             final Holder holder1= (Holder)holder;
-            holder1.cirview.setCenterText("jsjsjs");
+            holder1.cirview.setCenterText(strings[position]);
+            holder1.cirview.setCircleColor(colors[position]);
 
 
         }

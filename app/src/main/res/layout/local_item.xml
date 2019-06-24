@@ -10,6 +10,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:circleColor="@color/bg_lan"
-        app:textColor="@color/text_hei" />
+        app:textColor="@color/baise" />
 
 </LinearLayout>
