@@ -54,6 +54,7 @@ import com.gqt.bean.RegisterListener;
 import com.gqt.helper.CallEngine;
 import com.gqt.helper.GQTHelper;
 import com.gqt.helper.RegisterEngine;
+import com.hollysmart.apis.GetUserInfoAPI;
 import com.hollysmart.apis.UpDateVersionAPI;
 import com.hollysmart.apis.UpdateDeviceTokenAPI;
 import com.hollysmart.apis.UpdateInfoAPI;
@@ -63,6 +64,7 @@ import com.hollysmart.apis.UserLoginAPI;
 import com.hollysmart.beans.PicBean;
 import com.hollysmart.beans.UserInfoBean;
 import com.hollysmart.conference.MyCallListener;
+import com.hollysmart.db.UserInfo;
 import com.hollysmart.dialog.ButtomDialogView;
 import com.hollysmart.imgdownLoad.DownLoadImageService;
 import com.hollysmart.imgdownLoad.ImageDownLoadCallBack;
@@ -93,6 +95,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -416,7 +419,11 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                     String s = valuse[i];
 
                     String[] split = s.split("=");
-                    map.put(split[0], split[1]);
+                    try {
+                        map.put(split[0], URLDecoder.decode(split[1],"UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
 
 
                 }
@@ -650,6 +657,19 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                     public void loginResult(boolean isOk, String msg, String access_token, String token_type) {
 
                         UserToken.getUserToken().setFormToken(token_type + " " + access_token);
+                        UserInfo userInfoBean = new UserInfo();
+                        userInfoBean.setAccess_token(token_type + " " + access_token);
+
+                        new GetUserInfoAPI(userInfoBean, new GetUserInfoAPI.UserInfoIF() {
+                            @Override
+                            public void userResult(boolean isOk, UserInfo userInfo) {
+
+                                String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
+                                File file = new File(userPath);
+                                ACache.get(file).put(Values.CACHE_USERINFO, userInfo);
+
+                            }
+                        }).request();
                     }
                 }).request();
 
@@ -1929,14 +1949,14 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
     /**
      * 判断用户登录状态，登录获取用户信息
      */
-    private UserInfoBean userInfo;
+    private UserInfo userInfo;
 
     public boolean isLogin() {
         if (userInfo != null)
             return true;
         Object obj = ACache.get(getApplicationContext(), Values.CACHE_USER).getAsObject(Values.CACHE_USERINFO);
         if (obj != null) {
-            userInfo = (UserInfoBean) obj;
+            userInfo = (UserInfo) obj;
             return true;
         }
         return false;

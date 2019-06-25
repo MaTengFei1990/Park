@@ -19,6 +19,7 @@ import com.hollysmart.adapter.ProjectItemAdapter;
 import com.hollysmart.adapter.TitleViewAdapter;
 import com.hollysmart.apis.ResModelListAPI;
 import com.hollysmart.apis.RestaskDeleteAPI;
+import com.hollysmart.apis.SaveResTaskAPI;
 import com.hollysmart.apis.getResTaskListAPI;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
@@ -162,13 +163,44 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
     Map<String, String> map = new HashMap<String , String>();
     @Override
     public void init() {
+        isLogin();
 
         map = (Map<String, String>) getIntent().getSerializableExtra("exter");
+        
+        
+        newAddProject();
 
 
         initTitle();
         setTitle();
         initListData();
+
+    }
+
+    private void newAddProject() {
+        map.toString();
+
+        ProjectBean projectBean = new ProjectBean();
+
+        projectBean.setRemarks("");
+        projectBean.setfTaskname(map.get("name"));
+        projectBean.setfTaskmodel(map.get("type"));
+        projectBean.setfBegindate(map.get("btime"));
+        projectBean.setfEnddate(map.get("etime"));
+        projectBean.setfState("2");
+        projectBean.setfRange("");
+        projectBean.setId(map.get("id"));
+        projectBean.setfOfficeId(userInfo.getOffice().getId());
+        projectBean.setfTaskmodelnames(map.get("typename"));
+        projectBean.setfDescription("");
+
+
+        new SaveResTaskAPI(UserToken.getUserToken().getFormToken(), projectBean, new SaveResTaskAPI.SaveResTaskIF() {
+            @Override
+            public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
+
+            }
+        }).request();
 
     }
 
@@ -660,6 +692,28 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
          * 加载更多回调
          */
         public abstract void onLoadMore();
+    }
+
+
+    /**
+     * 判断用户登录状态，登录获取用户信息
+     */
+    private UserInfo userInfo;
+
+    public boolean isLogin() {
+        if (userInfo != null)
+            return true;
+        try {
+            String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
+            Object obj = ACache.get(new File(userPath)).getAsObject(Values.CACHE_USERINFO);
+            if (obj != null) {
+                userInfo = (UserInfo) obj;
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

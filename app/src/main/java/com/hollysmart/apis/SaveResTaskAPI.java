@@ -47,6 +47,8 @@ public class SaveResTaskAPI implements INetModel {
             object.put("fState", projectBean.getfState());
             object.put("fRange", projectBean.getfRange());
             object.put("id", projectBean.getId());
+            object.put("fOfficeId", projectBean.getId());
+            object.put("fDescription", projectBean.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
