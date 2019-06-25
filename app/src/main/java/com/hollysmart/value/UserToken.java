@@ -17,6 +17,7 @@ public class UserToken {
     }
 
     private String token;
+    private String formToken;
 
     public String getToken() {
         return token;
@@ -24,5 +25,14 @@ public class UserToken {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+
+    public String getFormToken() {
+        return formToken;
+    }
+
+    public void setFormToken(String formToken) {
+        this.formToken = formToken;
     }
 }

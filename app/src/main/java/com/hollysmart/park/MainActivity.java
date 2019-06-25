@@ -59,6 +59,7 @@ import com.hollysmart.apis.UpdateDeviceTokenAPI;
 import com.hollysmart.apis.UpdateInfoAPI;
 import com.hollysmart.apis.UploadAvatarPicAPI;
 import com.hollysmart.apis.UploadParkCoverPicAPI;
+import com.hollysmart.apis.UserLoginAPI;
 import com.hollysmart.beans.PicBean;
 import com.hollysmart.beans.UserInfoBean;
 import com.hollysmart.conference.MyCallListener;
@@ -90,9 +91,11 @@ import com.zhy.http.okhttp.callback.FileCallBack;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -378,7 +381,7 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
             tel(url);
 
         } else if (url.contains("scada.html")) {
-           startFormActivity();
+           startFormActivity(url);
 
         } else if (url.contains("updateapp.html")) {
             Intent intent = new Intent(mContext, AboutUsActivity.class);
@@ -396,9 +399,38 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
      * 进入项目管理页面;
      */
 
-    private void startFormActivity() {
+    private void startFormActivity(String url) {
+
+        String[] scada = url.split("scada.html\\?");
+        Map<String, String> map = new HashMap<String , String>();
+        if (scada!=null&&scada.length>1) {
+
+            String[] valuse = scada[1].split("&");
+
+
+
+            if (valuse.length > 0) {
+
+                for (int i = 0; i < valuse.length; i++) {
+
+                    String s = valuse[i];
+
+                    String[] split = s.split("=");
+                    map.put(split[0], split[1]);
+
+
+                }
+
+
+            }
+
+
+
+        }
+
 
         Intent intent = new Intent(mContext, ProjectManagerActivity.class);
+        intent.putExtra("exter", (Serializable) map);
         startActivity(intent);
     }
 
@@ -604,6 +636,23 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                 } else {
                     roleid = 1;
                 }
+            }
+        });
+        webView.evaluateJavascript("javascript:app.getLoginInfo()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                value= value.substring(1,value.length()-1);
+
+                String[] split = value.split("\\|");
+
+                new UserLoginAPI(split[0], split[1], new UserLoginAPI.LoginInfoIF() {
+                    @Override
+                    public void loginResult(boolean isOk, String msg, String access_token, String token_type) {
+
+                        UserToken.getUserToken().setFormToken(token_type + " " + access_token);
+                    }
+                }).request();
+
             }
         });
 

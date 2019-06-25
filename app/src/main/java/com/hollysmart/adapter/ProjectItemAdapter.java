@@ -370,7 +370,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
                     public void onClick(DialogInterface dialog, int which) {
                         slSlide.close();
 
-                        new RestaskDeleteAPI(Values.TOKEN, delList, new RestaskDeleteAPI.RestaskDeleteIF() {
+                        new RestaskDeleteAPI( UserToken.getUserToken().getFormToken(), delList, new RestaskDeleteAPI.RestaskDeleteIF() {
                             @Override
                             public void onRestaskDeleteResult(boolean isOk, String msg) {
 
@@ -489,7 +489,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
             public void onClick(View v) {
                 item.setfState("3");
 
-                new SaveResTaskAPI(Values.TOKEN, item, new SaveResTaskAPI.SaveResTaskIF() {
+                new SaveResTaskAPI( UserToken.getUserToken().getFormToken(), item, new SaveResTaskAPI.SaveResTaskIF() {
                     @Override
                     public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
                         if (isOk) {

@@ -40,7 +40,9 @@ import com.hollysmart.value.Values;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.support.v7.widget.RecyclerView.*;
 
@@ -58,8 +60,6 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         return R.layout.activity_project_manager;
     }
 
-
-    public static  String token="Bearer f7aa6cb595154ffb4c4a70c938d6f2ff";
 
 
 
@@ -117,7 +117,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                     isRefresh = true;
                     allprojectList.clear();
                     projectItemAdapter.notifyDataSetChanged();
-                    new getResTaskListAPI(Values.TOKEN, pageNo, ProjectManagerActivity.this).request();
+                    new getResTaskListAPI( UserToken.getUserToken().getFormToken(), pageNo, ProjectManagerActivity.this).request();
 
                 } else {
                     swipe.setRefreshing(false);
@@ -150,7 +150,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
     private void nextPage() {
         if (isLoadMore) {
-            new getResTaskListAPI(Values.TOKEN,pageNo,this).request();
+            new getResTaskListAPI( UserToken.getUserToken().getFormToken(),pageNo,this).request();
         }
 
 
@@ -159,10 +159,11 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
 
 
-
+    Map<String, String> map = new HashMap<String , String>();
     @Override
     public void init() {
 
+        map = (Map<String, String>) getIntent().getSerializableExtra("exter");
 
 
         initTitle();
@@ -336,7 +337,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
             projectDao.deletByProjectId(delinfo.getId());
         }
 
-         new RestaskDeleteAPI(Values.TOKEN, delList, new RestaskDeleteAPI.RestaskDeleteIF() {
+         new RestaskDeleteAPI( UserToken.getUserToken().getFormToken(), delList, new RestaskDeleteAPI.RestaskDeleteIF() {
             @Override
             public void onRestaskDeleteResult(boolean isOk, String msg) {
 
@@ -479,8 +480,8 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         pageNo=1;
         isRefresh = true;
 
-        new getResTaskListAPI(Values.TOKEN,pageNo,this).request();
-        new ResModelListAPI(Values.TOKEN,this).request();
+        new getResTaskListAPI( UserToken.getUserToken().getFormToken(),pageNo,this).request();
+        new ResModelListAPI( UserToken.getUserToken().getFormToken(),this).request();
 
 
         if (projectShowList.size() == 0) {

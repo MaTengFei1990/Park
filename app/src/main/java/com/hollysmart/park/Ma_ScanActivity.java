@@ -19,6 +19,7 @@ import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
+import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -176,7 +177,7 @@ public class Ma_ScanActivity extends StyleAnimActivity implements QRCodeView.Del
         resDataBean.setFd_resmodelid(fdResModelId);
 
 
-        new ResDataGetAPI(Values.TOKEN, resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
+        new ResDataGetAPI( UserToken.getUserToken().getFormToken(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
             @Override
             public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
 

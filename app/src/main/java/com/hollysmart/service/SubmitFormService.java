@@ -20,6 +20,7 @@ import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.utils.taskpool.TaskPool;
+import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -111,7 +112,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
 
 
-            taskPool.addTask(new SaveResDataAPI(Values.TOKEN,bean,this));
+            taskPool.addTask(new SaveResDataAPI( UserToken.getUserToken().getFormToken(),bean,this));
 
 
 
@@ -146,7 +147,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
 
 
-            taskPool.addTask(new SaveResDataAPI(Values.TOKEN,bean,this));
+            taskPool.addTask(new SaveResDataAPI( UserToken.getUserToken().getFormToken(),bean,this));
 
 
 

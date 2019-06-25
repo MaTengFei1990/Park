@@ -55,6 +55,7 @@ import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
+import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -603,7 +604,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
         route_OnOff = false;
         isNewLuXian = true;
         if (info != null) {
-            new SaveResRouateAPI(mContext,Values.TOKEN, info, new OnNetRequestListener() {
+            new SaveResRouateAPI(mContext, UserToken.getUserToken().getFormToken(), info, new OnNetRequestListener() {
                 @Override
                 public void onFinish() {
 

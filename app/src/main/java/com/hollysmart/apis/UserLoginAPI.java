@@ -29,7 +29,7 @@ public class UserLoginAPI implements INetModel {
     }
     @Override
     public void request() {
-        String url = Values.SERVICE_URL + "/authz/oauth/token";
+        String url = Values.SERVICE_URL_FORM + "/authz/oauth/token";
          OkHttpUtils.post().url(url)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("Authorization", "Basic OTgxNjhhMGRiMDEzM2I4ZWUwYzU6ZGMyZjk0Mzk4NTEwZTc0YTZkZmM2MjRlZDA4NTY0OTFiNzJkZWI5Ng==")

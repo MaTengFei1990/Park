@@ -23,6 +23,7 @@ import com.hollysmart.db.UserInfo;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Utils;
+import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -105,7 +106,7 @@ public class DynamicFormActivity extends StyleAnimActivity {
 
         } else {
             //有网络
-            new GetResModelVersionAPI(Values.TOKEN, selectBean.getId(), new GetResModelVersionAPI.GetResModelVersionIF() {
+            new GetResModelVersionAPI( UserToken.getUserToken().getFormToken(), selectBean.getId(), new GetResModelVersionAPI.GetResModelVersionIF() {
                 @Override
                 public void onGetResModelVersionResult(boolean isOk, int version) {
 
@@ -114,7 +115,7 @@ public class DynamicFormActivity extends StyleAnimActivity {
                     if ((isOk && (version > showRes.getfVersion()))||(data==null||data.size()==0)) {//有更新获取网络数据
                         // 获取表单数据
 
-                        new GetResModelAPI(Values.TOKEN, showRes.getId(), new GetResModelAPI.GetResModelIF() {
+                        new GetResModelAPI( UserToken.getUserToken().getFormToken(), showRes.getId(), new GetResModelAPI.GetResModelIF() {
                             @Override
                             public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBean) {
 
@@ -159,7 +160,7 @@ public class DynamicFormActivity extends StyleAnimActivity {
                                     map.clear();
 
                                     //获取字典数据
-                                    new GetDictListDataAPI(Values.TOKEN, showType, showTypelist, new GetDictListDataAPI.GetDictListDataIF() {
+                                    new GetDictListDataAPI( UserToken.getUserToken().getFormToken(), showType, showTypelist, new GetDictListDataAPI.GetDictListDataIF() {
                                         @Override
                                         public void getResDataList(boolean isOk, HashMap<String, List<DictionaryBean>> map) {
 
