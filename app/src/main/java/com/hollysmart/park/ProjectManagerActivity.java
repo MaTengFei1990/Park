@@ -195,7 +195,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         projectBean.setfDescription("");
 
 
-        new SaveResTaskAPI(UserToken.getUserToken().getFormToken(), projectBean, new SaveResTaskAPI.SaveResTaskIF() {
+        new SaveResTaskAPI(userInfo.getAccess_token(), projectBean, new SaveResTaskAPI.SaveResTaskIF() {
             @Override
             public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
 
@@ -512,8 +512,8 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         pageNo=1;
         isRefresh = true;
 
-        new getResTaskListAPI( UserToken.getUserToken().getFormToken(),pageNo,this).request();
-        new ResModelListAPI( UserToken.getUserToken().getFormToken(),this).request();
+        new getResTaskListAPI( userInfo.getAccess_token(),pageNo,this).request();
+        new ResModelListAPI(userInfo.getAccess_token(),this).request();
 
 
         if (projectShowList.size() == 0) {

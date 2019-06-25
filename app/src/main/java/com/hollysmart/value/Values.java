@@ -5,19 +5,16 @@ import android.os.Environment;
 
 
 public class Values {
-//	public static final String SERVIXE_SHOUYE = "http://gy.bjylfw.cn:8011/xx.html";     //公园处 正式
-//	public static final String SERVICE_URL = "http://gy.bjylfw.cn:8010/";     //公园处 正式
 
-	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处  正式
-	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处  正式
+//	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处  正式
+//	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处  正式
 
-//	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_beta/xx.html";     // 公园处 测试
-//	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_beta/";     //公园处 测试
+	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_beta/xx.html";     // 公园处 测试
+	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_beta/";     //公园处 测试
 
 	//集成表单需要的接口；
-	public static final String SERVICE_URL_FORM = "http://47.104.68.180:3011";//
+	public static final String SERVICE_URL_FORM = "http://gy.bjylfw.cn:443";//
 	public static final String SERVICE_URL_ADMIN_FORM = SERVICE_URL_FORM + "/admin";//
-	public static final String TOKEN = "Bearer f7aa6cb595154ffb4c4a70c938d6f2ff";
 
 	public static final String SDCARD_ROOT = "smart_park";
 	public static final String RELOAD_DATA = "reload_data";

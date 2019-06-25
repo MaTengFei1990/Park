@@ -37,6 +37,9 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.apis.SaveResDataAPI;
+import com.hollysmart.apis.UpLoadFormPicAPI;
+import com.hollysmart.apis.UpLoadSoundAPI;
 import com.hollysmart.beans.DongTaiFormBean;
 import com.hollysmart.beans.FormModelBean;
 import com.hollysmart.beans.JDPicInfo;
@@ -60,8 +63,11 @@ import com.hollysmart.service.SubmitFormService;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.CCM_Bitmap;
 import com.hollysmart.utils.CCM_DateTime;
+import com.hollysmart.utils.FileTool;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.loctionpic.ImageItem;
+import com.hollysmart.utils.taskpool.OnNetRequestListener;
+import com.hollysmart.utils.taskpool.TaskPool;
 import com.hollysmart.value.Values;
 import com.hollysmart.views.linearlayoutforlistview.LinearLayoutBaseAdapter;
 import com.hollysmart.views.linearlayoutforlistview.MyLinearLayoutForListView;
@@ -71,7 +77,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +96,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
-    private List<ResModelBean> resultList = new ArrayList<ResModelBean>();
+    private List<ResModelBean> resModelList = new ArrayList<ResModelBean>();
 
     private List<JDPicInfo> resPicList; // 当前景点图片集
 
@@ -99,7 +108,14 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     private List<DongTaiFormBean> formBeanList;// 当前资源的动态表单
 
+    private List<DongTaiFormBean> tempformBeanList;// 当前资源的动态表单
+
+    private String sureResModelId = "";
+
+
     private ProjectBean projectBean;//当前项目
+
+    private ResModelBean selectResModel; //当前项目的分类bean
 
     private TextView text_fenwei;
     private TextView tv_jingdianWeizi;
@@ -112,9 +128,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     private boolean sportEditFlag = false; // ture 新添加 false 修改
     private Context mContext;
-    private List<SoundInfo> audios=new ArrayList<>();// 当前资源的录音
 
-    private List<SoundInfo> netaudios=new ArrayList<>();// 网络请求获取得到的录音
 
     private PicAdapter picAdapter;
 
@@ -122,6 +136,27 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     private SeeBarRangeListener seeBarRangeListener;
     private DismissListener dismissListener;
+
+    private LoadingProgressDialog lpd;
+
+
+    private List<SoundInfo> currentSoundList = new ArrayList<>();//本地已有的录音
+    private List<SoundInfo> netaudios=new ArrayList<>();// 网络请求获取得到的录音
+
+    private List<SoundInfo> audios=new ArrayList<>();// 当前资源所有的录音
+
+
+    private File TempSoundfile;  // 音频的临时文件夹
+    private File creenetSoundFile;  // 音频的临时文件夹
+
+    private String tempPicFilePath= Values.SDCARD_FILE("."+Values.SDCARD_PIC) ;
+
+
+    private List<SoundInfo> deletlist = new ArrayList<>();
+
+    private List<JDPicInfo> deletPicList = new ArrayList<>();
+
+    private String resDataName;
 
 
     private static JDPicInfo picBeannull = new JDPicInfo(0, null, null, null, 1, "false");
@@ -175,7 +210,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
     public void setlongitudeAndlatitude(String longitude, String latitude) {
 
         if (tv_jingdianWeizi != null) {
-            tv_jingdianWeizi.setText(longitude + "," + latitude);
+            tv_jingdianWeizi.setText(saveEightLevel(longitude) + "," + saveEightLevel(latitude));
 
         }
     }
@@ -211,6 +246,8 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         isLogin();
+        setLpd();
+        currentSoundList.clear();
         Window mWindow = this.getActivity().getWindow();
         WindowManager.LayoutParams lp = mWindow.getAttributes();
         lp.dimAmount = 1f;
@@ -234,11 +271,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         SeekBar seekBar_fenwei = view.findViewById(R.id.seekBar_fenwei);
         et_remark = view.findViewById(R.id.et_remark);
 
-        resultList.clear();
-
-        if (resultList.size() == 1) {
-            resultList.get(0).setSelect(true);
-        }
+        resModelList.clear();
 
         String classifyIds = projectBean.getfTaskmodel();
         if (classifyIds != null) {
@@ -247,10 +280,20 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             ResModelDao resModelDao = new ResModelDao(mContext);
             for(int i=0;i<ids.length;i++) {
                 ResModelBean resModelBean = resModelDao.getDatById(ids[i]);
-                resultList.add(resModelBean);
+                if (resModelBean != null) {
+
+                    resModelList.add(resModelBean);
+                }
             }
 
 
+        }
+        picfile = Values.SDCARD_FILE(Values.SDCARD_FILE)  + projectBean.getfTaskname() + "/"
+                + Values.SDCARD_PIC + "/" ;
+
+        if (resModelList!=null&&resModelList.size() == 1) {
+            resModelList.get(0).setSelect(true);
+            selectResModel = resModelList.get(0);
         }
 
         resPicList = new ArrayList<>();
@@ -258,6 +301,26 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         resPicList.add(picBeannull);
 
         formBeanList = new ArrayList<>();
+        tempformBeanList = new ArrayList<>();
+
+
+        if (dingWeiDian != null) {
+
+            tv_jingdianWeizi.setText(saveEightLevel(dingWeiDian.longitude+"") + "," + saveEightLevel(dingWeiDian.latitude+""));
+        }
+
+        //创建音频临时文件夹
+        TempSoundfile = CreateDir(Values.SDCARD_FILE(Values.SDCARD_FILE) + "/" + projectBean.getfTaskname() + "/"
+                + Values.SDCARD_SOUNDS + "/" +"templefile" + "");
+
+        File[] files = TempSoundfile.listFiles();
+        for (File file : files) {
+            file.delete();
+        }
+
+        netaudios.clear();
+
+
 
 
         //修改
@@ -269,13 +332,19 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             if (!Utils.isEmpty(resDataBean.getFd_resname())) {
 
                 ed_jingdianName.setText(resDataBean.getFd_resname());
+                resDataName = resDataBean.getFd_resname();
             }
             if (!Utils.isEmpty(resDataBean.getNote())) {
 
                 et_remark.setText(resDataBean.getNote());
             }
-            seekBar_fenwei.setProgress(resDataBean.getScope());
+            seekBar_fenwei.setProgress(resDataBean.getScope()-10);
             text_fenwei.setText("当前范围：" + resDataBean.getScope() + "米");
+
+
+
+            creenetSoundFile = CreateDir(Values.SDCARD_FILE(Values.SDCARD_FILE) + "/" + projectBean.getfTaskname() + "/"
+                    + Values.SDCARD_SOUNDS + "/" +resDataBean.getFd_resname() + "");
 
 
 
@@ -300,6 +369,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
 
             if (resDataBean.getAudio() != null && resDataBean.getAudio().size() > 0) {
+                //网络获取
                 netaudios.addAll(resDataBean.getAudio());
                 audios.clear();
                 audios.addAll(0, resDataBean.getAudio());
@@ -307,28 +377,41 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                     tv_recordCount.setText("录音数量：" + audios.size() + "");
                 } else {
                     tv_recordCount.setText("录音数量：" + 0 + "");
+
+                    CreateDir(picfile);
+
                 }
 
             } else {
-
+                //本地加载
                 List<SoundInfo> soundInfoList = new JDSoundDao(getContext()).getDataByJDId(resDataBean.getId());
                 audios.clear();
-                audios.addAll(0, soundInfoList);
-                if (audios != null && audios.size() > 0) {
-                    tv_recordCount.setText("录音数量：" + audios.size() + "");
-                } else {
-                    tv_recordCount.setText("录音数量：" + 0 + "");
+                if (soundInfoList != null && soundInfoList.size() > 0) {
+
+                    currentSoundList.clear();
+                    currentSoundList.addAll(0, soundInfoList);
+                    audios.addAll(currentSoundList);
+
+                    if (audios != null && audios.size() > 0) {
+                        tv_recordCount.setText("录音数量：" + audios.size() + "");
+
+                    } else {
+                        tv_recordCount.setText("录音数量：" + 0 + "");
+
+                    }
                 }
 
+                CreateDir(picfile);
             }
 
 
 
 
-            for(int i=0;i<resultList.size();i++) {
+            for(int i = 0; i< resModelList.size(); i++) {
                 if (!Utils.isEmpty(resDataBean.getCategoryId())) {
-                    if (resultList.get(i).getId().equals(resDataBean.getCategoryId())) {
-                        resultList.get(i).setSelect(true);
+                    if (resModelList.get(i).getId().equals(resDataBean.getCategoryId())) {
+                        resModelList.get(i).setSelect(true);
+                        selectResModel = resModelList.get(i);
 
                     }
 
@@ -340,6 +423,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             String formData = resDataBean.getFormData();
 
             formBeanList.clear();
+            tempformBeanList.clear();
 
             try {
                 JSONObject jsonObject = null;
@@ -348,6 +432,8 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                         new TypeToken<List<DongTaiFormBean>>() {}.getType());
                 formBeanList.addAll(dictList);
+                tempformBeanList.addAll(dictList);
+                sureResModelId = resDataBean.getFd_resmodelid();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -360,11 +446,9 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             //
             resDataBean = new ResDataBean();
             formBeanList = new ArrayList<>();
+            tempformBeanList = new ArrayList<>();
 
-            //创建音频临时的文件夹：
-
-            TempSoundfile = CreateDir(Values.SDCARD_FILE(Values.SDCARD_FILE) + "/" + projectBean.getfTaskname() + "/"
-                    + Values.SDCARD_SOUNDS + "/" + System.currentTimeMillis() + "");
+            CreateDir(picfile);
 
 
         }
@@ -400,7 +484,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
                 dismiss();
                 if (sportEditFlag) {
-                    TempSoundfile.delete();
+                    FileTool.deteleFiles(TempSoundfile);
 
                 }
 
@@ -415,7 +499,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 List<ResModelBean> list = new ArrayList<>();
 
 
-                for (ResModelBean resModelBean : resultList) {
+                for (ResModelBean resModelBean : resModelList) {
 
                     if (resModelBean.isSelect()) {
 
@@ -443,14 +527,14 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 resDataBean = null;
                 dismiss();
                 if (sportEditFlag) {
-                    TempSoundfile.delete();
+                    FileTool.deteleFiles(TempSoundfile);
 
                 }
 
             }
         });
 
-        ziYuanAdapter = new ZiYuanAdapter(mContext, resultList);
+        ziYuanAdapter = new ZiYuanAdapter(mContext, resModelList);
         ll_jingDianFenLei.setAdapter(ziYuanAdapter);
 
         picAdapter = new PicAdapter(mContext, resPicList);
@@ -463,13 +547,24 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 Intent intent = new Intent(mContext, RecordListActivity.class);
                 intent.putExtra("projectbean", projectBean);
                 intent.putExtra("TempSoundfile", TempSoundfile.getAbsolutePath());
-                intent.putExtra("netaudios", (Serializable) netaudios);
+
+                List<SoundInfo> bundSound = new ArrayList<>();
+                if (netaudios != null && netaudios.size() > 0 ) {
+                    bundSound.addAll(netaudios);
+
+                }
+                if (currentSoundList != null && currentSoundList.size() > 0) {
+                    bundSound.addAll(currentSoundList);
+
+                }
+
+                intent.putExtra("netaudios", (Serializable) bundSound);
                 startActivityForResult(intent,5);
 
             }
         });
 
-        seekBar_fenwei.setMax(50);
+        seekBar_fenwei.setMax(40);
         seekBar_fenwei.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             @Override
@@ -482,8 +577,8 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                text_fenwei.setText("当前范围：" + progress + "米");
-                scope = progress;
+                scope = progress+10;
+                text_fenwei.setText("当前范围：" + scope + "米");
                 seeBarRangeListener.onChange(progress);
             }
         });
@@ -504,7 +599,19 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     }
 
-    private File TempSoundfile;
+
+    private void setLpd() {
+        lpd = new LoadingProgressDialog();
+        lpd.setMessage("正在保存，请稍等...");
+        lpd.create(getContext(), lpd.STYLE_SPINNER);
+        lpd.setCancelable(false);
+    }
+
+
+
+
+
+
 
 
     private File CreateDir(String folder) {
@@ -548,15 +655,46 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             Toast.makeText(mContext, "资源名称不能为空", Toast.LENGTH_LONG).show();
             return;
         }
+
+        if (selectResModel == null || !selectResModel.isSelect()) {
+            Toast.makeText(mContext, "请选择项目分类", Toast.LENGTH_LONG).show();
+            return;
+
+        }
+
+//        if (formBeanList == null || formBeanList.size() == 0) {
+//            Toast.makeText(mContext, "请填写表单详情", Toast.LENGTH_LONG).show();
+//            return;
+//        } else {
+//
+//            boolean notfill = true;
+//
+//            for (DongTaiFormBean formBean : formBeanList) {
+//
+//                if (formBean.getFieldMustInput() && Utils.isEmpty(formBean.getPropertyLabel())) {
+//                    notfill = false;
+//                }
+//
+//            }
+//
+//            if (!notfill) {
+//                Toast.makeText(mContext, "请将表单填写完整", Toast.LENGTH_LONG).show();
+//                return;
+//            }
+//
+//
+//        }
+
+
         String createTime = new CCM_DateTime().Datetime2();
-        String coordinate = dingWeiDian.longitude + "," + dingWeiDian.latitude
-                + ",0";
+        String coordinate = dingWeiDian.latitude + "," + dingWeiDian.longitude;
         sportEditFlag = true;
         // 添加数据库
 
         resDataBean.setId(System.currentTimeMillis() + "");
         resDataBean.setFdTaskId(projectBean.getId());
         resDataBean.setNumber(resNum);
+        resDataBean.setFd_resmodelid(selectResModel.getId());
         resDataBean.setFd_restaskname(projectBean.getfTaskname());
         resDataBean.setFd_resname(jdName);
         resDataBean.setNote(et_remark.getText().toString());
@@ -584,11 +722,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         addDB(resDataBean);
 
-
-        Intent intent = new Intent(mContext, SubmitFormService.class);
-        intent.putExtra("type", SubmitFormService.TYPE_XINZENG);
-        intent.putExtra("uuid", resDataBean.getId());
-        mContext.startService(intent);
+        uploadResData(resDataBean.getId());
 
         jingdianGone();
     }
@@ -610,7 +744,22 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             return;
         }
 
+
+
+        FormModelBean formModelBean = new FormModelBean();
+
+        formModelBean.setCgformFieldList(formBeanList);
+
+        resDataBean.setFormModel(formModelBean);
+
+        Gson gson = new Gson();
+        String formBeanStr = gson.toJson(formModelBean);
+
+        resDataBean.setFormData(formBeanStr);
+
+
         resDataBean.setFdTaskId(projectBean.getId());
+        resDataBean.setFd_resmodelid(selectResModel.getId());
         resDataBean.setFd_resname(jdName);
         resDataBean.setNumber(resNum);
         resDataBean.setScope(scope);
@@ -629,20 +778,25 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         JDPicDao jdPicDao = new JDPicDao(getActivity());
         JDSoundDao jdSoundDao = new JDSoundDao(getActivity());
 
-        if (resPicList != null && resPicList.size() > 0) {
+//        if (resPicList != null && resPicList.size() > 0) {
+//
+//            for (JDPicInfo jdPicInfo : resPicList) {
+//                if (jdPicInfo.getIsAddFlag() != 1) {
+//
+//                    jdPicInfo.setJdId(resDataBean.getId());
+//                    jdPicInfo.setJqId(resDataBean.getFdTaskId());
+//
+//                    jdPicDao.addOrUpdate(jdPicInfo);
+//                }
+//            }
+//        }
+        savePicFile(jdPicDao);
 
-            for (JDPicInfo jdPicInfo : resPicList) {
-                if (jdPicInfo.getIsAddFlag() != 1) {
+        moveTemp2CurrentFile();
 
-                    jdPicInfo.setJdId(resDataBean.getId());
-                    jdPicInfo.setJqId(resDataBean.getFdTaskId());
 
-                    jdPicDao.addOrUpdate(jdPicInfo);
-                }
-            }
-        }
-
-        if (audios != null && audios.size() > 0) {
+        if (audios != null) {
+            jdSoundDao.deletByResId(resDataBean.getId());
             for (SoundInfo soundInfo : audios) {
                 soundInfo.setJdId(resDataBean.getId());
                 soundInfo.setJqId(resDataBean.getFdTaskId());
@@ -653,14 +807,113 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         resDataDao.addOrUpdate(resDataBean);
 
-
-        Intent intent = new Intent(mContext, SubmitFormService.class);
-        intent.putExtra("type", SubmitFormService.TYPE_XINZENG);
-        intent.putExtra("uuid", resDataBean.getId());
-        mContext.startService(intent);
-
+        uploadResData(resDataBean.getId());
 
         jingdianGone();
+
+    }
+
+
+    /**
+     * 将资源上传到后台
+     */
+    private void uploadResData(String uuid) {
+        final ResDataDao formDao = new ResDataDao(mContext);
+        JDPicDao jdPicDao = new JDPicDao(mContext);
+        JDSoundDao jdSoundDao = new JDSoundDao(mContext);
+        final TaskPool taskPool = new TaskPool();
+
+        OnNetRequestListener listener= new OnNetRequestListener() {
+            @Override
+            public void onFinish() {
+                lpd.cancel();
+            }
+
+            @Override
+            public void OnNext() {
+                taskPool.execute(this);
+            }
+
+            @Override
+            public void OnResult(boolean isOk, String msg, Object object) {
+                if (isOk) {
+                    ResDataBean bean = (ResDataBean) object;
+                    if (bean != null) {
+                        formDao.addOrUpdate(bean);
+                        taskPool.execute(this);
+
+                        if (sportEditFlag) {
+                            lpd.setMessage("新增成功");
+
+                        } else {
+                            lpd.setMessage("修改成功");
+                        }
+
+
+                    }
+
+                    if (taskPool.getTotal() == 0) {
+                        if (sportEditFlag) {
+                            Utils.showToast(mContext, "新增成功");
+
+                        } else {
+                            Utils.showToast(mContext, "修改成功");
+                        }
+                    }
+                } else {
+                    if (sportEditFlag) {
+                        Utils.showToast(mContext, "新增失败");
+
+                    } else {
+                        Utils.showToast(mContext, "修改失败");
+                    }
+                }
+            }
+        };
+
+
+
+        List<ResDataBean> formBeens = formDao.getUuidDate(uuid);
+        for (ResDataBean bean : formBeens) {
+
+            List<JDPicInfo> picList = jdPicDao.getDataByJDId(bean.getId());
+
+            for (JDPicInfo jdPicInfo : picList) {
+
+                if (!Utils.isEmpty(jdPicInfo.getFilePath()) && jdPicInfo.getIsAddFlag() != 1&&(Utils.isEmpty(jdPicInfo.getImageUrl()))) {
+
+                    taskPool.addTask(new UpLoadFormPicAPI(userInfo.getAccess_token(), jdPicInfo, listener));
+                }
+            }
+            List<SoundInfo> soundInfoList = jdSoundDao.getDataByJDId(bean.getId());
+
+            for (SoundInfo soundInfo : soundInfoList) {
+
+                if (!Utils.isEmpty(soundInfo.getFilePath())&&(Utils.isEmpty(soundInfo.getAudioUrl()))) {
+                    taskPool.addTask(new UpLoadSoundAPI(userInfo.getAccess_token(), soundInfo, listener));
+                }
+            }
+
+            bean.setPic(picList);
+            bean.setAudio(soundInfoList);
+
+
+
+
+            taskPool.addTask(new SaveResDataAPI(userInfo.getAccess_token(),bean,listener));
+
+
+
+        }
+        if (sportEditFlag) {
+            lpd.setMessage("正在同步新增的资源,请稍等...");
+            lpd.show();
+
+        } else {
+            lpd.setMessage("正在同步修改的资源,请稍等...");
+            lpd.show();
+        }
+        taskPool.execute(listener);
 
     }
 
@@ -674,27 +927,186 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         resDataDao.addOrUpdate(resDataBean);
 
-        if (resPicList != null && resPicList.size() > 0) {
-            for (JDPicInfo jdPicInfo : resPicList) {
-                if (jdPicInfo.getIsAddFlag() != 1) {
-                    jdPicInfo.setJdId(resDataBean.getId());
-                    jdPicInfo.setJqId(resDataBean.getFdTaskId());
-                    jdPicDao.addOrUpdate(jdPicInfo);
-                }
-            }
+        savePicFile(jdPicDao);
 
-        }
-        if (audios != null && audios.size() > 0) {
+
+        moveTemp2CurrentFile();
+
+
+
+        if (audios != null) {
+            jdSoundDao.deletByResId(resDataBean.getId());
             for (SoundInfo soundInfo : audios) {
-                    soundInfo.setJdId(resDataBean.getId());
-                    soundInfo.setJqId(resDataBean.getFdTaskId());
-                    jdSoundDao.addOrUpdate(soundInfo);
+                soundInfo.setJdId(resDataBean.getId());
+                soundInfo.setJqId(resDataBean.getFdTaskId());
+                jdSoundDao.addOrUpdate(soundInfo);
             }
 
         }
 
 
     }
+
+    /***
+     * 保存照片资源文件到
+     */
+
+    private void savePicFile( JDPicDao jdPicDao ) {
+
+
+        picfile = Values.SDCARD_FILE(Values.SDCARD_FILE)  + projectBean.getfTaskname() + "/"
+                + Values.SDCARD_PIC + "/"+resDataBean.getFd_resname() + "/" ;
+
+        jdPicDao.deletByResId(resDataBean.getId());
+
+
+
+
+
+        for(int i=0;i<deletPicList.size();i++) {
+
+            JDPicInfo deletPicInfo = deletPicList.get(i);
+
+            String filePath = deletPicInfo.getFilePath();
+
+            File file = new File(filePath);
+
+            FileTool.deteleFiles(file);
+
+
+
+        }
+
+
+        File picFile = CreateDir(picfile);
+        picFile.delete();
+        File file = CreateDir(picfile);
+        if (file.exists()) {
+
+            if (resPicList != null && resPicList.size() > 0) {
+                for (int i = 0; i < resPicList.size(); i++) {
+                    JDPicInfo jdPicInfo = resPicList.get(i);
+                    if (jdPicInfo.getIsAddFlag() != 1) {
+                        jdPicInfo.setJdId(resDataBean.getId());
+                        jdPicInfo.setJqId(resDataBean.getFdTaskId());
+
+                        Bitmap bm = BitmapFactory.decodeFile(jdPicInfo.getFilePath());
+                        if (bm != null) {
+                            CCM_Bitmap.getBitmapToFile(bm, picfile + jdPicInfo.getFilename());
+                            jdPicInfo.setFilePath(picfile + jdPicInfo.getFilename());
+
+                        }
+
+
+                        jdPicDao.addOrUpdate(jdPicInfo);
+
+
+                    }
+                }
+
+            }
+
+
+        }
+
+        if (!sportEditFlag) {
+            if(!resDataName.equals(resDataBean.getFd_resname())){
+
+                String oldPic = Values.SDCARD_FILE(Values.SDCARD_FILE)  + projectBean.getfTaskname() + "/"
+                        + Values.SDCARD_PIC + "/"+resDataName + "/" ;
+                FileTool.deteleFiles(new File(oldPic));
+
+            }
+        }
+
+
+    }
+
+    /***
+     * 将临时文件夹下的音频文件移动到当前的资源文件下；
+     */
+
+    private void moveTemp2CurrentFile() {
+
+        File resSound = CreateDir(Values.SDCARD_FILE(Values.SDCARD_FILE) + "/" + projectBean.getfTaskname() + "/"
+                + Values.SDCARD_SOUNDS + "/" + resDataBean.getFd_resname() + "");
+
+
+        for(int i=0;i<deletlist.size();i++) {
+
+            SoundInfo deletsoundInfo = deletlist.get(i);
+
+            String filePath = deletsoundInfo.getFilePath();
+
+            File file = new File(filePath);
+
+            FileTool.deteleFiles(file);
+
+
+
+        }
+
+
+
+
+
+
+        try {
+            FileTool.copy(TempSoundfile.getPath(),resSound.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (!sportEditFlag) {
+
+            boolean equals = creenetSoundFile.getPath().equals(resSound.getPath());
+
+            if (!equals) {
+                try {
+                    FileTool.copy(creenetSoundFile.getPath(),resSound.getPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                FileTool.deteleFiles(creenetSoundFile);
+            }
+        }
+
+        FileTool.deteleFiles(TempSoundfile);
+
+        updateCurrentSoundList(resSound);
+
+
+
+    }
+
+
+
+    private void updateCurrentSoundList(File resSound) {
+
+
+        currentSoundList.clear();
+        audios.clear();
+//
+        File[] files = resSound.listFiles();
+        for (File file : files) {
+            if (file.getAbsolutePath().endsWith(".mp3")) {
+
+                SoundInfo soundInfo = new SoundInfo();
+                soundInfo.setFilePath(file.getAbsolutePath());
+                soundInfo.setFilename(file.getName());
+
+                currentSoundList.add(soundInfo);
+
+
+            }
+        }
+
+        audios.addAll(currentSoundList);
+
+    }
+
+
+
 
     private class PicAdapter extends LinearLayoutBaseAdapter {
 
@@ -709,7 +1121,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         @Override
         public View getView(final int position) {
-            JDPicInfo jdPicInfo = jdPicslist.get(position);
+            final JDPicInfo jdPicInfo = jdPicslist.get(position);
 
             View convertView = View.inflate(contextlist, R.layout.item_jingdian_pic, null);
             ImageView imageView = convertView.findViewById(R.id.photo);
@@ -774,15 +1186,8 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             iv_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JDPicInfo delPic = jdPicslist.get(position);
-                    String path = delPic.getFilePath();
-                    File file = new File(path);
-                    file.delete();
 
-                    JDPicDao jdPicDao = new JDPicDao(mContext);
-                    if (delPic.getId() != 0) {
-                        jdPicDao.deletByPicId(delPic.getId());
-                    }
+                    deletPicList.add(jdPicslist.get(position));
 
 
                     jdPicslist.remove(position);
@@ -799,6 +1204,25 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
 
     }
+
+
+
+
+    private String saveEightLevel(String star) {
+
+
+
+        DecimalFormat df = new DecimalFormat("########.000000");
+        BigDecimal lonX = new BigDecimal(star);
+        //保留8位小数
+        String formatX =df.format(lonX);
+
+        return formatX;
+
+    }
+
+
+
 
 
     private class ZiYuanAdapter extends LinearLayoutBaseAdapter {
@@ -846,6 +1270,32 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                         resDataBean.setFd_resmodelname(resModelBean.getName());
                         resDataBean.setFd_resmodelid(resModelBean.getId());
                         resDataBean.setCategoryId(resModelBean.getId());
+
+                        selectResModel=resModelBean;
+                        if (!Utils.isEmpty(sureResModelId) && sureResModelId.equals(selectResModel.getId())) {
+                            formBeanList.clear();
+                            formBeanList.addAll(tempformBeanList);
+
+
+                        } else {
+
+                            String formData = selectResModel.getfJsonData();
+
+                            formBeanList.clear();
+
+                            try {
+                                JSONObject jsonObject = null;
+                                jsonObject = new JSONObject(formData);
+                                Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                                List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                                        new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                                formBeanList.addAll(dictList);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
                     }
 
 
@@ -877,10 +1327,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         super.onCancel(dialog);
         if (dismissListener != null) {
             dismissListener.dismisse();
-            if (sportEditFlag) {
-                TempSoundfile.delete();
-
-            }
+            TempSoundfile.delete();
 
 
         }
@@ -891,11 +1338,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         super.dismiss();
         if (dismissListener != null) {
             dismissListener.dismisse();
-            if (sportEditFlag) {
-                TempSoundfile.delete();
-
-            }
-
+            TempSoundfile.delete();
 
         }
     }
@@ -929,7 +1372,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     }
 
-    private final String file = Values.SDCARD_FILE(Values.SDCARD_PIC);
+    private  String picfile ;
 
     /**
      * 选择完图片后的回调
@@ -958,13 +1401,11 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                     for (ImageItem item : picPaths) {
                         String cameraPath = item.imagePath;
 
-                        String cameraName = System.currentTimeMillis() + ".jpg";
-                        Bitmap bm = BitmapFactory.decodeFile(item.imagePath);
-                        CCM_Bitmap.getBitmapToFile(bm, file + cameraName);
-                        cameraPath = file + cameraName;
+                        String cameraName =item.imageId+ System.currentTimeMillis() + ".jpg";
 
                         JDPicInfo picBean = new JDPicInfo(0, cameraName, cameraPath, null, 0, "false");
                         resPicList.add(0, picBean);
+
                     }
                     if (resPicList.size() >= MAXNUM + 1) {
                         resPicList.remove(MAXNUM);
@@ -980,6 +1421,10 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 if (resultCode == 4) {
 
                     formBeanList = (List<DongTaiFormBean>) data.getSerializableExtra("formBeanList");
+                    tempformBeanList.clear();
+                    tempformBeanList.addAll(formBeanList);
+                    sureResModelId = selectResModel.getId();
+
                 }
 
                 break;
@@ -987,8 +1432,9 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 if (resultCode == 5) {
 
                     audios = (List<SoundInfo>) data.getSerializableExtra("recordlist");
+                    deletlist = (List<SoundInfo>) data.getSerializableExtra("deletList");
 
-                    if (audios != null && audios.size() != 0) {
+                    if (audios != null) {
                         tv_recordCount.setText("录音数量：" + audios.size() + "");
                     }
                 }
@@ -1027,8 +1473,8 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 150);
-        intent.putExtra("outputY", 150);
+        intent.putExtra("outputX", 500);
+        intent.putExtra("outputY", 500);
         intent.putExtra("return-data", true);
         //裁剪后的图片Uri路径，uritempFile为Uri类变量
         uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "wodeIcon.jpg");
@@ -1050,9 +1496,10 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 String picName = System.currentTimeMillis() + ".jpg";
                 Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(uritempFile));
 
-                String filePath = file + projectBean.getfTaskname() + "/" + Values.SDCARD_PIC + "/";
-                CCM_Bitmap.getBitmapToFile(bitmap, filePath + picName);
-                JDPicInfo bean = new JDPicInfo(0, picName, filePath + picName, null, 0, "false");
+                String path = tempPicFilePath ;
+
+                CCM_Bitmap.getBitmapToFile(bitmap, path + picName);
+                JDPicInfo bean = new JDPicInfo(0, picName, path + picName, null, 0, "false");
                 resPicList.add(0, bean);
                 picAdapter.notifyDataSetChanged();
 

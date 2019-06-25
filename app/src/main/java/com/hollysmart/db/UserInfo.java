@@ -37,6 +37,13 @@ public class UserInfo implements Serializable {
     private String roleIds;
     private String roleNames;
 
+
+    private String restaskAdd;
+    private String restaskDelete;
+    private String restaskFinish;
+    private String resdataUpdate;
+    private String resdataDelete;
+
     public void setId(String id) {
         this.id = id;
     }
@@ -545,6 +552,44 @@ public class UserInfo implements Serializable {
 
     }
 
+    public String getRestaskAdd() {
+        return restaskAdd;
+    }
 
+    public void setRestaskAdd(String restaskAdd) {
+        this.restaskAdd = restaskAdd;
+    }
+
+    public String getRestaskDelete() {
+        return restaskDelete;
+    }
+
+    public void setRestaskDelete(String restaskDelete) {
+        this.restaskDelete = restaskDelete;
+    }
+
+    public String getRestaskFinish() {
+        return restaskFinish;
+    }
+
+    public void setRestaskFinish(String restaskFinish) {
+        this.restaskFinish = restaskFinish;
+    }
+
+    public String getResdataUpdate() {
+        return resdataUpdate;
+    }
+
+    public void setResdataUpdate(String resdataUpdate) {
+        this.resdataUpdate = resdataUpdate;
+    }
+
+    public String getResdataDelete() {
+        return resdataDelete;
+    }
+
+    public void setResdataDelete(String resdataDelete) {
+        this.resdataDelete = resdataDelete;
+    }
 }
 

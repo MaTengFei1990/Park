@@ -19,6 +19,9 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.GroundOverlayOptions;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.Overlay;
@@ -37,6 +40,7 @@ import com.hollysmart.beans.ResDataBean;
 import com.hollysmart.db.JDPicDao;
 import com.hollysmart.db.LuXianDao;
 import com.hollysmart.db.ResDataDao;
+import com.hollysmart.park.PreviewActivity;
 import com.hollysmart.park.R;
 import com.hollysmart.utils.CCM_DateTime;
 import com.hollysmart.utils.GPSConverterUtils;
@@ -52,6 +56,7 @@ import java.util.List;
  */
 
 public class MainPresenter {
+
 
     private MainView mainView;
     private Model model;
@@ -87,12 +92,11 @@ public class MainPresenter {
 
         int mapType = mBaiduMap.getMapType();
         if (mapType!=1) {
-            bn_weixing.setImageResource(R.mipmap.icon1_02);
             mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         } else {
-            bn_weixing.setImageResource(R.mipmap.icon1_01);
             mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
         }
+        bn_weixing.setImageResource(R.mipmap.icon1_01);
     }
 
     /**
@@ -110,8 +114,8 @@ public class MainPresenter {
      *
      */
 
-    public LuXianInfo saveRoutes(ProjectBean projectBean, List<PointInfo> luxianpointsList, Context context) {
-        if (luxianpointsList != null && luxianpointsList.size() > 0) {
+    public LuXianInfo saveRoutes(String routesType,ProjectBean projectBean,List<PointInfo> luxianpointsList, Context context) {
+        if (luxianpointsList != null && luxianpointsList.size() > 2) {
             StringBuilder allbuilder = new StringBuilder();
             for (int i = 0; i < luxianpointsList.size(); i++) {
                 StringBuilder strbuild = new StringBuilder();
@@ -145,7 +149,7 @@ public class MainPresenter {
             luXianInfo.setFd_restaskid(projectBean.getId());
             luXianInfo.setIsUpload("false");
             luXianInfo.setFd_restaskname(projectBean.getfTaskname());
-            luXianInfo.setFd_resmodelid(projectBean.getfTaskmodel());
+            luXianInfo.setFd_resmodelid(routesType);
             luXianInfo.setFd_resmodelname(projectBean.getfTaskname());
             luXianInfo.setStartCoordinate(luxianpointsList.get(0).getJsonObject().toString());
             luXianInfo.setEndCoordinate(luxianpointsList.get(luxianpointsList.size() - 1).getJsonObject().toString());
@@ -183,7 +187,7 @@ public class MainPresenter {
 
 
 
-    public void showMoreDialog(final Context context) {
+    public void showMoreDialog(final Context context, final ProjectBean projectBean) {
 
         final BottomSheetDialog mBottomSheetDialog;
         Activity activity = (Activity) context;
@@ -217,9 +221,10 @@ public class MainPresenter {
         view.findViewById(R.id.tv_yulan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent privewIntent=new Intent(context, PreviewActivity.class);
-//                Activity activity = (Activity) context;
-//                activity. startActivity(privewIntent);
+                Intent privewIntent=new Intent(context, PreviewActivity.class);
+                privewIntent.putExtra("projectBean", projectBean);
+                Activity activity = (Activity) context;
+                activity. startActivity(privewIntent);
                 mBottomSheetDialog.dismiss();
 
             }
@@ -351,6 +356,10 @@ public class MainPresenter {
 
         }
 
+        if (points.size() < 3) {
+
+            return;
+        }
         mPolygonOptions.points(points);
 
         //在地图上显示多边形
@@ -367,8 +376,87 @@ public class MainPresenter {
 
     //绘制折线
     public void drowLine(List<PointInfo> luxianpointsList,LatLng loc) {
+
+
+
         BaiduMap mBaiduMap = mainView.getBaiDuMap();
         mBaiduMap.clear();
+        if (luxianpointsList == null || luxianpointsList.size() == 0) {
+            return;
+        }
+
+        if ( luxianpointsList.size() <2) {
+            return;
+        }
+
+        List<LatLng> points = new ArrayList<LatLng>();
+        LatLng p1;
+        for (int i = 0; i < luxianpointsList.size(); i++) {
+            p1= new LatLng(luxianpointsList.get(i).getLatitude(), luxianpointsList.get(i).getLongitude());
+            points.add(p1);
+
+        }
+        //地理坐标基本数据结构
+        if(points.isEmpty()){
+            //添加初始点标志
+            // 初始化全局 bitmap 信息，不用时及时 recycle
+        } else{
+            //位置移动画出两点之间的线
+            OverlayOptions ooPolyline2 = new PolylineOptions().width(4).color(0xAAFF0000).points(points);
+            mBaiduMap.addOverlay(ooPolyline2);
+
+            OverlayOptions firstLocMark = new MarkerOptions().position(points.get(0)).icon(bdA).zIndex(12).draggable(true);
+            mBaiduMap.addOverlay(firstLocMark);
+            OverlayOptions lasttLocMark = new MarkerOptions().position(points.get(points.size()-1)).icon(bdA).zIndex(12).draggable(true);
+            mBaiduMap.addOverlay(lasttLocMark);
+
+
+
+        }
+
+
+//        int i = luxianpointsList.size() / 50;
+//        if (i > 0) {
+//
+//            LayoutInflater  mLayoutInflater = LayoutInflater.from(mContext);
+//            View view = mLayoutInflater.inflate(R.layout.layout_mapview, null, false);
+//            TextView tv_licheng = view.findViewById(R.id.tv_licheng);
+//            TextView tv_time = view.findViewById(R.id.tv_time);
+//
+//            for(int j=0;j<i+1;j++) {
+//
+//                tv_licheng.setText(j*0.5+"km ");
+//                tv_time.setText(luxianpointsList.get(49 * j).getTime());
+//                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
+//                //构建MarkerOption，用于在地图上添加Marker
+//                MarkerOptions  optionPosition = new MarkerOptions()
+//                        .position(new LatLng(luxianpointsList.get(49 * j).getLatitude(), luxianpointsList.get(49 * j).getLongitude()))
+//                        .icon(bitmapDescriptor);
+//                //在地图上添加Marker，并显示
+//
+//                markList.add(optionPosition);
+//                if (mBaiduMap.getMapStatus().zoom > 15) {
+//                    mBaiduMap.addOverlays(markList);
+//
+//                }
+//
+//            }
+//
+//        }
+
+    }
+
+
+    /***
+     * 显示距离标识
+     *
+     */
+
+
+    public void showJuLiFlag(List<PointInfo> luxianpointsList, LatLng loc) {
+
+
+        BaiduMap mBaiduMap = mainView.getBaiDuMap();
         if (luxianpointsList == null || luxianpointsList.size() == 0) {
             return;
         }
@@ -378,30 +466,8 @@ public class MainPresenter {
         for (int i = 0; i < luxianpointsList.size(); i++) {
             p1= new LatLng(luxianpointsList.get(i).getLatitude(), luxianpointsList.get(i).getLongitude());
             points.add(p1);
-        }
-        //地理坐标基本数据结构
-        if(points.isEmpty()){
-            //添加初始点标志
-            // 初始化全局 bitmap 信息，不用时及时 recycle
-            OverlayOptions firstLocMark = new MarkerOptions().position(loc).icon(bdA).zIndex(12).draggable(true);
-            mBaiduMap.addOverlay(firstLocMark);
-        } else{
-            //位置移动画出两点之间的线
-            OverlayOptions ooPolyline2 = new PolylineOptions().width(4).color(0xAAFF0000).points(points);
-            mBaiduMap.addOverlay(ooPolyline2);
-
-            int i = points.size() / 50;
-            if (i > 0) {
-                OverlayOptions firstLocMark = new MarkerOptions().position(points.get(49*i)).icon(bdA).zIndex(12).draggable(true);
-                mBaiduMap.addOverlay(firstLocMark);
-
-            }
-
-
 
         }
-
-
         int i = luxianpointsList.size() / 50;
         if (i > 0) {
 
@@ -416,7 +482,7 @@ public class MainPresenter {
                 tv_time.setText(luxianpointsList.get(49 * j).getTime());
                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromView(view);
                 //构建MarkerOption，用于在地图上添加Marker
-                MarkerOptions optionPosition = new MarkerOptions()
+                MarkerOptions  optionPosition = new MarkerOptions()
                         .position(new LatLng(luxianpointsList.get(49 * j).getLatitude(), luxianpointsList.get(49 * j).getLongitude()))
                         .icon(bitmapDescriptor);
                 //在地图上添加Marker，并显示
@@ -430,6 +496,41 @@ public class MainPresenter {
             }
 
         }
+
+    }
+
+
+
+
+    /***
+     * 路线居中显示
+     *
+     */
+
+
+    public void lineShowOnCenter(List<PointInfo> luxianpointsList,LatLng loc) {
+
+        BaiduMap mBaiduMap = mainView.getBaiDuMap();
+
+        MapView mapView = mainView.getMapView();
+
+        if (luxianpointsList == null || luxianpointsList.size() == 0) {
+            return;
+        }
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        LatLng p1;
+        for (int i = 0; i < luxianpointsList.size(); i++) {
+            p1 = new LatLng(luxianpointsList.get(i).getLatitude(), luxianpointsList.get(i).getLongitude());
+            builder.include(p1);
+        }
+
+        LatLngBounds bounds = builder.build();
+        // 设置显示在屏幕中的地图地理范围
+        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, mapView.getWidth(), mapView.getHeight());
+        mBaiduMap.setMapStatus(u);
+
+
 
     }
 

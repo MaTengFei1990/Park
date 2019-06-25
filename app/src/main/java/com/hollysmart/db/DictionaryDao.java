@@ -161,4 +161,15 @@ public class DictionaryDao {
         }
         return true;
     }
+    public boolean deletByType(String  type){
+        try {
+            DeleteBuilder builder = dictionnaryDao.deleteBuilder();
+            builder.where().in("type", type);
+            builder.delete();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

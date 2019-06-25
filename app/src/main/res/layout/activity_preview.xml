@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_map"
+        android:layout_width="fill_parent"
+        android:background="@color/bg_lan"
+        android:layout_height="50dp" >
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:src="@mipmap/icon_back"
+            android:padding="13dp"
+            android:background="@color/touming"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="预览"
+            android:textColor="@color/baise"
+            android:textSize="@dimen/tv_size_big"/>
+
+        <ImageView
+            android:id="@+id/ib_add"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:padding="13dp"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon3_02"
+            android:background="@color/touming"/>
+
+    </RelativeLayout>
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/preview_bmapView"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_map"
+        android:clickable="true" />
+
+    <RelativeLayout
+        android:id="@+id/rl_map_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <com.hollysmart.views.MaxGallery
+            android:id="@+id/gy_data"
+            android:layout_width="fill_parent"
+            android:layout_height="120dp"
+            android:spacing="5dp" />
+    </RelativeLayout>
+
+
+</LinearLayout>

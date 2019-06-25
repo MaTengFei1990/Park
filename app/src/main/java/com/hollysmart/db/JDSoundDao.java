@@ -29,7 +29,7 @@ public class JDSoundDao {
     }
 
 
-     /**
+    /**
      * 修改或增加数据 列表
      */
     public boolean addOrUpdate(List<?> beans) {
@@ -84,7 +84,7 @@ public class JDSoundDao {
      */
     public List<SoundInfo> getData(String jqId ) {
         try {
-           return shuaKaDetailsDao.queryBuilder().where()
+            return shuaKaDetailsDao.queryBuilder().where()
                     .eq("jqId", jqId)
                     .query();
         } catch (SQLException e) {
@@ -99,7 +99,7 @@ public class JDSoundDao {
      */
     public List<SoundInfo> getDataByJDId(String jdId ) {
         try {
-           return shuaKaDetailsDao.queryBuilder().where()
+            return shuaKaDetailsDao.queryBuilder().where()
                     .eq("jdId", jdId)
                     .query();
         } catch (SQLException e) {
@@ -115,6 +115,17 @@ public class JDSoundDao {
         try {
             DeleteBuilder builder = shuaKaDetailsDao.deleteBuilder();
             builder.where().in("jqId", AreaId);
+            builder.delete();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    public boolean deletByResId(String ResId){
+        try {
+            DeleteBuilder builder = shuaKaDetailsDao.deleteBuilder();
+            builder.where().in("jdId", ResId);
             builder.delete();
         } catch (SQLException e) {
             e.printStackTrace();

@@ -23,7 +23,6 @@ import com.hollysmart.db.UserInfo;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Utils;
-import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -31,10 +30,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DynamicFormActivity extends StyleAnimActivity {
+public class DynamicFormActivity extends StyleAnimActivity  {
 
 
     @Override
@@ -60,7 +60,7 @@ public class DynamicFormActivity extends StyleAnimActivity {
     private ResModelBean showRes;
 
     private ResModelDao resModelDao;
-    private DictionaryDao dictionaryDao;
+    private  DictionaryDao dictionaryDao;
 
     @Override
     public void findView() {
@@ -106,16 +106,16 @@ public class DynamicFormActivity extends StyleAnimActivity {
 
         } else {
             //有网络
-            new GetResModelVersionAPI( UserToken.getUserToken().getFormToken(), selectBean.getId(), new GetResModelVersionAPI.GetResModelVersionIF() {
+            new GetResModelVersionAPI(userInfo.getAccess_token(), selectBean.getId(), new GetResModelVersionAPI.GetResModelVersionIF() {
                 @Override
                 public void onGetResModelVersionResult(boolean isOk, int version) {
 
-                    List<DictionaryBean> data = dictionaryDao.getData();
+                    HashMap<String, List<DictionaryBean>> stringListHashMap = getlocalDicItems(resFromBeanLsit);
 
-                    if ((isOk && (version > showRes.getfVersion()))||(data==null||data.size()==0)) {//有更新获取网络数据
+                    if ((isOk && (version > showRes.getfVersion()))||(stringListHashMap==null||stringListHashMap.size()==0)) {//有更新获取网络数据
                         // 获取表单数据
 
-                        new GetResModelAPI( UserToken.getUserToken().getFormToken(), showRes.getId(), new GetResModelAPI.GetResModelIF() {
+                        new GetResModelAPI(userInfo.getAccess_token(), showRes.getId(), new GetResModelAPI.GetResModelIF() {
                             @Override
                             public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBean) {
 
@@ -157,22 +157,15 @@ public class DynamicFormActivity extends StyleAnimActivity {
                                         }
 
                                     }
-                                    map.clear();
+                                    cocalmap.clear();
 
                                     //获取字典数据
-                                    new GetDictListDataAPI( UserToken.getUserToken().getFormToken(), showType, showTypelist, new GetDictListDataAPI.GetDictListDataIF() {
+                                    new GetDictListDataAPI(userInfo.getAccess_token(), showType, showTypelist, new GetDictListDataAPI.GetDictListDataIF() {
                                         @Override
                                         public void getResDataList(boolean isOk, HashMap<String, List<DictionaryBean>> map) {
 
                                             if (isOk) {
-                                                map.putAll(map);
-
-                                                DictionaryDao dictionaryDao = new DictionaryDao(mContext);
-
-                                                for (List<DictionaryBean> value : map.values()) {
-                                                    dictionaryDao.addOrUpdate(value);
-                                                }
-
+                                                cocalmap.putAll(map);
 
                                                 if (resFromBeanLsit != null && resFromBeanLsit.size() > 0) {
                                                     formBeanList.clear();
@@ -260,7 +253,7 @@ public class DynamicFormActivity extends StyleAnimActivity {
 
                     List<DictionaryBean> dictionaryBeanList = dictionaryDao.getDataType(dongTaiFormBean.getDictText());
 
-                    map.put(dongTaiFormBean.getDictText(), dictionaryBeanList);
+                    cocalmap.put(dongTaiFormBean.getDictText(), dictionaryBeanList);
 
                 }
 
@@ -283,9 +276,130 @@ public class DynamicFormActivity extends StyleAnimActivity {
             }
         });
 
-        biaoGeRecyclerAdapter.setMap(map);
+        biaoGeRecyclerAdapter.setMap(cocalmap);
+
+
 
     }
+
+
+    /***
+     * 获取本地字典数据
+     *
+     */
+
+
+    private HashMap<String, List<DictionaryBean>> getlocalDicItems(List<DongTaiFormBean> formBeans) {
+
+        HashMap<String, List<DictionaryBean>> map = new HashMap<>();
+
+        //获取本地字典
+        for (DongTaiFormBean dongTaiFormBean : formBeans) {
+
+            if (dongTaiFormBean.getShowType().equals("list")) {
+
+                if (!Utils.isEmpty(dongTaiFormBean.getDictText())) {
+
+                    List<DictionaryBean> dictionaryBeanList = dictionaryDao.getDataType(dongTaiFormBean.getDictText());
+
+                    map.put(dongTaiFormBean.getDictText(), dictionaryBeanList);
+
+                }
+
+
+            }
+
+        }
+
+
+        return map;
+    }
+
+
+    /***
+     * 获取网络的字典数据
+     */
+
+    private void getNetDicItems() {
+
+        String showType = new String();
+
+        List<String> showTypelist = new ArrayList<>();
+
+
+        for (int i = 0; i < formBeanList.size(); i++) {
+
+            DongTaiFormBean dongTaiFormBean = formBeanList.get(i);
+
+            if (dongTaiFormBean.getShowType().equals("list")) {
+
+                if (!Utils.isEmpty(dongTaiFormBean.getDictText())) {
+                    if (!showTypelist.contains(dongTaiFormBean.getDictText())) {
+                        showTypelist.add(dongTaiFormBean.getDictText());
+                        if (showTypelist.size()==1) {
+                            showType = dongTaiFormBean.getDictText();
+                        } else {
+                            showType = showType + "," + dongTaiFormBean.getDictText();
+                        }
+                    }
+
+
+                }
+
+
+            }
+
+        }
+        cocalmap.clear();
+
+
+        //获取字典数据
+        new GetDictListDataAPI(userInfo.getAccess_token(), showType, showTypelist, new GetDictListDataAPI.GetDictListDataIF() {
+            @Override
+            public void getResDataList(boolean isOk, HashMap<String, List<DictionaryBean>> map) {
+
+                if (isOk) {
+                    map.putAll(map);
+
+                    DictionaryDao dictionaryDao = new DictionaryDao(mContext);
+
+                    for (List<DictionaryBean> value : map.values()) {
+                        dictionaryDao.addOrUpdate(value);
+                    }
+
+
+                    if (resFromBeanLsit != null && resFromBeanLsit.size() > 0) {
+                        formBeanList.clear();
+                        formBeanList.addAll(resFromBeanLsit);
+
+
+                    }
+
+                    biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList);
+
+                    recy_view.setAdapter(biaoGeRecyclerAdapter);
+
+                    recy_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
+                            if (mShouldScroll && RecyclerView.SCROLL_STATE_IDLE == newState) {
+                                mShouldScroll = false;
+                                smoothMoveToPosition(recy_view, mToPosition);
+                            }
+                        }
+                    });
+
+                    UpdateData();
+                    biaoGeRecyclerAdapter.setMap(map);
+
+                }
+
+            }
+        }).request();
+
+    }
+
 
 
     /****
@@ -293,10 +407,28 @@ public class DynamicFormActivity extends StyleAnimActivity {
      */
 
     private void UpdateData() {
+        Set<String>   keys = cocalmap.keySet();
+        for(String key :keys){
 
-        for (List<DictionaryBean> value : map.values()) {
+            List<DictionaryBean> dataType = dictionaryDao.getDataType(key);
+
+            if (dataType != null && dataType.size() > 0) {
+
+                dictionaryDao.deletByType(key);
+            }
+
+        }
+
+        for (List<DictionaryBean> value : cocalmap.values()) {
+
             dictionaryDao.addOrUpdate(value);
-         }
+
+        }
+
+
+
+
+
 
 
 
@@ -412,12 +544,12 @@ public class DynamicFormActivity extends StyleAnimActivity {
 
             case R.id.ib_back:
 
-                Intent intent2 = new Intent();
-                resFromBeanLsit.clear();
-                resFromBeanLsit.addAll(formBeanList);
-                intent2.putExtra("formBeanList", (Serializable) resFromBeanLsit);
-
-                setResult(4, intent2);
+//                Intent intent2 = new Intent();
+//                resFromBeanLsit.clear();
+//                resFromBeanLsit.addAll(formBeanList);
+//                intent2.putExtra("formBeanList", (Serializable) resFromBeanLsit);
+//
+//                setResult(4, intent2);
 
                 this.finish();
                 break;
@@ -449,7 +581,7 @@ public class DynamicFormActivity extends StyleAnimActivity {
     }
 
 
-    private HashMap<String, List<DictionaryBean>> map = new HashMap<>();
+    private HashMap<String, List<DictionaryBean>> cocalmap = new HashMap<>();
 
 
 }

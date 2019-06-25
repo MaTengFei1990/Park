@@ -72,6 +72,9 @@ public class ProjectBean implements Serializable {
 
     private int syncCount;
 
+    @DatabaseField(columnName = "netCount")
+    private int netCount;
+
 
     private List<ResDataBean> unitList; //资源列表
 
@@ -249,5 +252,13 @@ public class ProjectBean implements Serializable {
 
     public void setUserinfoid(String userinfoid) {
         this.userinfoid = userinfoid;
+    }
+
+    public int getNetCount() {
+        return netCount;
+    }
+
+    public void setNetCount(int netCount) {
+        this.netCount = netCount;
     }
 }

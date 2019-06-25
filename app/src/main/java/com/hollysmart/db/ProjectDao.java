@@ -27,7 +27,7 @@ public class ProjectDao {
     }
 
 
-     /**
+    /**
      * 修改或增加数据 列表
      */
     public boolean addOrUpdate(List<?> beans) {
@@ -67,6 +67,19 @@ public class ProjectDao {
     public ProjectBean getLastId() {
         try {
             ProjectBean jdInfo = projectDao.queryBuilder().orderBy("id", false).queryForFirst();
+            return jdInfo;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 根据ID获取
+     */
+    public ProjectBean getDataByID(String id) {
+        try {
+            ProjectBean jdInfo = projectDao.queryBuilder().where().eq("id", id).queryForFirst();
             return jdInfo;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,7 +130,7 @@ public class ProjectDao {
      */
     public List<ProjectBean> getData(String jqId ) {
         try {
-           return projectDao.queryBuilder().where()
+            return projectDao.queryBuilder().where()
                     .eq("id", jqId)
                     .query();
         } catch (SQLException e) {

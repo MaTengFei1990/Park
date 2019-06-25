@@ -5,6 +5,7 @@ import android.widget.ImageButton;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.model.LatLng;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 public interface MainView extends BaiduMap.OnMarkerClickListener,BaiduMap.OnMapClickListener,BaiduMap.OnMapStatusChangeListener {
 
     BaiduMap getBaiDuMap();
+
+    MapView getMapView();
 
     ImageButton getWeiXingView();
 

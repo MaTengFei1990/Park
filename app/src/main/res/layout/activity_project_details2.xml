@@ -70,11 +70,12 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/linearLayout12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="15dp"
+        android:visibility="gone"
         android:layout_marginTop="70dp"
         android:orientation="vertical">
 
@@ -101,6 +102,43 @@
             android:layout_marginTop="3dip"
             android:background="@color/touming"
             android:src="@mipmap/icon1_09" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/bn_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_shape"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon1_07" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="资源管理"
+                android:ems="1"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/baise"
+                android:textSize="@dimen/tv_size" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -156,7 +194,7 @@
             android:id="@+id/bn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
             android:background="@drawable/btn_shape"
             android:gravity="center"
             android:paddingRight="10dp">
@@ -174,33 +212,12 @@
                 android:textSize="@dimen/tv_size" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/bn_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@drawable/btn_shape"
-            android:gravity="center"
-            android:paddingRight="10dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/icon1_07" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="资源管理"
-                android:textColor="@color/baise"
-                android:textSize="@dimen/tv_size" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/bn_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:visibility="gone"
             android:background="@drawable/btn_shape"
             android:gravity="center"
             android:paddingRight="10dp">

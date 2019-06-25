@@ -36,6 +36,8 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.hollysmart.apis.GetNetResListAPI;
+import com.hollysmart.apis.ResDataGetAPI;
 import com.hollysmart.apis.SaveResRouateAPI;
 import com.hollysmart.beans.GPS;
 import com.hollysmart.beans.LatLngToJL;
@@ -43,6 +45,7 @@ import com.hollysmart.beans.LuXianInfo;
 import com.hollysmart.beans.PointInfo;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.dialog.SheetDialogFragment;
 import com.hollysmart.main.MainPresenter;
@@ -55,7 +58,6 @@ import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
-import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -78,7 +80,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
     BaiduMap mBaiduMap;
     MapView mMapView = null;
     boolean isFirstLoc = true;// 是否首次定位
-    BitmapDescriptor bdA = BitmapDescriptorFactory.fromResource(R.mipmap.biao_a_02);
+    BitmapDescriptor bdA = BitmapDescriptorFactory.fromResource(R.mipmap.resflag_add);
 
     @Override
     public int layoutResID() {
@@ -202,7 +204,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
         sheetDialogFragment.setSeeBarRangeListener(new SheetDialogFragment.SeeBarRangeListener() {
             @Override
             public void onChange(int progress) {
-               mainPresenter.getCoordinates(progress, mIndex);
+                mainPresenter.getCoordinates(progress, mIndex);
             }
         });
 
@@ -244,10 +246,10 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
         mOverlays = new HashMap<Integer, Overlay>();
 
         resDatalist = new ArrayList<ResDataBean>();
+
+
+        mainPresenter.drawRange(projectBean.getfRange());
         initResDataList(projectBean.getId());
-
-       mainPresenter.drawRange(projectBean.getfRange());
-
 
     }
 
@@ -312,7 +314,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     // 权限请求成功的操作
                 } else {
                     // 权限请求失败的操作
-                    Utils.showToast(mContext, "请在权限管理中设置存储权限，不然会影响正常使用");
+                    Utils.showToast(mContext, "请在权限管理中设置存储权限,不然会影响正常使用");
                 }
                 break;
             case MY_PERMISSIONS_REQUEST_CALL:
@@ -321,7 +323,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     return;
                 } else {
                     // 权限请求失败的操作
-                    Utils.showToast(mContext, "请在权限管理中设置打电话权限，不然会影响正常使用");
+                    Utils.showToast(mContext, "请在权限管理中设置打电话权限,不然会影响正常使用");
                 }
                 break;
             case MY_PERMISSIONS_REQUEST_LOCATION:
@@ -330,7 +332,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     return;
                 } else {
                     // 权限请求失败的操作
-                    Utils.showToast(mContext, "请在权限管理中设置打电话权限，不然会影响正常使用");
+                    Utils.showToast(mContext, "请在权限管理中设置打电话权限,不然会影响正常使用");
                 }
                 break;
             case REQUEST_CODE_PERMISSION_CAMERA:
@@ -351,6 +353,11 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
     @Override
     public BaiduMap getBaiDuMap() {
         return mBaiduMap;
+    }
+
+    @Override
+    public MapView getMapView() {
+        return mMapView;
     }
 
     @Override
@@ -387,7 +394,6 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
         if (mIndex != marker.getZIndex()) {
             mIndex = marker.getZIndex();
             ResDataBean resDataBean = resDatalist.get(mIndex);//要编辑的景点信息；
-            ShowResDataDialog(false, resDataBean,true);
             new CCM_Delay(300, new CCM_Delay.DelayIF() {
                 @Override
                 public void operate() {
@@ -397,6 +403,30 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     mBaiduMap.animateMapStatus(u);
                 }
             });
+
+            if (resDataBean.getFormData() == null) {
+
+
+                new ResDataGetAPI(userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
+                    @Override
+                    public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+
+                        if (isOk) {
+
+                            ShowResDataDialog(false, resDataBen, true);
+
+                        }
+
+                    }
+                }).request();
+
+            } else {
+
+                ShowResDataDialog(false, resDataBean,true);
+            }
+
+
+
         }
         return true;
     }
@@ -434,14 +464,49 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
     @Override
     public void onMapStatusChangeFinish(MapStatus arg0) {
         Mlog.d("结束 latLng = " + arg0.target.latitude);
+        arg0.getClass();
+        dingWeiDian = new LatLng(arg0.target.latitude,
+                arg0.target.longitude);
+
+
+        if (sheetDialogFragment != null) {
+
+            sheetDialogFragment.setlongitudeAndlatitude(arg0.target.longitude + "", arg0.target.latitude + "");
+        }
     }
 
     @Override
     public void onMapStatusChange(MapStatus arg0) {
-        dingWeiDian = new LatLng(arg0.target.latitude,
-                arg0.target.longitude);
+
+        zoom = arg0.zoom;
+
+        if (zoom > 15) {
+            if (!showzhiShiPai) {
+                showzhiShiPai=true;
+                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0) );
+                mainPresenter.showJuLiFlag(luxianpointsList,new LatLng(0, 0) );
+
+                initResDataList(projectBean.getId());
+            }
+
+        } else {
+            if (showzhiShiPai) {
+                showzhiShiPai = false;
+                mBaiduMap.clear();
+                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0));
+                initResDataList(projectBean.getId());
+            }
+        }
+
+        mainPresenter.drawRange(projectBean.getfRange());
+
 
     }
+
+
+    private float zoom;
+
+    private boolean showzhiShiPai = false;
 
     /**
      * 定位SDK监听函数
@@ -451,7 +516,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
         public void onReceiveLocation(BDLocation location) {
             int locType = location.getLocType();
             // map view 销毁后不在处理新接收的位置
-            if (location == null || mMapView == null||locType== BDLocation.TypeServerError||locType== BDLocation.TypeCriteriaException)
+            if (location == null || mMapView == null||locType==BDLocation.TypeServerError||locType==BDLocation.TypeCriteriaException)
                 return;
             if (location.getSatelliteNumber() != -1) {
                 if (sheetDialogFragment != null) {
@@ -472,6 +537,8 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
             if (isFirstLoc) {
                 MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
                 mBaiduMap.animateMapStatus(u);
+
+                sheetDialogFragment.setlongitudeAndlatitude(location.getLongitude() + "", location.getLatitude() + "");
 
                 PointInfo pointInfo = new PointInfo();
                 pointInfo.setLatitude(location.getLatitude());
@@ -549,12 +616,12 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                 newAddResData(dingWeiDian);
                 break;
             case R.id.bn_all:
-//                Intent intent2 = new Intent(context, ResDataManageActivity.class);
-//                intent2.putExtra("projectBean", projectBean);
-//                startActivityForResult(intent2, 2);
+                Intent intent2 = new Intent(context, ResDataManageActivity.class);
+                intent2.putExtra("projectBean", projectBean);
+                startActivityForResult(intent2, 2);
                 break;
             case R.id.bn_more:
-                mainPresenter.showMoreDialog(context);
+                mainPresenter.showMoreDialog(context,projectBean);
                 break;
             case R.id.imagbtn_startOrContinue:
                 startOrPause();
@@ -563,10 +630,10 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                 saveRoutes();
                 break;
             case R.id.imagbtn_route:
-//                Intent intent = new Intent(context, TaskTrackActivity.class);
-//                intent.putExtra("resmodelid", projectBean.getfTaskmodel());
-//                intent.putExtra("TaskId", projectBean.getId());
-//                startActivityForResult(intent,3);
+                Intent intent = new Intent(context, TaskTrackActivity.class);
+                intent.putExtra("resmodelid", "0");
+                intent.putExtra("TaskId", projectBean.getId());
+                startActivityForResult(intent,3);
                 break;
         }
     }
@@ -597,14 +664,14 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
 
 
     /***
-     * 保存线路
+     * 保存轨迹线路
      */
     private void saveRoutes() {
-        LuXianInfo info = mainPresenter.saveRoutes(projectBean,luxianpointsList, context);
+        LuXianInfo info = mainPresenter.saveRoutes("0",projectBean,luxianpointsList, context);
         route_OnOff = false;
         isNewLuXian = true;
         if (info != null) {
-            new SaveResRouateAPI(mContext, UserToken.getUserToken().getFormToken(), info, new OnNetRequestListener() {
+            new SaveResRouateAPI(mContext,userInfo.getAccess_token(), info, new OnNetRequestListener() {
                 @Override
                 public void onFinish() {
 
@@ -618,7 +685,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                 @Override
                 public void OnResult(boolean isOk, String msg, Object object) {
                     if (isOk) {
-                        Utils.showDialog(mContext, msg);
+                        Utils.showDialog(mContext, "轨迹保存成功");
                     }
 
                 }
@@ -653,6 +720,13 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     mIndex = data.getIntExtra("index",-1);
 
                     ResDataBean resDataBean = (ResDataBean) data.getSerializableExtra("resDataBean");
+
+
+                    LatLng latLng = new LatLng(new Double(resDataBean.getLatitude()), new Double(resDataBean.getLongitude()));
+
+                    MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(latLng);
+                    mBaiduMap.animateMapStatus(u);
+
                     ShowResDataDialog(false, resDataBean,true);
 
                 } else if (resultCode == 2) {
@@ -697,22 +771,12 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                             }
 
                             mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0));
+                            mainPresenter.showJuLiFlag(luxianpointsList,new LatLng(0, 0) );
+                            mainPresenter.lineShowOnCenter(luxianpointsList,new LatLng(0, 0));
                         }
 
 
                     }
-
-
-
-
-
-
-
-
-
-
-
-
 
                 }
                 break;
@@ -740,7 +804,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     } else {
 
 
-                        Utils.showDialog(mContext,"该项目下没有该分类；");
+                        Utils.showDialog(mContext,"该项目下没有该分类;");
                     }
 
 
@@ -757,17 +821,77 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
      */
     private void initResDataList(String taskid) {
         mainPresenter.getAllSpotOfArea(taskid,context, resDatalist);
-        for (int i = 0; i < resDatalist.size(); i++) {
 
-            LatLng llA = new LatLng(Double.parseDouble(resDatalist.get(i).getLatitude()),
-                    Double.parseDouble(resDatalist.get(i).getLongitude()));
-            OverlayOptions ooA = new MarkerOptions().position(llA)
-                    .icon(bdA).zIndex(i);
-            Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
-            mMarkers.put(i, marker);
-            int fanwei = resDatalist.get(i).getScope();
-            mainPresenter.getCoordinates(fanwei, i);
-        }
+        new GetNetResListAPI(userInfo, projectBean, new GetNetResListAPI.DatadicListIF() {
+            @Override
+            public void datadicListResult(boolean isOk, List<ResDataBean> netDataList) {
+
+
+                List<String> idList = new ArrayList<>();
+
+                for (ResDataBean resDataBean : resDatalist) {
+
+                    idList.add(resDataBean.getId());
+                }
+
+
+                if (isOk) {
+                    if (netDataList != null && netDataList.size() > 0) {
+                        int j=0;
+
+                        for (int i = 0; i < netDataList.size(); i++) {
+
+                            ResDataBean resDataBean = netDataList.get(i);
+
+                            if (!idList.contains(resDataBean.getId())) {
+                                String fd_resposition = resDataBean.getFd_resposition();
+
+                                if (!Utils.isEmpty(fd_resposition)) {
+
+                                    String[] split = fd_resposition.split(",");
+                                    resDataBean.setLatitude(split[0]);
+                                    resDataBean.setLongitude(split[1]);
+
+                                }
+
+
+                                resDatalist.add(resDataBean);
+
+                                j = j + 1;
+
+                                projectBean.setNetCount(10);
+                            }
+                        }
+
+                        new ProjectDao(mContext).addOrUpdate(projectBean);
+                        ProjectBean dataByID = new ProjectDao(mContext).getDataByID(projectBean.getId());
+
+                        dataByID.getNetCount();
+                    }
+                }
+
+
+                for (int i = 0; i < resDatalist.size(); i++) {
+
+                    LatLng llA = new LatLng(Double.parseDouble(resDatalist.get(i).getLatitude()),
+                            Double.parseDouble(resDatalist.get(i).getLongitude()));
+                    OverlayOptions ooA = new MarkerOptions().position(llA)
+                            .icon(bdA).zIndex(i);
+                    Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+                    mMarkers.put(i, marker);
+                    int fanwei = resDatalist.get(i).getScope();
+                    mainPresenter.getCoordinates(fanwei, i);
+                }
+
+
+
+
+
+            }
+        }).request();
+
+
+
     }
 
 
