@@ -471,8 +471,12 @@ public class DynamicFormActivity extends StyleAnimActivity  {
 
             case R.id.iv_shure:
 
-                for (int i = 0; i < formBeanList.size(); i++) {
+               labe: for (int i = 0; i < formBeanList.size(); i++) {
                     DongTaiFormBean dongTaiFormBean = formBeanList.get(i);
+
+
+                    List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+
 
                     List<cgformRuleBean> cgformRuleList = dongTaiFormBean.getCgformRuleList();
 
@@ -483,7 +487,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
                         if (!Utils.isEmpty(dongTaiFormBean.getPropertyLabel())) {
                             Matcher m = p.matcher(dongTaiFormBean.getPropertyLabel());
                             if (!m.matches()) {
-                                smoothMoveToPosition(recy_view, i);
+                                smoothMoveToPosition(recy_view, dongTaiFormBean.getPosition());
                                 dongTaiFormBean.setPropertyLabel("");
                                 break;
                             }
@@ -496,12 +500,96 @@ public class DynamicFormActivity extends StyleAnimActivity  {
                         if (Utils.isEmpty(dongTaiFormBean.getPropertyLabel())) {
 
                             dongTaiFormBean.setShowTiShi(true);
-                            smoothMoveToPosition(recy_view, i);
+                            smoothMoveToPosition(recy_view, dongTaiFormBean.getPosition());
                             break;
 
                         } else {
                             dongTaiFormBean.setShowTiShi(false);
                         }
+
+                    }
+
+
+                    if (propertys != null && propertys.size() > 0) {
+
+
+                        if (propertys != null && (!Utils.isEmpty(dongTaiFormBean.getPropertyLabel()) && dongTaiFormBean.getPropertyLabel().equals("1"))) {
+
+                            for (int j = 0; j < propertys.size(); j++) {
+
+
+                                DongTaiFormBean dongTaiFormBean1 = propertys.get(j);
+
+                                List<cgformRuleBean> cgformRuleList2 = dongTaiFormBean1.getCgformRuleList();
+
+                                if (cgformRuleList2 != null && cgformRuleList2.size() > 0) {
+                                    cgformRuleBean cgformRuleBean = cgformRuleList2.get(0);
+                                    String par = cgformRuleBean.getPattern();
+                                    Pattern p = Pattern.compile(par);
+                                    if (!Utils.isEmpty(dongTaiFormBean1.getPropertyLabel())) {
+                                        Matcher m = p.matcher(dongTaiFormBean1.getPropertyLabel());
+                                        if (!m.matches()) {
+                                            smoothMoveToPosition(recy_view, dongTaiFormBean1.getPosition());
+                                            dongTaiFormBean1.setPropertyLabel("");
+                                            break labe;
+                                        }
+
+                                    }
+                                }
+
+                                if (dongTaiFormBean1.getFieldMustInput()) {
+
+                                    if (Utils.isEmpty(dongTaiFormBean1.getPropertyLabel())) {
+
+                                        dongTaiFormBean1.setShowTiShi(true);
+                                        smoothMoveToPosition(recy_view, dongTaiFormBean1.getPosition());
+                                        break labe;
+
+                                    } else {
+                                        dongTaiFormBean1.setShowTiShi(false);
+                                    }
+
+                                }
+
+
+                            }
+                        }
+
+
+
+
+                    } else {
+
+
+                    if (cgformRuleList != null && cgformRuleList.size() > 0) {
+                        cgformRuleBean cgformRuleBean = cgformRuleList.get(0);
+                        String par = cgformRuleBean.getPattern();
+                        Pattern p = Pattern.compile(par);
+                        if (!Utils.isEmpty(dongTaiFormBean.getPropertyLabel())) {
+                            Matcher m = p.matcher(dongTaiFormBean.getPropertyLabel());
+                            if (!m.matches()) {
+                                smoothMoveToPosition(recy_view,dongTaiFormBean.getPosition());
+                                dongTaiFormBean.setPropertyLabel("");
+                                break;
+                            }
+
+                        }
+                    }
+
+                    if (dongTaiFormBean.getFieldMustInput()) {
+
+                        if (Utils.isEmpty(dongTaiFormBean.getPropertyLabel())) {
+
+                            dongTaiFormBean.setShowTiShi(true);
+                            smoothMoveToPosition(recy_view, dongTaiFormBean.getPosition());
+                            break;
+
+                        } else {
+                            dongTaiFormBean.setShowTiShi(false);
+                        }
+
+                    }
+
 
                     }
 
@@ -521,11 +609,33 @@ public class DynamicFormActivity extends StyleAnimActivity  {
                             break;
 
                         }
-                        allEdit = true;
 
                     }
 
 
+                    List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+
+                    if (propertys != null && propertys.size() > 0) {
+
+                        for (DongTaiFormBean dongTaiFormBean1 : propertys) {
+
+                            if (dongTaiFormBean1.getFieldMustInput()) {
+
+                                if (Utils.isEmpty(dongTaiFormBean1.getPropertyLabel())) {
+                                    allEdit=false;
+                                    break;
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                    }
+
+                    allEdit = true;
                 }
                 if (allEdit) {
                     Intent intent = new Intent();

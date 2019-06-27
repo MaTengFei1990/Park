@@ -118,7 +118,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                     isRefresh = true;
                     allprojectList.clear();
                     projectItemAdapter.notifyDataSetChanged();
-                    new getResTaskListAPI( UserToken.getUserToken().getFormToken(), pageNo, ProjectManagerActivity.this).request();
+                    new getResTaskListAPI( userInfo.getAccess_token(), pageNo, ProjectManagerActivity.this).request();
 
                 } else {
                     swipe.setRefreshing(false);

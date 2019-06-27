@@ -1,6 +1,7 @@
 package com.hollysmart.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,8 +20,10 @@ import com.hollysmart.park.R;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +36,8 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
     private LayoutInflater mLayoutInflater;
     private List<DongTaiFormBean> biaoGeBeanList;
     private TimePickerDialog timePickerDialog;
+
+    private List<Boolean> groupItemStatus=new ArrayList<>();
 
     private HashMap<String, List<DictionaryBean>> map = new HashMap<>();
 
@@ -50,6 +55,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
     private static int VIEWTYPE_DANHANG = 0;
     private static int VIEWTYPE_DANHANG_LIST = 1;
     private static int VIEWTYPE_DANHANG_TIME_SELECT = 2;
+    private static int VIEWTYPE_CONTENT_CHILD_LIST = 3;//包含子表单
 
     /**
      * propertyType
@@ -80,7 +86,22 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
      */
     @Override
     public int getItemViewType(int position) {
-        DongTaiFormBean bean = biaoGeBeanList.get(position);
+
+        DongTaiFormBean bean = getItemStatusByPosition(position);
+
+        if (bean == null) {
+            return 0;
+        }
+
+
+        if (bean.getShowType() == null) {
+
+            return VIEWTYPE_DANHANG;
+
+        }
+
+
+
 
         if (bean.getShowType() .equals("text") ) {
             return VIEWTYPE_DANHANG;
@@ -89,6 +110,10 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             return VIEWTYPE_DANHANG_TIME_SELECT;
         }
+//        if (bean.getShowType().equals("list") && (bean.getPropertys() != null && bean.getPropertys().size() > 0)) {
+//
+//            return VIEWTYPE_CONTENT_CHILD_LIST;
+//        }
         if (bean.getShowType().equals("list") ) {
 
             return VIEWTYPE_DANHANG_LIST;
@@ -100,7 +125,42 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return biaoGeBeanList.size();
+//        return biaoGeBeanList.size();
+
+        int ParentitemCount = 0;
+        int childItemCount = 0;
+
+
+        for (int i = 0; i < biaoGeBeanList.size(); i++) {
+
+            DongTaiFormBean dongTaiFormBean = biaoGeBeanList.get(i);
+
+            if (dongTaiFormBean.getPropertys() != null && dongTaiFormBean.getPropertys().size() > 0) {
+
+                String propertyLabel = dongTaiFormBean.getPropertyLabel();
+
+                if (propertyLabel!=null&&propertyLabel.equals("2")) {
+
+                } else {
+
+                    childItemCount = childItemCount + dongTaiFormBean.getPropertys().size();
+                }
+
+            }
+
+
+        }
+
+        ParentitemCount = biaoGeBeanList.size();
+
+
+
+
+
+
+
+
+        return ParentitemCount+childItemCount;
     }
 
     @Override
@@ -109,6 +169,8 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             return new DanhangViewHolder(mLayoutInflater.inflate(R.layout.item_biaoge_danhang, parent, false));
         } else if (viewType == VIEWTYPE_DANHANG_TIME_SELECT) {
             return new DanhangXuanZeViewHolder(mLayoutInflater.inflate(R.layout.item_biaoge_danhang_xuanze, parent, false));
+//        } else if (viewType == VIEWTYPE_CONTENT_CHILD_LIST) {
+//            return new ChildViewItemHolder(mLayoutInflater.inflate(R.layout.item_biaoge_danhang_list_content_child, parent, false));
         } else if (viewType == VIEWTYPE_DANHANG_LIST) {
             return new DanhangXuanZelistViewHolder(mLayoutInflater.inflate(R.layout.item_biaoge_danhang_list, parent, false));
         }
@@ -120,7 +182,10 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        DongTaiFormBean bean = biaoGeBeanList.get(position);
+//        DongTaiFormBean bean = biaoGeBeanList.get(position);
+
+        DongTaiFormBean bean = getItemStatusByPosition(position);
+
 
         if (holder instanceof DanhangViewHolder) {
             danhang((DanhangViewHolder) holder, bean);
@@ -163,7 +228,8 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             @Override
             public void afterTextChanged(Editable s) {
-                biaoGeBeanList.get(getLayoutPosition()).setPropertyLabel(s.toString());
+//                biaoGeBeanList.get(getLayoutPosition()).setPropertyLabel(s.toString());
+                getItemStatusByPosition(getLayoutPosition()).setPropertyLabel(s.toString());
             }
         };
     }
@@ -390,7 +456,75 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
                             DictionaryBean dictionaryBean = dictionaryBeans.get(index);
                             holder.tv_value.setText(dictionaryBean.getLabel());
 
-                            bean.setPropertyLabel(dictionaryBean.getValue());
+
+                            String oldPropertylabel = bean.getPropertyLabel();
+
+
+                            if (Utils.isEmpty(oldPropertylabel)) {
+
+                                bean.setPropertyLabel(dictionaryBean.getValue());
+
+                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
+
+
+                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
+
+                                }
+
+                            }else if (!oldPropertylabel.equals(dictionaryBean.getValue())) {
+
+                                bean.setPropertyLabel(dictionaryBean.getValue());
+
+                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("1")) {
+
+
+                                    notifyItemRangeInserted(bean.getPosition()+1,bean.getPropertys().size());
+
+                                }
+
+                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
+
+
+                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
+
+                                }
+
+
+                            }
+
+
+
+
+//                            if (Utils.isEmpty(bean.getPropertyLabel())) {
+//
+//                                bean.setPropertyLabel(dictionaryBean.getValue());
+//
+//                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
+//
+//
+//                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
+//
+//                                }
+//                            }else {
+//                                bean.setPropertyLabel(dictionaryBean.getValue());
+//
+//                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("1")) {
+//
+//
+//                                    notifyItemRangeInserted(bean.getPosition()+1,bean.getPropertys().size());
+//
+//                                }
+//
+//                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
+//
+//
+//                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
+//
+//                                }
+//
+//                            }
+
+
                         }
                     }).showPopuWindow_DictListData(mContext,0, dictionaryBeans.get(0).getDescription(),map.get(bean.getDictText()));
 
@@ -462,5 +596,124 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
 
+
+
+
+
+
+    private DongTaiFormBean getItemStatusByPosition(int position) {
+
+        int countss=0;
+
+
+        for (int i = 0; i < biaoGeBeanList.size(); i++) {
+
+
+            DongTaiFormBean dongTaiFormBean = biaoGeBeanList.get(i);
+
+            String propertyLabel = dongTaiFormBean.getPropertyLabel();
+
+            if (propertyLabel != null && propertyLabel.equals("2")) {
+
+                    dongTaiFormBean.setPosition(countss);
+                    dongTaiFormBean.setGroupindex(i);
+                    countss++;
+
+            } else {
+
+                List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+
+                if (propertys != null && propertys.size() > 0) {
+                    dongTaiFormBean.setPosition(countss);
+                    countss++;
+
+                    for (int j = 0; j < propertys.size(); j++) {
+
+                        DongTaiFormBean dongTaiFormBean1 = propertys.get(j);
+
+                        dongTaiFormBean1.setGroupindex(i);
+                        dongTaiFormBean1.setPosition(countss);
+                        countss++;
+
+                    }
+
+
+                } else {
+
+
+                    dongTaiFormBean.setPosition(countss);
+                    dongTaiFormBean.setGroupindex(i);
+                    countss++;
+
+                }
+
+            }
+
+
+
+        }
+
+
+        for (int i = 0; i < biaoGeBeanList.size(); i++) {
+
+
+            DongTaiFormBean dongTaiFormBean = biaoGeBeanList.get(i);
+
+            List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+
+
+            String propertyLabel = dongTaiFormBean.getPropertyLabel();
+
+            if (propertyLabel != null && propertyLabel.equals("2")) {
+
+
+                if (position == dongTaiFormBean.getPosition()) {
+                    return dongTaiFormBean;
+                }
+
+
+            }else {
+
+                if (propertys != null && propertys.size() > 0) {
+
+                    if (position == dongTaiFormBean.getPosition()) {
+                        return dongTaiFormBean;
+                    }
+
+                    for (int j = 0; j < propertys.size(); j++) {
+
+                        DongTaiFormBean dongTaiFormBean1 = propertys.get(j);
+
+                        if (position == dongTaiFormBean1.getPosition()) {
+                            return dongTaiFormBean1;
+                        }
+
+                    }
+
+
+                } else {
+
+                    if (position == dongTaiFormBean.getPosition()) {
+                        return dongTaiFormBean;
+                    }
+
+
+                }
+            }
+
+
+
+
+        }
+
+
+
+
+    return null;
+
+
+
+
+    }
 
 }

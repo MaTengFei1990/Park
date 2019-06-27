@@ -31,16 +31,17 @@
             android:id="@+id/iv_del"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+			android:visibility="gone"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="5dp"
             android:src="@mipmap/icon2_01" />
         <ImageView
-            android:id="@+id/iv_more"
+            android:id="@+id/ll_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
-            android:src="@mipmap/icon_gengduo" />
+            android:src="@mipmap/icon_cancel" />
 
     </RelativeLayout>
 
@@ -103,6 +104,7 @@
 				android:layout_height="35dp"
 				android:textColor="@color/heise"
 				android:paddingLeft="5dp"
+				android:hint="请输入编号如：双秀公园-1"
 				android:background="@drawable/bg_toming_huibian"
 				android:textSize="@dimen/tv_size_small" />
 
@@ -141,6 +143,7 @@
             android:layout_marginLeft="10dp"
             android:textColor="@color/heise"
 			android:paddingLeft="5dp"
+			android:hint="请输入名称如：东门出租房"
 			android:background="@drawable/bg_toming_huibian"
             android:textSize="@dimen/tv_size_small" />
     </LinearLayout>
@@ -370,10 +373,11 @@
             android:background="@color/baise" />
 
         <LinearLayout
-            android:id="@+id/ll_cancel"
+            android:id="@+id/ll_cancel1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+			android:visibility="gone"
             android:gravity="center"
             android:padding="5dp" >
 
@@ -389,6 +393,45 @@
                 android:text="取消添加"
                 android:textColor="@color/baise"
                 android:textSize="@dimen/tv_size" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_more"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="5dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_gengduo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="下一步"
+                android:textColor="@color/baise"
+                android:textSize="@dimen/tv_size" />
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="("
+				android:textColor="@color/baise"
+				android:textSize="@dimen/text_xiao" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="完整表单"
+                android:textColor="@color/hongse_text"
+                android:textSize="@dimen/text_xiao" />
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text=")"
+				android:textColor="@color/baise"
+				android:textSize="@dimen/text_xiao" />
         </LinearLayout>
     </LinearLayout>
 

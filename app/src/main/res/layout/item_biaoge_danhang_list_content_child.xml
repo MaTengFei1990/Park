@@ -9,8 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="5dp">
+        android:layout_height="50dp"
+        android:padding="10dp">
 
 
         <TextView
@@ -63,6 +63,12 @@
             android:textColor="@color/hongse_text"
             android:textSize="@dimen/text_zhong" />
     </RelativeLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/child_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"/>
 
     <View
         android:layout_width="match_parent"

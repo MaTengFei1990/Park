@@ -260,7 +260,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         MyLinearLayoutForListView ll_jingDianFenLei = view.findViewById(R.id.ll_jingDianFenLei);
         MyLinearLayoutForListView ll_jingdian_pic = view.findViewById(R.id.ll_jingdian_pic);
         ImageButton bt_luyin = view.findViewById(R.id.bt_luyin);
-        ImageView iv_more = view.findViewById(R.id.iv_more);
+        LinearLayout iv_more = view.findViewById(R.id.ll_more);
         ImageView iv_del = view.findViewById(R.id.iv_del);
         tv_recordCount = view.findViewById(R.id.tv_recordCount);
 

@@ -77,6 +77,14 @@ public class DongTaiFormBean implements Serializable {
      */
     private List<cgformRuleBean> cgformRuleList;
 
+    private List<DongTaiFormBean> propertys;
+
+
+    private int Groupindex;
+    private int childindex;
+
+    private int position;
+
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
@@ -244,5 +252,39 @@ public class DongTaiFormBean implements Serializable {
 
     public void setShowTiShi(boolean showTiShi) {
         this.showTiShi = showTiShi;
+    }
+
+    public List<DongTaiFormBean> getPropertys() {
+        return propertys;
+    }
+
+    public void setPropertys(List<DongTaiFormBean> propertys) {
+        this.propertys = propertys;
+    }
+
+
+    public int getGroupindex() {
+        return Groupindex;
+    }
+
+    public void setGroupindex(int groupindex) {
+        Groupindex = groupindex;
+    }
+
+    public int getChildindex() {
+        return childindex;
+    }
+
+    public void setChildindex(int childindex) {
+        this.childindex = childindex;
+    }
+
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }
