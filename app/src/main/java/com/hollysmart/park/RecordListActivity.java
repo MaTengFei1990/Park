@@ -3,6 +3,8 @@ package com.hollysmart.park;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.hollysmart.adapter.RecordListAdapter;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.SoundInfo;
+import com.hollysmart.park.R;
 import com.hollysmart.record.RecordAudioButton;
 import com.hollysmart.record.RecordVoicePopWindow;
 import com.hollysmart.style.StyleAnimActivity;
@@ -52,13 +55,14 @@ public class RecordListActivity extends StyleAnimActivity {
     private RecordAudioButton btn_record;
 
     private File mAudioDir;
-    private ProjectBean projectBean;
 
     private RecordVoicePopWindow mRecordVoicePopWindow;
     private List<SoundInfo> soundInfoList = new ArrayList<>();
     private List<SoundInfo> netaudios = new ArrayList<>();
 
     private RecordListAdapter mAdapter;
+
+    private List<SoundInfo> deletlist;
 
     private String TempSoundfile; //临时文件的路径
 
@@ -77,12 +81,13 @@ public class RecordListActivity extends StyleAnimActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this );
         recycler_record.setLayoutManager(layoutManager);
+        deletlist = new ArrayList<>();
 
     }
 
 
     private void initVoice() {
-        mAudioDir = new File(Environment.getExternalStorageDirectory(), AUDIO_DIR_NAME);
+        mAudioDir = new File(AUDIO_DIR_NAME);
         if (!mAudioDir.exists()) {
             mAudioDir.mkdirs();
         }
@@ -194,7 +199,7 @@ public class RecordListActivity extends StyleAnimActivity {
 
             File[] files = mAudioDir.listFiles();
             for (File file : files) {
-                if (file.getAbsolutePath().endsWith("mp3")) {
+                if (file.getAbsolutePath().endsWith(".mp3")) {
 
                     SoundInfo soundInfo = new SoundInfo();
                     soundInfo.setFilePath(file.getAbsolutePath());
@@ -209,53 +214,53 @@ public class RecordListActivity extends StyleAnimActivity {
 
     private void setAdapter() {
         if (mAdapter == null) {
-            mAdapter = new RecordListAdapter(this, soundInfoList);
+            mAdapter = new RecordListAdapter(this, soundInfoList,deletlist);
 
-            mAdapter.setMyOnItemClickListener(new RecordListAdapter.MyOnItemClickListener() {
-                @Override
-                public void myClick(int positon) {
-                    AudioPlayManager.getInstance().stopPlay();
-                    SoundInfo item = soundInfoList.get(positon);
-
-                    if (!Utils.isEmpty(item.getAudioUrl())) {
-                        AudioPlayManager.getInstance().startPlayNetData(mContext, Values.SERVICE_URL_ADMIN_FORM+ item.getAudioUrl(), new IAudioPlayListener() {
-                            @Override
-                            public void onStart(Uri var1) {
-                            }
-
-                            @Override
-                            public void onStop(Uri var1) {
-                            }
-
-                            @Override
-                            public void onComplete(Uri var1) {
-                            }
-                        });
-
-
-                    } else if (Utils.isEmpty(item.getFilePath())) {
-
-                        Uri audioUri = Uri.fromFile(new File(item.getFilePath()));
-
-                        Log.e("LQR", audioUri.toString());
-                        AudioPlayManager.getInstance().startPlay(mContext, audioUri, new IAudioPlayListener() {
-                            @Override
-                            public void onStart(Uri var1) {
-                            }
-
-                            @Override
-                            public void onStop(Uri var1) {
-                            }
-
-                            @Override
-                            public void onComplete(Uri var1) {
-                            }
-                        });
-
-                    }
-
-                }
-            });
+//            mAdapter.setMyOnItemClickListener(new RecordListAdapter.MyOnItemClickListener() {
+//                @Override
+//                public void myClick(int positon) {
+//                    AudioPlayManager.getInstance().stopPlay();
+//                    SoundInfo item = soundInfoList.get(positon);
+//
+//                    if (!Utils.isEmpty(item.getAudioUrl())) {
+//                        AudioPlayManager.getInstance().startPlayNetData(mContext, Values.SERVICE_URL_ADMIN+ item.getAudioUrl(), new IAudioPlayListener() {
+//                            @Override
+//                            public void onStart(Uri var1) {
+//                            }
+//
+//                            @Override
+//                            public void onStop(Uri var1) {
+//                            }
+//
+//                            @Override
+//                            public void onComplete(Uri var1) {
+//                            }
+//                        });
+//
+//
+//                    } else if (!Utils.isEmpty(item.getFilePath())) {
+//
+//                        Uri audioUri = Uri.fromFile(new File(item.getFilePath()));
+//
+//                        Log.e("LQR", audioUri.toString());
+//                        AudioPlayManager.getInstance().startPlay(mContext, audioUri, new IAudioPlayListener() {
+//                            @Override
+//                            public void onStart(Uri var1) {
+//                            }
+//
+//                            @Override
+//                            public void onStop(Uri var1) {
+//                            }
+//
+//                            @Override
+//                            public void onComplete(Uri var1) {
+//                            }
+//                        });
+//
+//                    }
+//
+//                }
+//            });
 
             recycler_record.setAdapter(mAdapter);
         } else
@@ -281,7 +286,6 @@ public class RecordListActivity extends StyleAnimActivity {
     @Override
     public void init() {
         requestPermisson();
-        projectBean = (ProjectBean) getIntent().getSerializableExtra("projectbean");
         TempSoundfile =  getIntent().getStringExtra("TempSoundfile");
         netaudios = (List<SoundInfo>) getIntent().getSerializableExtra("netaudios");
 
@@ -374,7 +378,7 @@ public class RecordListActivity extends StyleAnimActivity {
                 int k=filename.lastIndexOf("-");
                 suf = filename.substring(k+1,j);//得到文件后缀
 
-                    soundpathList.add(files[i].getName());//对于文件才把它加到list中
+                soundpathList.add(files[i].getName());//对于文件才把它加到list中
             }
 
         }
@@ -437,13 +441,14 @@ public class RecordListActivity extends StyleAnimActivity {
 //
 //    }
 
-        @Override
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
             case R.id.ib_back:
                 Intent intent1 = new Intent();
                 intent1.putExtra("recordlist", (Serializable) soundInfoList);
+                intent1.putExtra("deletList", (Serializable) deletlist);
                 setResult(5,intent1);
                 finish();
 
@@ -452,6 +457,7 @@ public class RecordListActivity extends StyleAnimActivity {
 
                 Intent intent = new Intent();
                 intent.putExtra("recordlist", (Serializable) soundInfoList);
+                intent.putExtra("deletList", (Serializable) deletlist);
                 setResult(5,intent);
                 finish();
 

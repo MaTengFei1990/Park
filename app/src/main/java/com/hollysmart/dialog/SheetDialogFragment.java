@@ -150,7 +150,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
     private File TempSoundfile;  // 音频的临时文件夹
     private File creenetSoundFile;  // 音频的临时文件夹
 
-    private String tempPicFilePath= Values.SDCARD_FILE("."+Values.SDCARD_PIC) ;
+    private String tempPicFilePath= Values.SDCARD_FILE(Values.SDCARD_PIC) ;
 
 
     private List<SoundInfo> deletlist = new ArrayList<>();
