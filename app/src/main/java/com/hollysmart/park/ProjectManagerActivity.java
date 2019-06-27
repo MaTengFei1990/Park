@@ -25,7 +25,6 @@ import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
 import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.beans.StateBean;
-import com.hollysmart.beans.UserInfoBean;
 import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.ResDataDao;
 import com.hollysmart.db.ResModelDao;
@@ -35,7 +34,6 @@ import com.hollysmart.listener.TextClickListener;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Utils;
-import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
 import java.io.File;
@@ -63,7 +61,6 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
 
 
-
     public static final int  ALL_PROJECT_TYPE=0;     //全部
 
     public static final int  WAITING_PROJECT_TYPE=1; //待办
@@ -71,6 +68,12 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
     public static final int  BEING_PROJECT_TYPE=2;   //进行中
 
     public static final int  FINISH_PROJECT_TYPE=3;  //已完成
+
+    public static final int ADD_PROJECT_FLAG=0x11;
+    public static final int ADD_PROJECT_FLAG_OK=0x12;
+
+    public static final int ADD_RESDATA_FLAG=0x13;
+    public static final int ADD_RESDATA_FLAG_OK=0x14;
 
     private LoadingProgressDialog lpd;
 
@@ -85,6 +88,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
     @Override
     public void findView() {
         requestPermisson();
+        isLogin();
         setLpd();
 
         findViewById(R.id.iBtn).setOnClickListener(this);
@@ -166,8 +170,8 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         isLogin();
 
         map = (Map<String, String>) getIntent().getSerializableExtra("exter");
-        
-        
+
+
         newAddProject();
 
 
@@ -269,6 +273,9 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                 break;
             case R.id.iv_search:
                 Intent searchintent = new Intent(getApplicationContext(), SearchActivity.class);
+
+//                searchintent.putExtra("alllist", (Serializable) projectShowList);
+
                 startActivity(searchintent);
                 break;
             case R.id.iBtn:
@@ -369,7 +376,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
             projectDao.deletByProjectId(delinfo.getId());
         }
 
-         new RestaskDeleteAPI( UserToken.getUserToken().getFormToken(), delList, new RestaskDeleteAPI.RestaskDeleteIF() {
+        new RestaskDeleteAPI(userInfo.getAccess_token(), delList, new RestaskDeleteAPI.RestaskDeleteIF() {
             @Override
             public void onRestaskDeleteResult(boolean isOk, String msg) {
 
@@ -494,7 +501,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
     private void initListData() {
 
-        projectItemAdapter = new ProjectItemAdapter(this,null,lpd, projectShowList, R.layout.adapter_slide);
+        projectItemAdapter = new ProjectItemAdapter(this,userInfo,lpd, projectShowList, R.layout.adapter_slide);
 
         rcy_view.setAdapter(projectItemAdapter);
 
@@ -507,6 +514,12 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                     findViewById(R.id.ll_bottom).setVisibility(View.VISIBLE);
                 }
 
+            }
+        });
+        projectItemAdapter.setRefreshDataChangeListener(new ProjectItemAdapter.RefreshDataChangeListener() {
+            @Override
+            public void refreshDataChange() {
+                notifyDataChange(CurrentState);
             }
         });
         pageNo=1;
@@ -562,11 +575,27 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
         for (ProjectBean projectBean : allprojectList) {
 
+            int netCount = 0;
+            ProjectBean data = projectDao.getDataByID(projectBean.getId());
+            if (data != null) {
+                netCount = data.getNetCount();
+            }
+
             List<ResDataBean> syncData = resDataDao.getSyncData(projectBean.getId());
             List<ResDataBean> allResData = resDataDao.getData(projectBean.getId());
+            if (syncData == null) {
+                projectBean.setAllConunt(0+netCount);
 
-            projectBean.setAllConunt(allResData.size());
-            projectBean.setSyncCount(syncData.size());
+            } else {
+                projectBean.setAllConunt(allResData.size()+netCount);
+            }
+            if (allResData == null) {
+                projectBean.setSyncCount(0+netCount);
+            } else {
+                projectBean.setSyncCount(syncData.size()+netCount);
+            }
+
+
 
         }
 
@@ -609,6 +638,26 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
 
 
+    /**
+     * 判断用户登录状态，登录获取用户信息
+     */
+    private UserInfo userInfo;
+
+    public boolean isLogin() {
+        if (userInfo != null)
+            return true;
+        try {
+            String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
+            Object obj = ACache.get(new File(userPath)).getAsObject(Values.CACHE_USERINFO);
+            if (obj != null) {
+                userInfo = (UserInfo) obj;
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
     private int pageNo ;
@@ -695,26 +744,39 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
     }
 
 
-    /**
-     * 判断用户登录状态，登录获取用户信息
-     */
-    private UserInfo userInfo;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    public boolean isLogin() {
-        if (userInfo != null)
-            return true;
-        try {
-            String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
-            Object obj = ACache.get(new File(userPath)).getAsObject(Values.CACHE_USERINFO);
-            if (obj != null) {
-                userInfo = (UserInfo) obj;
-                return true;
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        switch (requestCode) {
+
+            case ADD_PROJECT_FLAG:
+
+
+                if (resultCode == ADD_PROJECT_FLAG_OK) {
+
+                    if (CurrentState == ALL_PROJECT_TYPE) {
+                        pageNo = 1;
+                        isLoadMore = false;
+                        isRefresh = true;
+                        allprojectList.clear();
+                        projectItemAdapter.notifyDataSetChanged();
+                        new getResTaskListAPI(userInfo.getAccess_token(), map.get("id"),pageNo, ProjectManagerActivity.this).request();
+
+                    } else {
+                        swipe.setRefreshing(false);
+                    }
+
+                }
+
+
+                break;
+
+            case ADD_RESDATA_FLAG:
+                notifyDataChange(CurrentState);
+                break;
         }
-        return false;
-    }
 
+    }
 }
 

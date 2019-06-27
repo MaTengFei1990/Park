@@ -32,25 +32,31 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hollysmart.apis.RestaskDeleteAPI;
+import com.hollysmart.apis.SaveResDataAPI;
 import com.hollysmart.apis.SaveResTaskAPI;
+import com.hollysmart.apis.UpLoadFormPicAPI;
+import com.hollysmart.apis.UpLoadSoundAPI;
+import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.LuXianInfo;
 import com.hollysmart.beans.PointInfo;
 import com.hollysmart.beans.ProjectBean;
-import com.hollysmart.beans.UserInfoBean;
+import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.beans.SoundInfo;
+import com.hollysmart.db.JDPicDao;
+import com.hollysmart.db.JDSoundDao;
 import com.hollysmart.db.LuXianDao;
 import com.hollysmart.db.ProjectDao;
+import com.hollysmart.db.ResDataDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.dialog.LoadingProgressDialog;
-//import com.hollysmart.park.NewAddProjectActivity;
 import com.hollysmart.park.ProjectDetails2Activity;
 import com.hollysmart.park.R;
-import com.hollysmart.service.SubmitFormService;
 import com.hollysmart.tools.JSONTool;
 import com.hollysmart.tools.KMLTool;
-import com.hollysmart.utils.CCM_DateTime;
 import com.hollysmart.utils.Utils;
+import com.hollysmart.utils.taskpool.OnNetRequestListener;
+import com.hollysmart.utils.taskpool.TaskPool;
 import com.hollysmart.utils.zip.XZip;
-import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 import com.qiniu.android.common.FixedZone;
 import com.qiniu.android.http.ResponseInfo;
@@ -66,6 +72,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.hollysmart.park.ProjectManagerActivity.ADD_RESDATA_FLAG;
+
 /**
  * Created by Lenovo on 2019/4/9.
  */
@@ -75,6 +85,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
 
     private List<PointInfo> pointInfos=new ArrayList<>();
 
+    private UserInfo userInfo;
 
     private LoadingProgressDialog lpd;
 
@@ -107,10 +118,12 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
     public final int LOADING_END = 3;
 
     public LongclickListener longclickListener;
+    public RefreshDataChangeListener refreshDataChangeListener;
 
-    public ProjectItemAdapter(Context context, UserInfoBean userInfo, LoadingProgressDialog lpd, List<ProjectBean> datas, int layoutId) {
+    public ProjectItemAdapter(Context context, UserInfo userInfo, LoadingProgressDialog lpd, List<ProjectBean> datas, int layoutId) {
         super(context, datas, layoutId);
         this.context=context;
+        this.userInfo=userInfo;
         this.projectBeanList=datas;
         this.lpd=lpd;
         manager = new SlideManager();
@@ -134,14 +147,17 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
         this.longclickListener = longclickListener;
     }
 
+    public RefreshDataChangeListener getRefreshDataChangeListener() {
+        return refreshDataChangeListener;
+    }
+
+    public void setRefreshDataChangeListener(RefreshDataChangeListener refreshDataChangeListener) {
+        this.refreshDataChangeListener = refreshDataChangeListener;
+    }
+
     @Override
     public int getItemViewType(int position) {
-
-        if (position + 1 == getItemCount()) {
-            return TYPE_FOOTER;
-        } else {
-            return TYPE_ITEM;
-        }
+        return TYPE_ITEM;
     }
 
     @Override
@@ -150,7 +166,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
             return 0;
         } else {
 
-            return projectBeanList.size() + 1;
+            return projectBeanList.size();
         }
 
     }
@@ -169,7 +185,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
     @Override
     public void onBindViewHolder(CommonHolder holder, int position) {
 
-         if (holder instanceof FootViewHolder) {
+        if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             switch (loadState) {
                 case LOADING: // 正在加载
@@ -221,6 +237,19 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
         if ("3".equals(item.getfState())) {
             holder.setText(R.id.tv_state, "已完成");
             holder.setImageResource(R.id.iv_state, R.mipmap.icon_wancheng);
+        }
+
+
+        if (!Utils.isEmpty(userInfo.getRestaskDelete()) && userInfo.getRestaskDelete().equals("restask:delete")) {
+            holder.getView(R.id.tv_delete).setVisibility(VISIBLE);
+        } else {
+            holder.getView(R.id.tv_delete).setVisibility(GONE);
+        }
+
+        if (!Utils.isEmpty(userInfo.getRestaskFinish()) && userInfo.getRestaskFinish().equals("restask:finish")) {
+            holder.getView(R.id.tv_finish).setVisibility(VISIBLE);
+        } else {
+            holder.getView(R.id.tv_finish).setVisibility(GONE);
         }
 
 
@@ -331,20 +360,76 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
             @Override
             public void onClick(View v) {
 
-                KMLTool kmlTool = new KMLTool(mContext);
-                String fileName = item.getfTaskname() + new CCM_DateTime().Date_No() + ".kml";
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+                builder.setTitle("确认上传项目？");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        lpd.setMessage("上传中...");
+                        lpd.show();
 
-                boolean kml = kmlTool.createKML(item.getId(), Values.SDCARD_FILE(Values.SDCARD_FILE) + "/"
-                        + item.getfTaskname(), fileName, pointInfos);
+                        KMLTool kmlTool = new KMLTool(mContext);
+                        biaodian(item);
+                        if (kmlTool.createKML(item.getId(),
+                                Values.SDCARD_FILE(Values.SDCARD_FILE) + "/"
+                                        + item.getfTaskname(), item.getfTaskname(), pointInfos)) {
+                            try {
+                                XZip.ZipFolder(
+                                        Values.SDCARD_FILE(Values.SDCARD_FILE)
+                                                + "/"
+                                                + item.getfTaskname(),
+                                        Values.SDCARD_FILE(Values.SDCARD_FILE)
+                                                + "/"
+                                                + item.getfTaskname()
+                                                + ".zip");
+                            } catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            if (new JSONTool(mContext).createJSON(
+                                    item.getId(),
+                                    item.getfTaskname(),
+                                    item.getCreateDate(),
+                                    Values.SDCARD_FILE(Values.SDCARD_FILE) + "/"
+                                            + item.getfTaskname())) {
+                                Toast.makeText(mContext, "导出成功", Toast.LENGTH_LONG)
+                                        .show();
 
-                if (kml) {
+                            } else {
+                                Toast.makeText(mContext, "JSON导出失败",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(mContext, "KML导出失败", Toast.LENGTH_LONG)
+                                    .show();
+                        }
 
-                    upLoadToqiNiu(new File(Values.SDCARD_FILE(Values.SDCARD_FILE) + "/"
-                            + item.getfTaskname()+"/"+fileName));
-                } else {
-                    Toast.makeText(mContext, "KML导出失败", Toast.LENGTH_LONG)
-                            .show();
-                }
+                        File file = new File(Values.SDCARD_FILE(Values.SDCARD_FILE)
+                                + "/" + item.getfTaskname() + ".zip");
+                        System.out.println("file " + file.exists());
+                        if (file.exists()) {
+                            upLoadToqiNiu(file);
+
+                        } else {
+                            Utils.showToast(mContext,"分享失败，文件不存在");
+                        }
+
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.create().show();
+
+
+
+
+
+
+
+
 
 
 
@@ -370,7 +455,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
                     public void onClick(DialogInterface dialog, int which) {
                         slSlide.close();
 
-                        new RestaskDeleteAPI( UserToken.getUserToken().getFormToken(), delList, new RestaskDeleteAPI.RestaskDeleteIF() {
+                        new RestaskDeleteAPI(userInfo.getAccess_token(), delList, new RestaskDeleteAPI.RestaskDeleteIF() {
                             @Override
                             public void onRestaskDeleteResult(boolean isOk, String msg) {
 
@@ -422,7 +507,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
                 biaodian(item);
                 if (kmlTool.createKML(item.getId(),
                         Values.SDCARD_FILE(Values.SDCARD_FILE) + "/"
-                                + item.getfTaskname(), item.getfTaskname(), pointInfos)) {
+                                + item.getfTaskname(), item.getfTaskname()+".kml", pointInfos)) {
                     try {
                         XZip.ZipFolder(
                                 Values.SDCARD_FILE(Values.SDCARD_FILE)
@@ -473,31 +558,42 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
         });
 
 
-//        // 修改
-//        holder.setViewOnClickListener(R.id.tv_edit, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, NewAddProjectActivity.class);
-//                intent.putExtra("projectBean", item);
-//                intent.putExtra("editFlag", 2);
-//                mContext.startActivity(intent);
-//            }
-//        });
         // 完成
         holder.setViewOnClickListener(R.id.tv_finish, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                item.setfState("3");
 
-                new SaveResTaskAPI( UserToken.getUserToken().getFormToken(), item, new SaveResTaskAPI.SaveResTaskIF() {
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+                builder.setTitle("确认完成该项目？");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
-                        if (isOk) {
-                            Utils.showDialog(mContext,"项目已完成");
-                        }
+                    public void onClick(DialogInterface dialog, int which) {
+                        item.setfState("3");
+
+                        new SaveResTaskAPI(userInfo.getAccess_token(), item, new SaveResTaskAPI.SaveResTaskIF() {
+                            @Override
+                            public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
+                                if (isOk) {
+                                    Utils.showDialog(mContext,"项目已完成");
+
+                                    if (refreshDataChangeListener != null) {
+                                        refreshDataChangeListener.refreshDataChange();
+                                    }
+                                }
+
+                            }
+                        }).request();
+
 
                     }
-                }).request();
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.create().show();
+
 
 
             }
@@ -507,9 +603,30 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
         holder.setViewOnClickListener(R.id.tv_tongbu, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, SubmitFormService.class);
-                intent.putExtra("type", SubmitFormService.TYPE_BIANLI);
-                mContext.startService(intent);
+
+
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+                builder.setTitle("确认同步该项目？");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        submit();
+
+
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.create().show();
+
+
+
+
+
 
             }
         });
@@ -541,7 +658,9 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
                         intent.putExtra("projectId", item.getId());
                         intent.putExtra("classifyIds", item.getfTaskmodel());
                         intent.putExtra("projectBean", item);
-                        mContext.startActivity(intent);
+
+                        Activity activity = (Activity) mContext;
+                        activity.startActivityForResult(intent, ADD_RESDATA_FLAG);
                     }
 
                 }
@@ -551,6 +670,89 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
 
             }
         });
+    }
+
+
+    /***
+     * 同步
+     */
+
+    private void submit() {
+
+        final ResDataDao formDao = new ResDataDao(mContext);
+        JDPicDao jdPicDao = new JDPicDao(mContext);
+        JDSoundDao jdSoundDao = new JDSoundDao(mContext);
+        final TaskPool taskPool = new TaskPool();
+
+        OnNetRequestListener listener= new OnNetRequestListener() {
+            @Override
+            public void onFinish() {
+                lpd.cancel();
+            }
+
+            @Override
+            public void OnNext() {
+                taskPool.execute(this);
+            }
+
+            @Override
+            public void OnResult(boolean isOk, String msg, Object object) {
+                if (isOk) {
+                    ResDataBean bean = (ResDataBean) object;
+                    if (bean != null) {
+                        formDao.addOrUpdate(bean);
+                        taskPool.execute(this);
+
+                        if (refreshDataChangeListener != null) {
+                            refreshDataChangeListener.refreshDataChange();
+                        }
+
+
+                    }
+                } else {
+                    Utils.showToast(mContext,"同步失败");
+                }
+            }
+        };
+
+        List<ResDataBean> formBeens = formDao.getUnUpLoadDataList();
+
+        if (formBeens != null && formBeens.size() == 0) {
+            Utils.showToast(mContext,"暂无未同步的资源");
+            return;
+        }
+        for (ResDataBean bean : formBeens) {
+
+            List<JDPicInfo> picList = jdPicDao.getDataByJDId(bean.getId());
+
+            for (JDPicInfo jdPicInfo : picList) {
+
+                if (!Utils.isEmpty(jdPicInfo.getFilePath()))
+                    taskPool.addTask(new UpLoadFormPicAPI(userInfo.getAccess_token(), jdPicInfo, listener));
+            }
+            List<SoundInfo> soundInfoList = jdSoundDao.getDataByJDId(bean.getId());
+
+            for (SoundInfo soundInfo : soundInfoList) {
+
+                if (!Utils.isEmpty(soundInfo.getFilePath()))
+                    taskPool.addTask(new UpLoadSoundAPI(userInfo.getAccess_token(), soundInfo, listener));
+            }
+
+            bean.setPic(picList);
+            bean.setAudio(soundInfoList);
+
+
+
+
+            taskPool.addTask(new SaveResDataAPI(userInfo.getAccess_token(), bean, listener));
+
+
+
+        }
+        lpd.setMessage("正在同步资源，请稍等。。。");
+        lpd.show();
+        taskPool.execute(listener);
+
     }
 
 
@@ -575,9 +777,12 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
                     public void complete(String key, ResponseInfo info, JSONObject res) {
                         //res包含hash、key等信息，具体字段取决于上传策略的设置
                         if(info.isOK()) {
-                            Log.i("qiniu", "Upload Success");
+                            Utils.showDialog(mContext,"上传成功！");
+                            lpd.cancel();
                         } else {
                             Log.i("qiniu", "Upload Fail");
+                            Utils.showDialog(mContext,"上传失败！");
+                            lpd.cancel();
                             //如果失败，这里可以把info信息上报自己的服务器，便于后面分析上传错误原因
                         }
                         Log.i("qiniu", key + ",\r\n " + info + ",\r\n " + res);
@@ -799,5 +1004,10 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
 
     public interface LongclickListener{
         void longclick();
+    }
+
+
+    public interface RefreshDataChangeListener{
+        void refreshDataChange();
     }
 }

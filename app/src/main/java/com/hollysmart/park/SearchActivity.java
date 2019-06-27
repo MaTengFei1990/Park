@@ -128,7 +128,7 @@ public class SearchActivity extends StyleAnimActivity {
     /**
      * 判断用户登录状态，登录获取用户信息
      */
-    private UserInfoBean userInfo;
+    private UserInfo userInfo;
 
     public boolean isLogin() {
         if (userInfo != null)
@@ -137,7 +137,7 @@ public class SearchActivity extends StyleAnimActivity {
             String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
             Object obj = ACache.get(new File(userPath)).getAsObject(Values.CACHE_USERINFO);
             if (obj != null) {
-                userInfo = (UserInfoBean) obj;
+                userInfo = (UserInfo) obj;
                 return true;
             }
         }catch (Exception e){
