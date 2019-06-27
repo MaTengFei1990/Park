@@ -211,7 +211,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
     public void setlongitudeAndlatitude(String longitude, String latitude) {
 
         if (tv_jingdianWeizi != null) {
-            tv_jingdianWeizi.setText(saveEightLevel(longitude) + "," + saveEightLevel(latitude));
+            tv_jingdianWeizi.setText("经:"+saveEightLevel(longitude) + ",纬:" + saveEightLevel(latitude));
 
         }
     }
@@ -307,7 +307,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         if (dingWeiDian != null) {
 
-            tv_jingdianWeizi.setText(saveEightLevel(dingWeiDian.longitude+"") + "," + saveEightLevel(dingWeiDian.latitude+""));
+            tv_jingdianWeizi.setText("经:"+saveEightLevel(dingWeiDian.longitude+"") + ",纬:" + saveEightLevel(dingWeiDian.latitude+""));
         }
 
         //创建音频临时文件夹
