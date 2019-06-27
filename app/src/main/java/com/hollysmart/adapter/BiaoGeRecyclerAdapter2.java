@@ -492,39 +492,6 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
                             }
 
-
-
-
-//                            if (Utils.isEmpty(bean.getPropertyLabel())) {
-//
-//                                bean.setPropertyLabel(dictionaryBean.getValue());
-//
-//                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
-//
-//
-//                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
-//
-//                                }
-//                            }else {
-//                                bean.setPropertyLabel(dictionaryBean.getValue());
-//
-//                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("1")) {
-//
-//
-//                                    notifyItemRangeInserted(bean.getPosition()+1,bean.getPropertys().size());
-//
-//                                }
-//
-//                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
-//
-//
-//                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
-//
-//                                }
-//
-//                            }
-
-
                         }
                     }).showPopuWindow_DictListData(mContext,0, dictionaryBeans.get(0).getDescription(),map.get(bean.getDictText()));
 
