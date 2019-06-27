@@ -15,6 +15,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -32,10 +33,12 @@ public class getResTaskListAPI implements INetModel {
     private ResTaskListIF sheBeiListIF;
     private int pageNo;
     private String  token;
+    private String fdTaskId;
 
-    public getResTaskListAPI(String token,int pageNo, ResTaskListIF sheBeiListIF) {
+    public getResTaskListAPI(String token,String fdTaskId,int pageNo, ResTaskListIF sheBeiListIF) {
         this.pageNo = pageNo;
         this.token = token;
+        this.fdTaskId = fdTaskId;
         this.sheBeiListIF = sheBeiListIF;
     }
 
@@ -43,12 +46,11 @@ public class getResTaskListAPI implements INetModel {
     public void request() {
         JSONObject object = new JSONObject();
         try {
-            object.put("pageNo", pageNo);
-            object.put("pageSize", "10");
+            object.put("fdTaskId", fdTaskId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String urlStr = Values.SERVICE_URL_FORM + "/admin/api/restask/list";
+        String urlStr = Values.SERVICE_URL_FORM + "/admin/api/restask/get";
         OkHttpUtils.postString().url(urlStr)
                 .content(object.toString()).addHeader("Authorization", token)
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
@@ -70,13 +72,15 @@ public class getResTaskListAPI implements INetModel {
                     if ( status == 200){
                         Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
                         JSONObject dataOBJ = new JSONObject(jsonObject.getString("data"));
-                        List<ProjectBean> projectBeanList = mGson.fromJson(dataOBJ.getString("list"),
-                                new TypeToken<List<ProjectBean>>() {}.getType());
-                        for(ProjectBean projectBean:projectBeanList){
-                            projectBean.setUserinfoid(UserToken.getUserToken().getToken());
+                        ProjectBean projectBean = mGson.fromJson(dataOBJ.toString(),
+                                new TypeToken<ProjectBean>() {}.getType());
+                        List<ProjectBean> projectBeanList = new ArrayList<>();
+                        projectBeanList.add(projectBean);
+                        for(ProjectBean projectBean1:projectBeanList){
+                            projectBean1.setUserinfoid(UserToken.getUserToken().getToken());
                         }
 
-                        sheBeiListIF.onResTaskListResult(true, projectBeanList,dataOBJ.getInt("count"));
+                        sheBeiListIF.onResTaskListResult(true, projectBeanList,projectBeanList.size());
                     }else {
                         sheBeiListIF.onResTaskListResult(false, null,0);
                     }

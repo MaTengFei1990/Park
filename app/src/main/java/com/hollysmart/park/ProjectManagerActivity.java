@@ -118,7 +118,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                     isRefresh = true;
                     allprojectList.clear();
                     projectItemAdapter.notifyDataSetChanged();
-                    new getResTaskListAPI( userInfo.getAccess_token(), pageNo, ProjectManagerActivity.this).request();
+                    new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"), pageNo, ProjectManagerActivity.this).request();
 
                 } else {
                     swipe.setRefreshing(false);
@@ -151,7 +151,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
     private void nextPage() {
         if (isLoadMore) {
-            new getResTaskListAPI( UserToken.getUserToken().getFormToken(),pageNo,this).request();
+            new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,this).request();
         }
 
 
@@ -512,7 +512,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         pageNo=1;
         isRefresh = true;
 
-        new getResTaskListAPI( userInfo.getAccess_token(),pageNo,this).request();
+        new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,this).request();
         new ResModelListAPI(userInfo.getAccess_token(),this).request();
 
 
