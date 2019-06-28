@@ -663,28 +663,44 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         }
 
-//        if (formBeanList == null || formBeanList.size() == 0) {
-//            Toast.makeText(mContext, "请填写表单详情", Toast.LENGTH_LONG).show();
-//            return;
-//        } else {
-//
-//            boolean notfill = true;
-//
-//            for (DongTaiFormBean formBean : formBeanList) {
-//
-//                if (formBean.getFieldMustInput() && Utils.isEmpty(formBean.getPropertyLabel())) {
-//                    notfill = false;
-//                }
-//
-//            }
-//
-//            if (!notfill) {
-//                Toast.makeText(mContext, "请将表单填写完整", Toast.LENGTH_LONG).show();
-//                return;
-//            }
-//
-//
-//        }
+        if (formBeanList == null || formBeanList.size() == 0) {
+            Toast.makeText(mContext, "请填写表单详情", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+
+            boolean notfill = true;
+
+            for (DongTaiFormBean formBean : formBeanList) {
+
+                if (formBean.getFieldMustInput() && Utils.isEmpty(formBean.getPropertyLabel())) {
+                    notfill = false;
+                }
+
+                List<DongTaiFormBean> propertys = formBean.getPropertys();
+
+                if (propertys != null && propertys.size() > 0) {
+
+                    for (DongTaiFormBean property : propertys) {
+
+                        if (property.getFieldMustInput() && Utils.isEmpty(property.getPropertyLabel())) {
+                            notfill = false;
+                        }
+
+                    }
+
+
+
+                }
+
+            }
+
+            if (!notfill) {
+                Toast.makeText(mContext, "请将表单填写完整", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+        }
 
 
         String createTime = new CCM_DateTime().Datetime2();
@@ -743,6 +759,45 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         if (Utils.isEmpty(resNum)) {
             Toast.makeText(mContext, "资源编号不能为空", Toast.LENGTH_LONG).show();
             return;
+        }
+
+        if (formBeanList == null || formBeanList.size() == 0) {
+            Toast.makeText(mContext, "请填写表单详情", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+
+            boolean notfill = true;
+
+            for (DongTaiFormBean formBean : formBeanList) {
+
+                if (formBean.getFieldMustInput() && Utils.isEmpty(formBean.getPropertyLabel())) {
+                    notfill = false;
+                }
+
+                List<DongTaiFormBean> propertys = formBean.getPropertys();
+
+                if (propertys != null && propertys.size() > 0) {
+
+                    for (DongTaiFormBean property : propertys) {
+
+                        if (property.getFieldMustInput() && Utils.isEmpty(property.getPropertyLabel())) {
+                            notfill = false;
+                        }
+
+                    }
+
+
+
+                }
+
+            }
+
+            if (!notfill) {
+                Toast.makeText(mContext, "请将表单填写完整", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
         }
 
 

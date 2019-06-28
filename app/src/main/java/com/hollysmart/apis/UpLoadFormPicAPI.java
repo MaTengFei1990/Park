@@ -44,7 +44,7 @@ public class UpLoadFormPicAPI implements INetModel {
             @Override
             public void yaSouResult(boolean isOk, JDPicInfo info) {
 
-                String url = Values.SERVICE_URL + "/admin/api/busMedia/upload";
+                String url = Values.SERVICE_URL_FORM + "/admin/api/busMedia/upload";
                 Mlog.d("图片上传地址 = " + picPath);
                 OkHttpUtils.post().url(url)
                         .addHeader("Authorization",access_token)

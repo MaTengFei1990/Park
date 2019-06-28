@@ -48,7 +48,7 @@ public class GetNetResListAPI implements INetModel {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String urlStr = Values.SERVICE_URL + "/admin/api/resdata/datadicList";
+        String urlStr = Values.SERVICE_URL_FORM + "/admin/api/resdata/datadicList";
         OkHttpUtils.postString().url(urlStr)
                 .content(object.toString()).addHeader("Authorization", userInfo.getAccess_token())
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
