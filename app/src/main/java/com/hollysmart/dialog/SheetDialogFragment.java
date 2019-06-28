@@ -1134,7 +1134,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 iv_del.setVisibility(View.GONE);
                 if (contextlist != null && imageView != null) {
                     Glide.with(contextlist)
-                            .load(R.mipmap.a_v)
+                            .load(R.mipmap.takepic)
                             .centerCrop().into(imageView);
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override

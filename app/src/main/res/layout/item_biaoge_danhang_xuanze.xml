@@ -31,15 +31,17 @@
             android:textColor="@color/heise_text"
             android:textSize="@dimen/text_zhong" />
 
-        <TextView
-            android:id="@+id/tv_value"
-            android:layout_width="150dp"
-            android:layout_height="30dp"
-            android:layout_toLeftOf="@+id/iv_arrorw"
-            android:layout_centerVertical="true"
-            android:textColor="@color/huise_text"
-            android:background="@color/huise_bg"
-            android:textSize="@dimen/text_zhong" />
+        <!--<TextView-->
+            <!--android:id="@+id/tv_value"-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:singleLine="true"-->
+            <!--android:maxLines="1"-->
+            <!--android:layout_toLeftOf="@+id/iv_arrorw"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:textColor="@color/huise_text"-->
+            <!--android:gravity="center|right"-->
+            <!--android:textSize="@dimen/text_zhong" />-->
 
         <TextView
             android:id="@+id/tv_tishi"
@@ -52,16 +54,53 @@
             android:textSize="@dimen/text_zhong" />
 
 
-        <ImageView
-            android:id="@+id/iv_arrorw"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:padding="5dp"
+        <!--<ImageView-->
+            <!--android:id="@+id/iv_arrorw"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:padding="5dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:src="@mipmap/arrow_bottom"-->
+            <!--android:textColor="@color/hongse_text"-->
+            <!--android:textSize="@dimen/text_zhong" />-->
+
+        <LinearLayout
+            android:id="@+id/ll_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@mipmap/arrow_bottom"
-            android:textColor="@color/hongse_text"
-            android:textSize="@dimen/text_zhong" />
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_value"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:hint="请选择"
+                android:layout_toLeftOf="@+id/iv_arrorw"
+                android:layout_centerVertical="true"
+                android:textColor="@color/huise_text"
+                android:gravity="center|right"
+                android:textSize="@dimen/text_zhong" />
+
+            <ImageView
+                android:id="@+id/iv_arrorw"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:padding="8dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/search_arrow_right"
+                android:textColor="@color/hongse_text"
+                android:textSize="@dimen/text_zhong" />
+
+        </LinearLayout>
+
+
+
     </RelativeLayout>
 
     <View

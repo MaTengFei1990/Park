@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.hollysmart.beans.PicBean;
+import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.imageview.GestureImageView;
+import com.hollysmart.park.R;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.value.Values;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class BigPicActivity extends StyleAnimActivity {
@@ -31,33 +32,33 @@ public class BigPicActivity extends StyleAnimActivity {
 	private TextView tv_page;
 	private Context context;
 	private boolean isLoction;
-	private List<PicBean> infos;
+	private List<JDPicInfo> infos;
+	private static JDPicInfo picBeannull = new JDPicInfo(0, null, null, null, 1, "false");
 
 	@Override
 	public int layoutResID() {
 		return R.layout.activity_big_pic;
 	}
-	
+
 	@Override
 	public void findView() {
 		rl_title =  findViewById(R.id.rl_title);
 		tv_page =  findViewById(R.id.tv_page);
 		findViewById(R.id.iv_back).setOnClickListener(this);
 	}
-	
+
 	@Override
 	public void init() {
 		context = this;
 		isLoction = getIntent().getBooleanExtra("isLoction", false);
-		infos = (List<PicBean>) getIntent().getSerializableExtra("infos");
-		int index = getIntent().getIntExtra("index", 0);
-		for(int i=0;i<infos.size();i++) {
-			PicBean bean = infos.get(i);
-			if (bean.getIsAddFlag() == 1 && Utils.isEmpty(bean.getPath())) {
+		infos = (List<JDPicInfo>)getIntent().getSerializableExtra("infos");
+		for (int i = 0; i < infos.size(); i++) {
+
+			if (infos.get(i).getIsAddFlag() == 1) {
 				infos.remove(i);
 			}
 		}
-
+		int index = getIntent().getIntExtra("index", 0);
 		tv_page.setText("(" + (index + 1) + "/" + infos.size() + ")");
 
 		ViewPager vp_pic = (ViewPager) findViewById(R.id.vp_pic_detail);
@@ -68,8 +69,8 @@ public class BigPicActivity extends StyleAnimActivity {
 		vp_pic.setCurrentItem(index);
 
 	}
-	
-	public class MyOnPageChangeListener implements OnPageChangeListener {
+
+	public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
 
 		public void onPageScrollStateChanged(int arg0) {
 		}
@@ -92,10 +93,10 @@ public class BigPicActivity extends StyleAnimActivity {
 				visibileTitle();
 			tag = !tag;
 		}
-		
+
 	}
-	
-	
+
+
 	private boolean tag = true;
 	private void gongTitle(){
 		rl_title.setVisibility(View.GONE);
@@ -103,8 +104,8 @@ public class BigPicActivity extends StyleAnimActivity {
 	private void visibileTitle(){
 		rl_title.setVisibility(View.VISIBLE);
 	}
-	
-	
+
+
 	private class ImageAdapter extends PagerAdapter {
 		private LayoutInflater inflater;
 		ImageAdapter() {
@@ -137,14 +138,15 @@ public class BigPicActivity extends StyleAnimActivity {
 			assert imageLayout != null;
 
 			final GestureImageView imageView = (GestureImageView) imageLayout.findViewById(R.id.image);
-			if (infos.get(position).getPath()!= null) {
+			if (infos.get(position).getFilePath()!= null) {
+				File file = new File(infos.get(position).getFilePath());
 
-				if (!Utils.isEmpty(infos.get(position).getPath())) {
+				if (file.exists()) {
 					Glide.with(BigPicActivity.this)
-							.load(new File(infos.get(position).getPath()))
+							.load(new File(infos.get(position).getFilePath()))
 							.asBitmap()
-							.placeholder(R.mipmap.dbsx)
-							.error(R.mipmap.dbsx)
+							.placeholder(R.mipmap.a_v)
+							.error(R.mipmap.a_v)
 							.into(new SimpleTarget<Bitmap>() {
 								@Override
 								public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -154,10 +156,10 @@ public class BigPicActivity extends StyleAnimActivity {
 
 				} else {
 					Glide.with(BigPicActivity.this)
-							.load(Values.SERVICE_URL + infos.get(position).getUrlpath())
+							.load(Values.SERVICE_URL_ADMIN_FORM + infos.get(position).getImageUrl())
 							.asBitmap()
-							.placeholder(R.mipmap.dbsx)
-							.error(R.mipmap.dbsx)
+							.placeholder(R.mipmap.a_v)
+							.error(R.mipmap.a_v)
 							.into(new SimpleTarget<Bitmap>() {
 								@Override
 								public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -166,7 +168,7 @@ public class BigPicActivity extends StyleAnimActivity {
 							});
 				}
 			} else {
-				imageView.setImageResource(R.mipmap.dbsx);
+				imageView.setImageResource(R.mipmap.a_v);
 			}
 			imageView.setOnClickListener(BigPicActivity.this);
 			view.addView(imageLayout, 0);
@@ -187,5 +189,4 @@ public class BigPicActivity extends StyleAnimActivity {
 			return null;
 		}
 	}
-
 }

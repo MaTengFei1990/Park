@@ -39,16 +39,17 @@ public class SaveResTaskAPI implements INetModel {
     public void request() {
         JSONObject object = new JSONObject();
         try {
-            object.put("remarks", projectBean.getRemarks());
+//            object.put("remarks", projectBean.getRemarks());
             object.put("fTaskname", projectBean.getfTaskname());
             object.put("fTaskmodel", projectBean.getfTaskmodel());
             object.put("fBegindate", projectBean.getfBegindate());
             object.put("fEnddate", projectBean.getfEnddate());
+            object.put("fdTasktype ", projectBean.getfTaskmodel());
             object.put("fState", projectBean.getfState());
             object.put("fRange", projectBean.getfRange());
-            object.put("id", projectBean.getId());
-            object.put("fOfficeId", projectBean.getId());
-            object.put("fDescription", projectBean.getId());
+            object.put("fdTaskId", projectBean.getId());
+            object.put("fOfficeId", projectBean.getfOfficeId());
+            object.put("fDescription", "");
         } catch (JSONException e) {
             e.printStackTrace();
         }

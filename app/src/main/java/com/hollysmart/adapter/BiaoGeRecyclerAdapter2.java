@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hollysmart.beans.DictionaryBean;
@@ -408,6 +409,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView tv_name;
         private TextView tv_value;
         private TextView tv_tishi;
+        private LinearLayout ll_value;
 
         public DanhangXuanZelistViewHolder(View itemView) {
             super(itemView);
@@ -415,6 +417,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             tv_name =  itemView.findViewById(R.id.tv_name);
             tv_tishi =  itemView.findViewById(R.id.tv_tishi);
             tv_value =  itemView.findViewById(R.id.tv_value);
+            ll_value =  itemView.findViewById(R.id.ll_value);
         }
     }
 
@@ -445,7 +448,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         holder.tv_name.setText(bean.getContent());
-        holder.tv_value.setOnClickListener(new View.OnClickListener() {
+        holder.ll_value.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final List<DictionaryBean> dictionaryBeans = map.get(bean.getDictText());
@@ -509,6 +512,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView tv_name;
         private TextView tv_value;
         private TextView tv_tishi;
+        private LinearLayout ll_value;
 
         public DanhangXuanZeViewHolder(View itemView) {
             super(itemView);
@@ -516,6 +520,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             tv_name =  itemView.findViewById(R.id.tv_name);
             tv_value =  itemView.findViewById(R.id.tv_value);
             tv_tishi =  itemView.findViewById(R.id.tv_tishi);
+            ll_value =  itemView.findViewById(R.id.ll_value);
         }
     }
 
@@ -540,7 +545,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         holder.tv_name.setText(bean.getContent());
-        holder.tv_value.setOnClickListener(new View.OnClickListener() {
+        holder.ll_value.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 timePickerDialog = new TimePickerDialog(mContext, new TimePickerDialog.TimePickerDialogInterface() {

@@ -177,7 +177,7 @@ public class Ma_ScanActivity extends StyleAnimActivity implements QRCodeView.Del
         resDataBean.setFd_resmodelid(fdResModelId);
 
 
-        new ResDataGetAPI( UserToken.getUserToken().getFormToken(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
+        new ResDataGetAPI( userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
             @Override
             public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
 

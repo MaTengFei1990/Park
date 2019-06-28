@@ -203,6 +203,15 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
             @Override
             public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
 
+                if (isOk) {
+                    new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,ProjectManagerActivity.this).request();
+
+                }
+
+
+
+
+
             }
         }).request();
 
@@ -525,7 +534,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
         pageNo=1;
         isRefresh = true;
 
-        new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,this).request();
+//        new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,this).request();
         new ResModelListAPI(userInfo.getAccess_token(),this).request();
 
 
