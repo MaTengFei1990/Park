@@ -665,6 +665,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         if (formBeanList == null || formBeanList.size() == 0) {
             Toast.makeText(mContext, "请填写表单详情", Toast.LENGTH_LONG).show();
+
             return;
         } else {
 
