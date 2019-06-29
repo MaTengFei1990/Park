@@ -587,7 +587,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             String propertyLabel = dongTaiFormBean.getPropertyLabel();
 
-            if (propertyLabel != null && propertyLabel.equals("2")) {
+            if (propertyLabel != null && propertyLabel.equals("否")) {
 
                     dongTaiFormBean.setPosition(countss);
                     dongTaiFormBean.setGroupindex(i);
@@ -638,7 +638,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             String propertyLabel = dongTaiFormBean.getPropertyLabel();
 
-            if (propertyLabel != null && propertyLabel.equals("2")) {
+            if (propertyLabel != null && propertyLabel.equals("否")) {
 
 
                 if (position == dongTaiFormBean.getPosition()) {

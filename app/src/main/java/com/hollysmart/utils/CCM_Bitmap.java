@@ -52,6 +52,9 @@ public class CCM_Bitmap {
 		File file = new File(pathName);
 		try {
 			FileOutputStream out = new FileOutputStream(file);
+			if (out == null) {
+				return false;
+			}
 			if (bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)) {
 				out.flush();
 				out.close();

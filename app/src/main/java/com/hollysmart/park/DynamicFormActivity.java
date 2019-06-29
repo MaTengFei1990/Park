@@ -302,7 +302,10 @@ public class DynamicFormActivity extends StyleAnimActivity  {
 
                     List<DictionaryBean> dictionaryBeanList = dictionaryDao.getDataType(dongTaiFormBean.getDictText());
 
-                    map.put(dongTaiFormBean.getDictText(), dictionaryBeanList);
+                    if (dictionaryBeanList != null && dictionaryBeanList.size() > 0) {
+
+                        map.put(dongTaiFormBean.getDictText(), dictionaryBeanList);
+                    }
 
                 }
 

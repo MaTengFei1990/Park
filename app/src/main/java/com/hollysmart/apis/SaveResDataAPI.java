@@ -10,6 +10,7 @@ import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
 import com.hollysmart.beans.SoundInfo;
+import com.hollysmart.beans.cgformRuleBean;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
@@ -131,19 +132,140 @@ public class SaveResDataAPI implements INetModel {
 
 
 
-            Type type =new TypeToken<List<DongTaiFormBean>>() {}.getType();
+//            Type type =new TypeToken<List<DongTaiFormBean>>() {}.getType();
+//
+//            JsonArray jsonArray = new Gson().toJsonTree(cgformFieldList, type).getAsJsonArray();
 
-            JsonArray jsonArray = new Gson().toJsonTree(cgformFieldList, type).getAsJsonArray();
+
+//            JSONArray array = new JSONArray(jsonArray.toString());
 
 
-            JSONArray array = new JSONArray(jsonArray.toString());
+            JSONArray formJsonArray = new JSONArray();
 
-            if (array.length() == 0) {
+            for (int i = 0; i < cgformFieldList.size(); i++) {
 
-            } else {
-                formJson.put("cgformFieldList", array);
+                DongTaiFormBean dongTaiFormBean = cgformFieldList.get(i);
+
+                JSONObject formobj = new JSONObject();
+                try {
+                    formobj.put("content", dongTaiFormBean.getContent());
+                    formobj.put("fieldMustInput", dongTaiFormBean.getFieldMustInput());
+                    formobj.put("fieldName", dongTaiFormBean.getFieldName());
+                    formobj.put("isEdit", dongTaiFormBean.getIsEdit());
+                    formobj.put("isQuery", dongTaiFormBean.getIsQuery());
+                    formobj.put("isShow", dongTaiFormBean.getIsShow());
+                    formobj.put("isShowList", dongTaiFormBean.getIsShowList());
+                    formobj.put("javaField", dongTaiFormBean.getJavaField());
+                    formobj.put("orderNum", dongTaiFormBean.getOrderNum());
+                    formobj.put("propertyLabel", dongTaiFormBean.getPropertyLabel());
+                    formobj.put("showTiShi", dongTaiFormBean.isShowTiShi());
+                    formobj.put("showType", dongTaiFormBean.getShowType());
+                    formobj.put("dictText", dongTaiFormBean.getDictText());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                if (dongTaiFormBean.getPropertys() != null && dongTaiFormBean.getPropertys().size() > 0) {
+
+                    JSONArray childformJsonArray = new JSONArray();
+
+                    for (int j = 0; j < dongTaiFormBean.getPropertys().size(); j++) {
+
+                        DongTaiFormBean ChilddongTaiFormBean = dongTaiFormBean.getPropertys().get(j);
+
+                        JSONObject childformobj = new JSONObject();
+                        try {
+                            childformobj.put("content", ChilddongTaiFormBean.getContent());
+                            childformobj.put("fieldMustInput", ChilddongTaiFormBean.getFieldMustInput());
+                            childformobj.put("fieldName", ChilddongTaiFormBean.getFieldName());
+                            childformobj.put("isEdit", ChilddongTaiFormBean.getIsEdit());
+                            childformobj.put("isQuery", ChilddongTaiFormBean.getIsQuery());
+                            childformobj.put("isShow", ChilddongTaiFormBean.getIsShow());
+                            childformobj.put("isShowList", ChilddongTaiFormBean.getIsShowList());
+                            childformobj.put("javaField", ChilddongTaiFormBean.getJavaField());
+                            childformobj.put("orderNum", ChilddongTaiFormBean.getOrderNum());
+                            childformobj.put("propertyLabel", ChilddongTaiFormBean.getPropertyLabel());
+                            childformobj.put("showTiShi", ChilddongTaiFormBean.isShowTiShi());
+                            childformobj.put("showType", ChilddongTaiFormBean.getShowType());
+                            childformobj.put("dictText", ChilddongTaiFormBean.getDictText());
+
+                            childformJsonArray.put(childformobj);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    formobj.put("propertys", childformJsonArray);
+
+
+
+                }
+                if (dongTaiFormBean.getCgformRuleList() != null && dongTaiFormBean.getCgformRuleList().size() > 0) {
+
+                    JSONArray conformRuleList = new JSONArray();
+
+                    for (int k = 0; k < dongTaiFormBean.getCgformRuleList().size(); k++) {
+
+                        cgformRuleBean ChildchnformRule = dongTaiFormBean.getCgformRuleList().get(k);
+
+                        JSONObject childRuleobj = new JSONObject();
+                        try {
+                            childRuleobj.put("createDate", ChildchnformRule.getCreateDate());
+                            childRuleobj.put("error", ChildchnformRule.getError());
+                            childRuleobj.put("modified", ChildchnformRule.getModified());
+                            childRuleobj.put("mykey", ChildchnformRule.getMykey());
+                            childRuleobj.put("pageNo", ChildchnformRule.getPageNo());
+                            childRuleobj.put("pageSize", ChildchnformRule.getPageSize());
+                            childRuleobj.put("pattern", ChildchnformRule.getPattern());
+                            childRuleobj.put("remarks", ChildchnformRule.getRemarks());
+                            childRuleobj.put("type", ChildchnformRule.getType());
+                            childRuleobj.put("updateDate", ChildchnformRule.getUpdateDate());
+
+                            conformRuleList.put(childRuleobj);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    formobj.put("cgformRuleList", conformRuleList);
+
+
+
+                }
+
+
+                formJsonArray.put(formobj);
+
 
             }
+
+
+            JSONArray array = formJsonArray;
+
+
+
+
+
+
+
+
+
+
+
+
+//            if (array.length() == 0) {
+//
+//            } else {
+                formJson.put("cgformFieldList", array);
+//
+//            }
 
 
 

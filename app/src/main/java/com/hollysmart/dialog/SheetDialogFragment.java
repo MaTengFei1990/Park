@@ -778,20 +778,25 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 }
 
                 List<DongTaiFormBean> propertys = formBean.getPropertys();
+                if (formBean.getPropertyLabel() != null) {
+                    if (!formBean.getPropertyLabel().equals("否")) {
+                        if (propertys != null && propertys.size() > 0) {
 
-                if (propertys != null && propertys.size() > 0) {
+                            for (DongTaiFormBean property : propertys) {
 
-                    for (DongTaiFormBean property : propertys) {
+                                if (property.getFieldMustInput() && Utils.isEmpty(property.getPropertyLabel())) {
+                                    notfill = false;
+                                }
 
-                        if (property.getFieldMustInput() && Utils.isEmpty(property.getPropertyLabel())) {
-                            notfill = false;
+                            }
+
+
+
                         }
-
                     }
-
-
-
                 }
+
+
 
             }
 
