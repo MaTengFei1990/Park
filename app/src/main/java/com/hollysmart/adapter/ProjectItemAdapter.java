@@ -53,6 +53,7 @@ import com.hollysmart.park.ProjectDetails2Activity;
 import com.hollysmart.park.R;
 import com.hollysmart.tools.JSONTool;
 import com.hollysmart.tools.KMLTool;
+import com.hollysmart.utils.PicYasuo;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.utils.taskpool.TaskPool;
@@ -727,14 +728,21 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
 
             for (JDPicInfo jdPicInfo : picList) {
 
-                if (!Utils.isEmpty(jdPicInfo.getFilePath()))
+                if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
+
+                    taskPool.addTask(new PicYasuo(jdPicInfo, listener));
+                }
+            }
+            for (JDPicInfo jdPicInfo : picList) {
+
+                if (!Utils.isEmpty(jdPicInfo.getFilePath())&& Utils.isEmpty(jdPicInfo.getImageUrl()))
                     taskPool.addTask(new UpLoadFormPicAPI(userInfo.getAccess_token(), jdPicInfo, listener));
             }
             List<SoundInfo> soundInfoList = jdSoundDao.getDataByJDId(bean.getId());
 
             for (SoundInfo soundInfo : soundInfoList) {
 
-                if (!Utils.isEmpty(soundInfo.getFilePath()))
+                if (!Utils.isEmpty(soundInfo.getFilePath())&& Utils.isEmpty(soundInfo.getAudioUrl()))
                     taskPool.addTask(new UpLoadSoundAPI(userInfo.getAccess_token(), soundInfo, listener));
             }
 

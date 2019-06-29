@@ -98,7 +98,7 @@ public class CCM_Bitmap {
 	 */
 	public void storeImage(Bitmap bitmap, String outPath) throws FileNotFoundException {
 		FileOutputStream os = new FileOutputStream(outPath);
-		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 80, os);
 	}
 	
 	/**

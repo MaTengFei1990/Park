@@ -40,9 +40,9 @@ public class UpLoadFormPicAPI implements INetModel {
 
     @Override
     public void request() {
-        new PicYasuo(bean, new PicYasuo.PicYansuoIF() {
-            @Override
-            public void yaSouResult(boolean isOk, JDPicInfo info) {
+//        new PicYasuo(bean, new PicYasuo.PicYansuoIF() {
+//            @Override
+//            public void yaSouResult(boolean isOk, JDPicInfo info) {
 
                 String url = Values.SERVICE_URL_FORM + "/admin/api/busMedia/upload";
                 Mlog.d("图片上传地址 = " + picPath);
@@ -74,8 +74,8 @@ public class UpLoadFormPicAPI implements INetModel {
                         }
                     }
                 });
-            }
-        }).request();
+//            }
+//        }).request();
 
     }
 }

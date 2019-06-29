@@ -63,6 +63,7 @@ import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.CCM_Bitmap;
 import com.hollysmart.utils.CCM_DateTime;
 import com.hollysmart.utils.FileTool;
+import com.hollysmart.utils.PicYasuo;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.loctionpic.ImageItem;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
@@ -945,6 +946,15 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         for (ResDataBean bean : formBeens) {
 
             List<JDPicInfo> picList = jdPicDao.getDataByJDId(bean.getId());
+
+
+            for (JDPicInfo jdPicInfo : picList) {
+
+                if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
+
+                    taskPool.addTask(new PicYasuo(jdPicInfo, listener));
+                }
+            }
 
             for (JDPicInfo jdPicInfo : picList) {
 

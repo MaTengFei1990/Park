@@ -17,6 +17,7 @@ import com.hollysmart.db.JDSoundDao;
 import com.hollysmart.db.ResDataDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.utils.ACache;
+import com.hollysmart.utils.PicYasuo;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.utils.taskpool.TaskPool;
@@ -93,6 +94,12 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
             for (JDPicInfo jdPicInfo : picList) {
 
+
+                if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
+
+                    taskPool.addTask(new PicYasuo(jdPicInfo, this));
+                }
+
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && jdPicInfo.getIsAddFlag() != 1) {
 
                     taskPool.addTask(new UpLoadFormPicAPI(userInfoBean.getAccess_token(), jdPicInfo, this));
@@ -129,6 +136,12 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
             List<JDPicInfo> picList = jdPicDao.getDataByJDId(bean.getId());
 
             for (JDPicInfo jdPicInfo : picList) {
+
+
+                if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
+
+                    taskPool.addTask(new PicYasuo(jdPicInfo, this));
+                }
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()))
                     taskPool.addTask(new UpLoadFormPicAPI(userInfoBean.getAccess_token(),jdPicInfo,this));
