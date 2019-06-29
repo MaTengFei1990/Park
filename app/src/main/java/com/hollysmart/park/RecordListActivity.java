@@ -168,7 +168,7 @@ public class RecordListActivity extends StyleAnimActivity {
                 File file = new File(audioPath.getPath());
                 if (file.exists()) {
                     Toast.makeText(getApplicationContext(), "录制成功", Toast.LENGTH_SHORT).show();
-                    loadData();
+                    loadData(false);
                 }
             }
 
@@ -184,19 +184,44 @@ public class RecordListActivity extends StyleAnimActivity {
 
 
     private void initData() {
-        loadData();
+        loadData(true);
         setAdapter();
     }
 
 
-    private void loadData() {
-        if (mAudioDir.exists()) {
-            soundInfoList.clear();
+    private void loadData(boolean isFirst) {
+//        if (mAudioDir.exists()) {
+//            soundInfoList.clear();
+//
+//            //获取网络的音频文件；
+//
+//            soundInfoList.addAll(netaudios);
+//
+//            File[] files = mAudioDir.listFiles();
+//            for (File file : files) {
+//                if (file.getAbsolutePath().endsWith(".mp3")) {
+//
+//                    SoundInfo soundInfo = new SoundInfo();
+//                    soundInfo.setFilePath(file.getAbsolutePath());
+//                    soundInfo.setFilename(file.getName());
+//                    soundInfoList.add(soundInfo);
+//                }
+//            }
+//
+//            setAdapter();
+//        }
 
-            //获取网络的音频文件；
-
+        if (isFirst) {
             soundInfoList.addAll(netaudios);
+        }
 
+        List<String> names = new ArrayList<>();
+
+        for (SoundInfo soundInfo : soundInfoList) {
+            names.add(soundInfo.getFilename());
+        }
+
+        if (mAudioDir.exists()) {
             File[] files = mAudioDir.listFiles();
             for (File file : files) {
                 if (file.getAbsolutePath().endsWith(".mp3")) {
@@ -204,12 +229,17 @@ public class RecordListActivity extends StyleAnimActivity {
                     SoundInfo soundInfo = new SoundInfo();
                     soundInfo.setFilePath(file.getAbsolutePath());
                     soundInfo.setFilename(file.getName());
-                    soundInfoList.add(soundInfo);
+                    if (!names.contains(file.getName())) {
+                        soundInfoList.add(soundInfo);
+                    }
                 }
             }
-
-            setAdapter();
         }
+
+        setAdapter();
+
+
+
     }
 
     private void setAdapter() {
