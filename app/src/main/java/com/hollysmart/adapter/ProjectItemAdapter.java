@@ -240,17 +240,17 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
         }
 
 
-        if (!Utils.isEmpty(userInfo.getRestaskDelete()) && userInfo.getRestaskDelete().equals("restask:delete")) {
-            holder.getView(R.id.tv_delete).setVisibility(VISIBLE);
-        } else {
-            holder.getView(R.id.tv_delete).setVisibility(GONE);
-        }
-
-        if (!Utils.isEmpty(userInfo.getRestaskFinish()) && userInfo.getRestaskFinish().equals("restask:finish")) {
-            holder.getView(R.id.tv_finish).setVisibility(VISIBLE);
-        } else {
-            holder.getView(R.id.tv_finish).setVisibility(GONE);
-        }
+//        if (!Utils.isEmpty(userInfo.getRestaskDelete()) && userInfo.getRestaskDelete().equals("restask:delete")) {
+//            holder.getView(R.id.tv_delete).setVisibility(VISIBLE);
+//        } else {
+//            holder.getView(R.id.tv_delete).setVisibility(GONE);
+//        }
+//
+//        if (!Utils.isEmpty(userInfo.getRestaskFinish()) && userInfo.getRestaskFinish().equals("restask:finish")) {
+//            holder.getView(R.id.tv_finish).setVisibility(VISIBLE);
+//        } else {
+//            holder.getView(R.id.tv_finish).setVisibility(GONE);
+//        }
 
 
         holder.setText(R.id.tv_allCount, "总数量:"+item.getAllConunt()+"条");

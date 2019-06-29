@@ -913,18 +913,18 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
                     if (taskPool.getTotal() == 0) {
                         if (sportEditFlag) {
-                            Utils.showToast(mContext, "新增成功");
+                            Utils.showDialog(mContext, "新增成功");
 
                         } else {
-                            Utils.showToast(mContext, "修改成功");
+                            Utils.showDialog(mContext, "修改成功");
                         }
                     }
                 } else {
                     if (sportEditFlag) {
-                        Utils.showToast(mContext, "新增失败");
+                        Utils.showDialog(mContext, "新增失败");
 
                     } else {
-                        Utils.showToast(mContext, "修改失败");
+                        Utils.showDialog(mContext, "修改失败");
                     }
                 }
             }
