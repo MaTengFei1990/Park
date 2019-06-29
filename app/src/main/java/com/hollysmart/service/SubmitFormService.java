@@ -6,7 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.hollysmart.apis.SaveResDataAPI;
-import com.hollysmart.apis.UpLoadResPicAPI;
+import com.hollysmart.apis.UpLoadFormPicAPI;
 import com.hollysmart.apis.UpLoadSoundAPI;
 import com.hollysmart.apis.UserLoginAPI;
 import com.hollysmart.beans.JDPicInfo;
@@ -95,7 +95,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && jdPicInfo.getIsAddFlag() != 1) {
 
-                    taskPool.addTask(new UpLoadResPicAPI(userInfoBean.getAccess_token(), jdPicInfo, this));
+                    taskPool.addTask(new UpLoadFormPicAPI(userInfoBean.getAccess_token(), jdPicInfo, this));
                 }
             }
             List<SoundInfo> soundInfoList = jdSoundDao.getDataByJDId(bean.getId());
@@ -131,7 +131,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
             for (JDPicInfo jdPicInfo : picList) {
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()))
-                    taskPool.addTask(new UpLoadResPicAPI(userInfoBean.getAccess_token(),jdPicInfo,this));
+                    taskPool.addTask(new UpLoadFormPicAPI(userInfoBean.getAccess_token(),jdPicInfo,this));
             }
             List<SoundInfo> soundInfoList = jdSoundDao.getDataByJDId(bean.getId());
 

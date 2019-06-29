@@ -823,13 +823,17 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
 
         resDataBean.setFdTaskId(projectBean.getId());
+        resDataBean.setFd_restaskname(projectBean.getfTaskname());
         resDataBean.setFd_resmodelid(selectResModel.getId());
         resDataBean.setFd_resname(jdName);
         resDataBean.setNumber(resNum);
         resDataBean.setScope(scope);
         resDataBean.setRescode(resNum);
+        resDataBean.setFd_resmodelname(selectResModel.getName());
+        resDataBean.setFd_resdate(resDataBean.getCreatedAt());
         resDataBean.setNote(et_remark.getText().toString());
         resDataBean.setCreatedAt(createTime);
+        resDataBean.setFd_resposition(resDataBean.getLatitude()+","+resDataBean.getLongitude());
         resDataBean.setJdPicInfos(resPicList);
         updateDb(resDataBean);
     }
@@ -1150,6 +1154,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
         currentSoundList.clear();
         audios.clear();
+        audios.addAll(netaudios);
 //
         File[] files = resSound.listFiles();
         for (File file : files) {
@@ -1158,14 +1163,29 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 SoundInfo soundInfo = new SoundInfo();
                 soundInfo.setFilePath(file.getAbsolutePath());
                 soundInfo.setFilename(file.getName());
+                if (!currentSoundList.contains(soundInfo)) {
+                    currentSoundList.add(soundInfo);
+                }
 
-                currentSoundList.add(soundInfo);
 
 
             }
         }
 
-        audios.addAll(currentSoundList);
+        List<String> autoNames = new ArrayList<>();
+
+        for (int j = 0; j < audios.size(); j++) {
+            autoNames.add(audios.get(j).getFilename());
+        }
+
+
+        for (int i = 0; i < currentSoundList.size(); i++) {
+
+            if (!autoNames.contains(currentSoundList.get(i).getFilename())) {
+                audios.add(currentSoundList.get(i));
+            }
+        }
+
 
     }
 

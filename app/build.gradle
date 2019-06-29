@@ -108,6 +108,8 @@ dependencies {
     implementation files('libs/GQTSDK_1.0.1.16_Standard.jar')
     compile files('libs/commons-net-3.3.jar')
     compile files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
+
+    implementation 'top.zibin:Luban:1.1.8'
 }
 
 
