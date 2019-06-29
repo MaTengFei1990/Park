@@ -4,15 +4,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.model.LatLng;
 import com.hollysmart.adapter.ResDataManageAdapter;
+import com.hollysmart.apis.GetNetResListAPI;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
 import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.db.JDPicDao;
+import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.ResDataDao;
+import com.hollysmart.db.UserInfo;
 import com.hollysmart.style.StyleAnimActivity;
+import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Mlog;
+import com.hollysmart.utils.Utils;
+import com.hollysmart.value.Values;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +69,7 @@ public class ResDataManageActivity extends StyleAnimActivity {
 
 	@Override
 	public void init() {
+		isLogin();
 		picList=new ArrayList<>();
 		soundList=new ArrayList<>();
 		mJingDians = new ArrayList<>();
@@ -104,9 +116,117 @@ public class ResDataManageActivity extends StyleAnimActivity {
 
 		}
 
-		resDataManageAdapter.notifyDataSetChanged();
 
 
+
+
+		new GetNetResListAPI(userInfo, projectBean, new GetNetResListAPI.DatadicListIF() {
+			@Override
+			public void datadicListResult(boolean isOk, List<ResDataBean> netDataList) {
+
+
+				List<String> idList = new ArrayList<>();
+
+				for (ResDataBean resDataBean : mJingDians) {
+
+					idList.add(resDataBean.getId());
+				}
+
+
+				if (isOk) {
+					if (netDataList != null && netDataList.size() > 0) {
+						int j=0;
+
+						for (int i = 0; i < netDataList.size(); i++) {
+
+							ResDataBean resDataBean = netDataList.get(i);
+
+							if (!idList.contains(resDataBean.getId())) {
+								String fd_resposition = resDataBean.getFd_resposition();
+
+								if (!Utils.isEmpty(fd_resposition)) {
+
+									String[] split = fd_resposition.split(",");
+									resDataBean.setLatitude(split[0]);
+									resDataBean.setLongitude(split[1]);
+
+								}
+
+
+								mJingDians.add(resDataBean);
+
+								j = j + 1;
+
+								projectBean.setNetCount(10);
+							}
+						}
+
+						new ProjectDao(mContext).addOrUpdate(projectBean);
+						ProjectBean dataByID = new ProjectDao(mContext).getDataByID(projectBean.getId());
+
+						dataByID.getNetCount();
+					}
+				}
+
+//				for (int i = 0; i < mJingDians.size(); i++) {
+//
+//					LatLng llA = new LatLng(Double.parseDouble(mJingDians.get(i).getLatitude()),
+//							Double.parseDouble(mJingDians.get(i).getLongitude()));
+//					OverlayOptions ooA = new MarkerOptions().position(llA)
+//							.icon(bdA).zIndex(i);
+//					Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+//					mMarkers.put(i, marker);
+//					int fanwei = resDatalist.get(i).getScope();
+//					mainPresenter.getCoordinates(fanwei, i);
+//				}
+
+				resDataManageAdapter.notifyDataSetChanged();
+
+
+
+			}
+		}).request();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+
+
+
+
+
+
+	/**
+	 * 判断用户登录状态，登录获取用户信息
+	 */
+	private UserInfo userInfo;
+
+	public boolean isLogin() {
+		if (userInfo != null)
+			return true;
+		try {
+			String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
+			Object obj = ACache.get(new File(userPath)).getAsObject(Values.CACHE_USERINFO);
+			if (obj != null) {
+				userInfo = (UserInfo) obj;
+				return true;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 

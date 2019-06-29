@@ -90,6 +90,7 @@ public class GetNetResListAPI implements INetModel {
                             resDataBean.setFd_resdate(objDataBen.getString("fd_resdate"));
                             resDataBean.setRescode(objDataBen.getString("fd_rescode"));
                             resDataBean.setFd_resposition(objDataBen.getString("fd_resposition"));
+                            resDataBean.setFd_resname(objDataBen.getString("fd_resname"));
 
                             menuBeanList.add(resDataBean);
                         }

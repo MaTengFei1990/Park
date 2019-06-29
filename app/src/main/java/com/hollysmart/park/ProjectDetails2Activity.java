@@ -727,7 +727,33 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(latLng);
                     mBaiduMap.animateMapStatus(u);
 
-                    ShowResDataDialog(false, resDataBean,true);
+                    if (resDataBean.getFormData() == null) {
+
+
+                        new ResDataGetAPI(userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
+                            @Override
+                            public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+
+                                if (isOk) {
+
+                                    ShowResDataDialog(false, resDataBen, true);
+
+                                }
+
+                            }
+                        }).request();
+
+                    } else {
+
+                        ShowResDataDialog(false, resDataBean,true);
+                    }
+
+
+
+
+
+
+
 
                 } else if (resultCode == 2) {
                     newAddResData(dingWeiDian);
