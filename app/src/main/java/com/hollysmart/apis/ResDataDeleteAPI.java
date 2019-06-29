@@ -50,7 +50,7 @@ public class ResDataDeleteAPI implements INetModel {
 
         Mlog.d("删除单个资源---object===" + object.toString());
 
-        String urlStr = Values.SERVICE_URL + "/admin/api/resdata/delete";
+        String urlStr = Values.SERVICE_URL_FORM + "/admin/api/resdata/delete";
         OkHttpUtils.postString().url(urlStr)
                 .content(object.toString()).addHeader("Authorization", access_token)
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))

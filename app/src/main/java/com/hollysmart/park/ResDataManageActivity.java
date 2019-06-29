@@ -5,9 +5,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.hollysmart.adapter.ResDataManageAdapter;
-import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.db.JDPicDao;
 import com.hollysmart.db.ResDataDao;
 import com.hollysmart.style.StyleAnimActivity;
@@ -55,7 +55,7 @@ public class ResDataManageActivity extends StyleAnimActivity {
 	private List<ResDataBean> mJingDians;
 	private ResDataManageAdapter resDataManageAdapter;
 
-	
+
 	@Override
 	public void init() {
 		picList=new ArrayList<>();
@@ -70,13 +70,13 @@ public class ResDataManageActivity extends StyleAnimActivity {
 
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.ib_back:
-			finish();
-			break;
-		case R.id.ib_add:
-			setResult(2); // 2代表新增
-			finish();
-			break;
+			case R.id.ib_back:
+				finish();
+				break;
+			case R.id.ib_add:
+				setResult(2); // 2代表新增
+				finish();
+				break;
 		}
 	}
 
