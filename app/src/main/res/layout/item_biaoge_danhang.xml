@@ -28,7 +28,7 @@
         android:layout_toRightOf="@id/tv_bitian"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/huise_text"
+        android:textColor="@color/huise_hint"
         android:textSize="@dimen/text_zhong" />
 
     <EditText

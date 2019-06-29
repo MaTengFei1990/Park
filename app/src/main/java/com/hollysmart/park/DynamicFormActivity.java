@@ -513,7 +513,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
                     if (propertys != null && propertys.size() > 0) {
 
 
-                        if (propertys != null && (!Utils.isEmpty(dongTaiFormBean.getPropertyLabel()) && dongTaiFormBean.getPropertyLabel().equals("1"))) {
+                        if (propertys != null && (!Utils.isEmpty(dongTaiFormBean.getPropertyLabel()) && dongTaiFormBean.getPropertyLabel().equals("是"))) {
 
                             for (int j = 0; j < propertys.size(); j++) {
 

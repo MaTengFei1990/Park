@@ -40,7 +40,7 @@ public class SaveResDataAPI implements INetModel {
     private ResDataBean resDataBean;
     private OnNetRequestListener onNetRequestListener;
 
-    public SaveResDataAPI(String access_token, ResDataBean resDataBean, OnNetRequestListener onNetRequestListener) {
+    public SaveResDataAPI(String access_token,ResDataBean resDataBean, OnNetRequestListener onNetRequestListener) {
         this.access_token = access_token;
         this.resDataBean = resDataBean;
         this.onNetRequestListener = onNetRequestListener;
@@ -53,12 +53,13 @@ public class SaveResDataAPI implements INetModel {
         JSONObject outJs = new JSONObject();
 
         try {
-            outJs.put("fd_resmodelid", resDataBean.getFd_resmodelid());
-            outJs.put("fd_resdate", resDataBean.getFd_resdate());
             outJs.put("id", resDataBean.getId());
-            outJs.put("fd_restaskid", resDataBean.getFdTaskId());
+            outJs.put("fd_rescode", resDataBean.getRescode());
             outJs.put("fd_resname", resDataBean.getFd_resname());
+            outJs.put("fd_restaskid", resDataBean.getFdTaskId());
+            outJs.put("fd_resdate", resDataBean.getFd_resdate());
             outJs.put("fd_restaskname", resDataBean.getFd_restaskname());
+            outJs.put("fd_resmodelid", resDataBean.getFd_resmodelid());
             outJs.put("fd_resmodelname", resDataBean.getFd_resmodelname());
             outJs.put("fd_resposition", resDataBean.getFd_resposition());
 
@@ -148,14 +149,6 @@ public class SaveResDataAPI implements INetModel {
 
 
             resjson.put("formModel", formJson);
-
-
-
-
-
-
-
-
 
 
 

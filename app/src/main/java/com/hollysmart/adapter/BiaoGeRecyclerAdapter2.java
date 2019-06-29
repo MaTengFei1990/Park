@@ -429,13 +429,15 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         }
 
         if (bean.getPropertyLabel() != null) {
-            List<DictionaryBean> dictionaryBeans = map.get(bean.getDictText());
+//            List<DictionaryBean> dictionaryBeans = map.get(bean.getDictText());
+//
+//            for (DictionaryBean dictionaryBean : dictionaryBeans) {
+//                if (dictionaryBean.getValue().equals(bean.getPropertyLabel())) {
+//                    holder.tv_value.setText(dictionaryBean.getLabel());
+//                }
+//            }
+            holder.tv_value.setText(bean.getPropertyLabel());
 
-            for (DictionaryBean dictionaryBean : dictionaryBeans) {
-                if (dictionaryBean.getValue().equals(bean.getPropertyLabel())) {
-                    holder.tv_value.setText(dictionaryBean.getLabel());
-                }
-            }
         } else {
             holder.tv_value.setText("");
         }
@@ -465,27 +467,27 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
                             if (Utils.isEmpty(oldPropertylabel)) {
 
-                                bean.setPropertyLabel(dictionaryBean.getValue());
+                                bean.setPropertyLabel(dictionaryBean.getLabel());
 
-                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
+                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("否")) {
 
 
                                     notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
 
                                 }
 
-                            }else if (!oldPropertylabel.equals(dictionaryBean.getValue())) {
+                            }else if (!oldPropertylabel.equals(dictionaryBean.getLabel())) {
 
-                                bean.setPropertyLabel(dictionaryBean.getValue());
+                                bean.setPropertyLabel(dictionaryBean.getLabel());
 
-                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("1")) {
+                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("是")) {
 
 
                                     notifyItemRangeInserted(bean.getPosition()+1,bean.getPropertys().size());
 
                                 }
 
-                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("2")) {
+                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("否")) {
 
 
                                     notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
