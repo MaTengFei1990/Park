@@ -860,9 +860,6 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 //        }
         savePicFile(jdPicDao);
 
-        moveTemp2CurrentFile();
-
-
         if (audios != null) {
             jdSoundDao.deletByResId(resDataBean.getId());
             for (SoundInfo soundInfo : audios) {
@@ -872,6 +869,9 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             }
 
         }
+        moveTemp2CurrentFile();
+
+
 
         resDataDao.addOrUpdate(resDataBean);
 
