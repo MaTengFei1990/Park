@@ -2,7 +2,6 @@ package com.hollysmart.apis;
 
 import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.utils.Mlog;
-import com.hollysmart.utils.PicYasuo;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.value.Values;

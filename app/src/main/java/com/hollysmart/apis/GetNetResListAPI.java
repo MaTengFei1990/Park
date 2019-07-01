@@ -1,8 +1,5 @@
 package com.hollysmart.apis;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.hollysmart.beans.ProjectBean;
 import com.hollysmart.beans.ResDataBean;
 import com.hollysmart.db.UserInfo;

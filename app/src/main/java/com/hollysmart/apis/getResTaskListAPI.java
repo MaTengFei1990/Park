@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hollysmart.beans.ProjectBean;
-import com.hollysmart.beans.UserInfoBean;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.value.UserToken;

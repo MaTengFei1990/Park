@@ -2,7 +2,6 @@ package com.hollysmart.apis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.hollysmart.beans.DongTaiFormBean;
 import com.hollysmart.beans.FormModelBean;
@@ -22,7 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import okhttp3.Call;
