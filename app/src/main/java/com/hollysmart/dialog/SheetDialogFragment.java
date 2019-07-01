@@ -339,6 +339,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 et_remark.setText(resDataBean.getNote());
             }
             seekBar_fenwei.setProgress(resDataBean.getScope()-10);
+            scope = resDataBean.getScope();
             text_fenwei.setText("当前范围：" + resDataBean.getScope() + "米");
 
 

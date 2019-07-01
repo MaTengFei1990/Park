@@ -75,6 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:text="下一步"
+            android:visibility="gone"
             android:textColor="@color/baise"
             android:textSize="@dimen/text_da" />
 

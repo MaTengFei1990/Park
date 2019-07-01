@@ -44,7 +44,6 @@ public class PicYasuo implements INetModel {
                     @Override
                     public void onStart() {
                         // TODO 压缩开始前调用，可以在方法内启动 loading UI
-                        Utils.showToast(context,"start zip");
                     }
 
                     @Override
@@ -57,7 +56,6 @@ public class PicYasuo implements INetModel {
                     @Override
                     public void onError(Throwable e) {
                         // TODO 当压缩过程出现问题时调用
-                        Utils.showToast(context,"eeeee==="+e.getMessage());
                         onNetRequestListener.OnNext();
                     }
                 }).launch();

@@ -830,11 +830,14 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                     } else {
 
 
-                        Utils.showDialog(mContext,"该项目下没有该分类;");
+                        Utils.showDialog(mContext, "该项目下没有该分类;");
                     }
 
 
-
+                } else {
+                    if (resultCode == 4) {
+                        Utils.showDialog(mContext, "该项目下没有该分类;");
+                    }
                 }
                 break;
 

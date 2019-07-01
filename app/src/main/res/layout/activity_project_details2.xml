@@ -22,14 +22,32 @@
             android:padding="10dp"
             android:src="@mipmap/fanhui_1" />
 
-
-        <TextView
-            android:id="@+id/tv_projectName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_centerInParent="true"
-            android:textColor="@color/baise"
-            android:textSize="@dimen/tv_size" />
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_projectName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textColor="@color/baise"
+                android:textSize="@dimen/tv_size" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/baise"
+                android:text="技术支持:13718156911"
+                android:textSize="@dimen/text_xiao" />
+
+
+
+        </LinearLayout>
+
+
 
 
         <LinearLayout

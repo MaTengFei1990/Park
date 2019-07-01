@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hollysmart.beans.FormModelBean;
 import com.hollysmart.beans.ResDataBean;
 import com.hollysmart.utils.Mlog;
+import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.value.Values;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -77,6 +78,10 @@ public class ResDataGetAPI implements INetModel {
 
 
                     if ( status == 200){
+                        if (Utils.isEmpty(jsonObject.getString("data"))) {
+                            resDataDeleteIF.onResDataDeleteResult(false, null);
+                            return;
+                        }
 
                         Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
                         ResDataBean redata = mGson.fromJson(jsonObject.getString("data"),

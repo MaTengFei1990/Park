@@ -188,6 +188,9 @@ public class Ma_ScanActivity extends StyleAnimActivity implements QRCodeView.Del
                     setResult(3, intent);
                     finish();
 
+                } else {
+                    setResult(4, null);
+                    finish();
                 }
 
             }
