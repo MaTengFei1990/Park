@@ -1,7 +1,6 @@
 package com.hollysmart.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import com.hollysmart.utils.Utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,7 +109,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             return VIEWTYPE_DANHANG_TIME_SELECT;
         }
-//        if (bean.getShowType().equals("list") && (bean.getPropertys() != null && bean.getPropertys().size() > 0)) {
+//        if (bean.getShowType().equals("list") && (bean.getCgformFieldList() != null && bean.getCgformFieldList().size() > 0)) {
 //
 //            return VIEWTYPE_CONTENT_CHILD_LIST;
 //        }
@@ -136,7 +134,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             DongTaiFormBean dongTaiFormBean = biaoGeBeanList.get(i);
 
-            if (dongTaiFormBean.getPropertys() != null && dongTaiFormBean.getPropertys().size() > 0) {
+            if (dongTaiFormBean.getCgformFieldList() != null && dongTaiFormBean.getCgformFieldList().size() > 0) {
 
                 String propertyLabel = dongTaiFormBean.getPropertyLabel();
 
@@ -144,7 +142,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
                 } else {
 
-                    childItemCount = childItemCount + dongTaiFormBean.getPropertys().size();
+                    childItemCount = childItemCount + dongTaiFormBean.getCgformFieldList().size();
                 }
 
             }
@@ -469,10 +467,10 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
                                 bean.setPropertyLabel(dictionaryBean.getLabel());
 
-                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("否")) {
+                                if (bean.getCgformFieldList() != null && bean.getPropertyLabel().equals("否")) {
 
 
-                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
+                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getCgformFieldList().size());
 
                                 }
 
@@ -480,17 +478,17 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
                                 bean.setPropertyLabel(dictionaryBean.getLabel());
 
-                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("是")) {
+                                if (bean.getCgformFieldList() != null && bean.getPropertyLabel().equals("是")) {
 
 
-                                    notifyItemRangeInserted(bean.getPosition()+1,bean.getPropertys().size());
+                                    notifyItemRangeInserted(bean.getPosition()+1,bean.getCgformFieldList().size());
 
                                 }
 
-                                if (bean.getPropertys() != null && bean.getPropertyLabel().equals("否")) {
+                                if (bean.getCgformFieldList() != null && bean.getPropertyLabel().equals("否")) {
 
 
-                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getPropertys().size());
+                                    notifyItemRangeRemoved(bean.getPosition()+1,bean.getCgformFieldList().size());
 
                                 }
 
@@ -595,7 +593,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             } else {
 
-                List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+                List<DongTaiFormBean> propertys = dongTaiFormBean.getCgformFieldList();
 
                 if (propertys != null && propertys.size() > 0) {
                     dongTaiFormBean.setPosition(countss);
@@ -633,7 +631,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
             DongTaiFormBean dongTaiFormBean = biaoGeBeanList.get(i);
 
-            List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+            List<DongTaiFormBean> propertys = dongTaiFormBean.getCgformFieldList();
 
 
             String propertyLabel = dongTaiFormBean.getPropertyLabel();

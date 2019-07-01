@@ -164,13 +164,13 @@ public class SaveResDataAPI implements INetModel {
                 }
 
 
-                if (dongTaiFormBean.getPropertys() != null && dongTaiFormBean.getPropertys().size() > 0) {
+                if (dongTaiFormBean.getCgformFieldList() != null && dongTaiFormBean.getCgformFieldList().size() > 0) {
 
                     JSONArray childformJsonArray = new JSONArray();
 
-                    for (int j = 0; j < dongTaiFormBean.getPropertys().size(); j++) {
+                    for (int j = 0; j < dongTaiFormBean.getCgformFieldList().size(); j++) {
 
-                        DongTaiFormBean ChilddongTaiFormBean = dongTaiFormBean.getPropertys().get(j);
+                        DongTaiFormBean ChilddongTaiFormBean = dongTaiFormBean.getCgformFieldList().get(j);
 
                         JSONObject childformobj = new JSONObject();
                         try {
@@ -197,7 +197,7 @@ public class SaveResDataAPI implements INetModel {
 
                     }
 
-                    formobj.put("propertys", childformJsonArray);
+                    formobj.put("cgformFieldList", childformJsonArray);
 
 
 

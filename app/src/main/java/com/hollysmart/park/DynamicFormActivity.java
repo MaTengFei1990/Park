@@ -478,7 +478,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
                     DongTaiFormBean dongTaiFormBean = formBeanList.get(i);
 
 
-                    List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+                    List<DongTaiFormBean> propertys = dongTaiFormBean.getCgformFieldList();
 
 
                     List<cgformRuleBean> cgformRuleList = dongTaiFormBean.getCgformRuleList();
@@ -616,7 +616,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
                     }
 
 
-                    List<DongTaiFormBean> propertys = dongTaiFormBean.getPropertys();
+                    List<DongTaiFormBean> propertys = dongTaiFormBean.getCgformFieldList();
 
                     if (propertys != null && propertys.size() > 0) {
 

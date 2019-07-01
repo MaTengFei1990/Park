@@ -76,9 +76,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -678,7 +676,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 //                    notfill = false;
 //                }
 //
-//                List<DongTaiFormBean> propertys = formBean.getPropertys();
+//                List<DongTaiFormBean> propertys = formBean.getCgformFieldList();
 //
 //                if (propertys != null && propertys.size() > 0) {
 //
@@ -778,7 +776,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                     notfill = false;
                 }
 
-                List<DongTaiFormBean> propertys = formBean.getPropertys();
+                List<DongTaiFormBean> propertys = formBean.getCgformFieldList();
                 if (formBean.getPropertyLabel() != null) {
                     if (!formBean.getPropertyLabel().equals("否")) {
                         if (propertys != null && propertys.size() > 0) {
