@@ -648,30 +648,40 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         webView.evaluateJavascript("javascript:app.getLoginInfo()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                value= value.substring(1,value.length()-1);
+                if (!Utils.isEmpty(value)) {
 
-                String[] split = value.split("\\|");
+                    value= value.substring(1,value.length()-1);
 
-                new UserLoginAPI(split[0], split[1], new UserLoginAPI.LoginInfoIF() {
-                    @Override
-                    public void loginResult(boolean isOk, String msg, String access_token, String token_type) {
+                    String[] split = value.split("\\|");
 
-                        UserToken.getUserToken().setFormToken(token_type + " " + access_token);
-                        UserInfo userInfoBean = new UserInfo();
-                        userInfoBean.setAccess_token(token_type + " " + access_token);
+                    new UserLoginAPI(split[0], split[1], new UserLoginAPI.LoginInfoIF() {
+                        @Override
+                        public void loginResult(boolean isOk, String msg, String access_token, String token_type) {
 
-                        new GetUserInfoAPI(userInfoBean, new GetUserInfoAPI.UserInfoIF() {
-                            @Override
-                            public void userResult(boolean isOk, UserInfo userInfo) {
+                            if (isOk) {
+                                UserToken.getUserToken().setFormToken(token_type + " " + access_token);
+                                UserInfo userInfoBean = new UserInfo();
+                                userInfoBean.setAccess_token(token_type + " " + access_token);
 
-                                String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
-                                File file = new File(userPath);
-                                ACache.get(file).put(Values.CACHE_USERINFO, userInfo);
+                                new GetUserInfoAPI(userInfoBean, new GetUserInfoAPI.UserInfoIF() {
+                                    @Override
+                                    public void userResult(boolean isOk, UserInfo userInfo) {
+                                        if (isOk) {
+                                            String userPath = Values.SDCARD_FILE(Values.SDCARD_CACHE) + Values.CACHE_USER;
+                                            File file = new File(userPath);
+                                            ACache.get(file).put(Values.CACHE_USERINFO, userInfo);
+
+                                        }
+
+
+                                    }
+                                }).request();
 
                             }
-                        }).request();
-                    }
-                }).request();
+
+                        }
+                    }).request();
+                }
 
             }
         });

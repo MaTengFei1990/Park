@@ -272,13 +272,13 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
                 mContext.startActivity(intent);
                 dismiss();
                 break;
-            case R.id.tv_chat:
-//                intent = new Intent(mContext, ConferenceSendActivity.class);
-                intent = new Intent(mContext, VoiceCallingActivity.class);
-                intent.putExtra("roleid",roleid);
-                mContext.startActivity(intent);
-                dismiss();
-                break;
+//            case R.id.tv_chat:
+////                intent = new Intent(mContext, ConferenceSendActivity.class);
+//                intent = new Intent(mContext, VoiceCallingActivity.class);
+//                intent.putExtra("roleid",roleid);
+//                mContext.startActivity(intent);
+//                dismiss();
+//                break;
             default:
                 break;
         }

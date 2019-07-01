@@ -39,18 +39,19 @@
             android:drawablePadding="10dp"
             android:paddingBottom="@dimen/more_window_item_margin"
             android:text="相册" />
-        <TextView
-            android:id="@+id/tv_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_photo"
-            android:clickable="true"
-            android:layout_marginLeft="60.0dip"
-            android:drawableTop="@mipmap/icon_pic"
-            android:gravity="center_horizontal"
-            android:drawablePadding="10dp"
-            android:paddingBottom="@dimen/more_window_item_margin"
-            android:text="语音" />
+        <!--<TextView-->
+            <!--android:id="@+id/tv_chat"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@id/tv_photo"-->
+            <!--android:clickable="true"-->
+            <!--android:visibility="gone"-->
+            <!--android:layout_marginLeft="60.0dip"-->
+            <!--android:drawableTop="@mipmap/icon_pic"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:drawablePadding="10dp"-->
+            <!--android:paddingBottom="@dimen/more_window_item_margin"-->
+            <!--android:text="语音" />-->
 
     </RelativeLayout>
 
