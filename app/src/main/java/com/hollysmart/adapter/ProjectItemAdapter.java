@@ -730,7 +730,7 @@ public class ProjectItemAdapter extends CommonAdapter<ProjectBean> {
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
 
-                    taskPool.addTask(new PicYasuo(jdPicInfo, listener));
+                    taskPool.addTask(new PicYasuo(jdPicInfo, mContext,listener));
                 }
             }
             for (JDPicInfo jdPicInfo : picList) {

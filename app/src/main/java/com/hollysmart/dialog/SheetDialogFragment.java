@@ -952,7 +952,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
 
-                    taskPool.addTask(new PicYasuo(jdPicInfo, listener));
+                    taskPool.addTask(new PicYasuo(jdPicInfo,mContext, listener));
                 }
             }
 

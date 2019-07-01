@@ -97,7 +97,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
 
-                    taskPool.addTask(new PicYasuo(jdPicInfo, this));
+                    taskPool.addTask(new PicYasuo(jdPicInfo, this,this));
                 }
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && jdPicInfo.getIsAddFlag() != 1) {
@@ -140,7 +140,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()) && Utils.isEmpty(jdPicInfo.getImageUrl())) {
 
-                    taskPool.addTask(new PicYasuo(jdPicInfo, this));
+                    taskPool.addTask(new PicYasuo(jdPicInfo, this,this));
                 }
 
                 if (!Utils.isEmpty(jdPicInfo.getFilePath()))
