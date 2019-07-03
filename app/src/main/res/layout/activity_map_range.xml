@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/ll_shang"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/bg_lan">
+
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:src="@mipmap/fanhui_1" />
+
+
+        <TextView
+            android:id="@+id/tv_GPSInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/range_select"
+            android:textColor="@color/baise"
+            android:textSize="@dimen/tv_size" />
+
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:id="@+id/tv_GPSNum"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:src="@mipmap/icon_yes" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/mMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        </com.baidu.mapapi.map.MapView>
+
+
+        <ImageView
+            android:id="@+id/iv_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/shizi3" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+
+            <Button
+                android:id="@+id/btn_add"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_shape"
+                android:textColor="@color/baise"
+                android:textSize="@dimen/text_zhong"
+                android:text="添加" />
+
+            <Button
+                android:id="@+id/btn_chexiao"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_shape"
+                android:textColor="@color/baise"
+                android:textSize="@dimen/text_zhong"
+                android:text="撤销" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_shape"
+                android:textColor="@color/baise"
+                android:textSize="@dimen/text_zhong"
+                android:text="保存" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="150dp"
+            android:gravity="right"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/bn_weixing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/touming"
+                android:src="@mipmap/icon1_01" />
+
+            <ImageButton
+                android:id="@+id/bn_dingwei"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/touming"
+                android:src="@mipmap/icon1_03" />
+
+            <ImageButton
+                android:id="@+id/imagbtn_enlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/touming"
+                android:src="@mipmap/icon1_04" />
+
+            <ImageButton
+                android:id="@+id/imagbtn_zoomOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/touming"
+                android:src="@mipmap/icon1_05" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>
