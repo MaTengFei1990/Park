@@ -66,6 +66,7 @@ import com.hollysmart.beans.UserInfoBean;
 import com.hollysmart.conference.MyCallListener;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.dialog.ButtomDialogView;
+import com.hollysmart.formlib.ResDataListActivity;
 import com.hollysmart.imgdownLoad.DownLoadImageService;
 import com.hollysmart.imgdownLoad.ImageDownLoadCallBack;
 import com.hollysmart.popuwindow.MoreWindow;
@@ -390,6 +391,9 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
             Intent intent = new Intent(mContext, AboutUsActivity.class);
             startActivity(intent);
 
+        } else if (url.contains("resource.html?")) {
+            startResourceListActivity(url);
+
         } else {
             webView.loadUrl(url);
 
@@ -397,6 +401,47 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
 
     }
+    /**
+     * 进入资源列表页面;
+     */
+
+    private void startResourceListActivity(String url) {
+
+        String[] scada = url.split("resource.html\\?");
+        Map<String, String> map = new HashMap<String , String>();
+        if (scada!=null&&scada.length>1) {
+
+            if (scada.length > 0) {
+
+                for (int i = 1; i < scada.length; i++) {
+
+                    String s = scada[i];
+
+                    String[] split = s.split("=");
+                    try {
+                        map.put(split[0], URLDecoder.decode(split[1],"UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+
+            }
+
+
+
+        }
+
+
+        Intent intent = new Intent(mContext, ResDataListActivity.class);
+        intent.putExtra("exter", (Serializable) map);
+        startActivity(intent);
+    }
+
+
+
 
     /**
      * 进入项目管理页面;

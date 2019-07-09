@@ -38,12 +38,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MapRangeActivity"></activity>
+        <activity android:name="com.hollysmart.formlib.ListShowOnMapActivity"></activity>
+        <activity android:name="com.hollysmart.formlib.ResDetailsActivity" />
+        <activity android:name="com.hollysmart.formlib.ResDataListActivity" />
+        <activity android:name=".MapRangeActivity" />
         <activity
             android:name="com.hollysmart.voicecall.VocieCallInCall2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".VoiceCallComingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

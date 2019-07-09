@@ -14,7 +14,7 @@ android {
         //设置支持的 so 库 支持
         ndk {
 //            abiFilters 'arm64-v8a', 'armeabi', 'armeabi-v7a', 'x86', 'x86_64'
-            abiFilters  'armeabi'
+            abiFilters 'armeabi'
         }
     }
     buildTypes {
@@ -110,6 +110,7 @@ dependencies {
     compile files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
 
     implementation 'top.zibin:Luban:1.1.8'
+    implementation 'com.youth.banner:banner:1.4.10'
 }
 
 

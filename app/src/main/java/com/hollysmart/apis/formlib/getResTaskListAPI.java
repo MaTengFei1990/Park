@@ -1,4 +1,4 @@
-package com.hollysmart.apis;
+package com.hollysmart.apis.formlib;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -85,6 +85,7 @@ public class getResTaskListAPI implements INetModel {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    sheBeiListIF.onResTaskListResult(false, null,0);
                 }
 
             }

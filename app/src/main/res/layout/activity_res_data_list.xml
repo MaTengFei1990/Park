@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:id="@+id/ll_shang"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/bg_lan"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/ib_back"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:src="@mipmap/fanhui_1"
+            android:padding="13dp"
+            android:background="@color/touming"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="资源管理"
+            android:textColor="@color/baise"
+            android:textSize="@dimen/tv_size_big"/>
+
+        <ImageView
+            android:id="@+id/iv_maplsit"
+            android:layout_width="60dp"
+            android:layout_height="fill_parent"
+            android:padding="13dp"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/icon_map_list"
+            android:background="@color/touming"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lv_jingdian"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="@color/touming"
+        android:dividerHeight="0sp">
+    </ListView>
+
+</LinearLayout>
