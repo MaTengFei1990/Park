@@ -168,7 +168,23 @@ public class BigPicActivity extends StyleAnimActivity {
 							});
 				}
 			} else {
-				imageView.setImageResource(R.mipmap.a_v);
+
+				if (infos.get(position).getImageUrl() != null) {
+					Glide.with(BigPicActivity.this)
+							.load(Values.SERVICE_URL_ADMIN_FORM + infos.get(position).getImageUrl())
+							.asBitmap()
+							.placeholder(R.mipmap.a_v)
+							.error(R.mipmap.a_v)
+							.into(new SimpleTarget<Bitmap>() {
+								@Override
+								public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+									imageView.setImageBitmap(getBitMap(resource));
+								}
+							});
+				} else {
+
+					imageView.setImageResource(R.mipmap.a_v);
+				}
 			}
 			imageView.setOnClickListener(BigPicActivity.this);
 			view.addView(imageLayout, 0);

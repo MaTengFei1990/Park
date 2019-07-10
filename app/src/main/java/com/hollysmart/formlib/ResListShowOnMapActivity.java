@@ -35,6 +35,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -74,7 +75,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ResListShowOnMapActivity extends StyleAnimActivity implements View.OnClickListener, MainView {
+public class ResListShowOnMapActivity extends StyleAnimActivity implements View.OnClickListener, MainView ,BaiduMap.OnMapLoadedCallback{
 
 
     private Context context;
@@ -212,6 +213,7 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
         mBaiduMap.animateMapStatus(u);
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.setOnMapLoadedCallback(this);
         // 定位初始化
         mLocClient = new LocationClient(getApplicationContext());
         //声明LocationClient类
@@ -404,6 +406,32 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
 
     }
 
+    @Override
+    public void onMapLoaded() {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (int i = 0; i < resDatalist.size(); i++) {
+            GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
+                    Double.parseDouble(resDatalist.get(i).getLongitude()));
+
+            LatLng llA = new LatLng(gps.getLat(),
+                    gps.getLon());
+            OverlayOptions ooA = new MarkerOptions().position(llA)
+                    .icon(bdA).zIndex(i);
+            Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+            mMarkers.put(i, marker);
+            builder.include(llA);
+            int fanwei = resDatalist.get(i).getScope();
+            mainPresenter.getCoordinates(fanwei, i);
+        }
+
+        LatLngBounds bounds = builder.build();
+        // 设置显示在屏幕中的地图地理范围
+        int  Width = mMapView.getWidth();
+        int height = mMapView.getHeight();
+        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
+        mBaiduMap.setMapStatus(u);
+    }
 
 
     /**
@@ -744,10 +772,46 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                     }
                 }
 
+//                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//                for (int i = 0; i < resDatalist.size(); i++) {
+//                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
+//                            Double.parseDouble(resDatalist.get(i).getLongitude()));
+//
+//                    LatLng llA = new LatLng(gps.getLat(),
+//                            gps.getLon());
+//                    OverlayOptions ooA = new MarkerOptions().position(llA)
+//                            .icon(bdA).zIndex(i);
+//                    Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+//                    mMarkers.put(i, marker);
+//                    builder.include(llA);
+//                    int fanwei = resDatalist.get(i).getScope();
+//                    mainPresenter.getCoordinates(fanwei, i);
+//                }
+//
+//                LatLngBounds bounds = builder.build();
+//                // 设置显示在屏幕中的地图地理范围
+//                int  Width = mMapView.getWidth();
+//                int height = mMapView.getHeight();
+//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
+//                mBaiduMap.setMapStatus(u);
 
+
+                drowInMap();
+
+
+            }
+        }).request();
+
+
+
+    }
+
+
+
+    private void drowInMap() {
+
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 for (int i = 0; i < resDatalist.size(); i++) {
-
-
                     GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
                             Double.parseDouble(resDatalist.get(i).getLongitude()));
 
@@ -757,20 +821,21 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                             .icon(bdA).zIndex(i);
                     Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
                     mMarkers.put(i, marker);
+                    builder.include(llA);
                     int fanwei = resDatalist.get(i).getScope();
                     mainPresenter.getCoordinates(fanwei, i);
                 }
 
-
-
-
-
-            }
-        }).request();
-
-
+                LatLngBounds bounds = builder.build();
+                // 设置显示在屏幕中的地图地理范围
+                int  Width = mMapView.getWidth();
+                int height = mMapView.getHeight();
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
+                mBaiduMap.setMapStatus(u);
 
     }
+
+
 
 
     private boolean spotEditFlag = true; // ture 新添加 false 修改

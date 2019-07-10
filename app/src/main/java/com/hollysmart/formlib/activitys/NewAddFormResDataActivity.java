@@ -1036,32 +1036,32 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
             }else {
 
-                if (formBean.getShowType().equals("image")) {
-
-                    if (!Utils.isEmpty(formBean.getPropertyLabel())) {
-                        String[] split = formBean.getPropertyLabel().split(",");
-                        List<JDPicInfo> picInfos = new ArrayList<>();
-
-                        for (int k = 0; k < split.length; k++) {
-
-                            JDPicInfo jdPicInfo = new JDPicInfo();
-
-                            jdPicInfo.setImageUrl(split[k]);
-                            jdPicInfo.setIsDownLoad("true");
-                            jdPicInfo.setIsAddFlag(0);
-
-                            picInfos.add(jdPicInfo);
-                        }
-                        if (picInfos != null && picInfos.size() > 0) {
-
-                            formPicMap.put(formBean.getJavaField(), picInfos);
-                        }
-
-
-                    }
-
-
-                }
+//                if (formBean.getShowType().equals("image")) {
+//
+//                    if (!Utils.isEmpty(formBean.getPropertyLabel())) {
+//                        String[] split = formBean.getPropertyLabel().split(",");
+//                        List<JDPicInfo> picInfos = new ArrayList<>();
+//
+//                        for (int k = 0; k < split.length; k++) {
+//
+//                            JDPicInfo jdPicInfo = new JDPicInfo();
+//
+//                            jdPicInfo.setImageUrl(split[k]);
+//                            jdPicInfo.setIsDownLoad("true");
+//                            jdPicInfo.setIsAddFlag(0);
+//
+//                            picInfos.add(jdPicInfo);
+//                        }
+//                        if (picInfos != null && picInfos.size() > 0) {
+//
+//                            formPicMap.put(formBean.getJavaField(), picInfos);
+//                        }
+//
+//
+//                    }
+//
+//
+//                }
 
             }
 
