@@ -213,7 +213,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
             DongTaiFormBean formBean = formBeans.get(i);
 
             if (formBean.getPic() != null && formBean.getPic().size() > 0) {
-                formPicMap.put(formBean.getFieldName(), formBean.getPic());
+                formPicMap.put(formBean.getJavaField(), formBean.getPic());
 
             }else {
 
@@ -234,7 +234,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
                         }
                         if (picInfos != null && picInfos.size() > 0) {
 
-                            formPicMap.put(formBean.getFieldName(), picInfos);
+                            formPicMap.put(formBean.getJavaField(), picInfos);
                         }
 
 
@@ -254,7 +254,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
                     DongTaiFormBean childbean = childList.get(j);
 
                     if (childbean.getPic() != null && childbean.getPic().size() > 0) {
-                        formPicMap.put(childbean.getFieldName(), childbean.getPic());
+                        formPicMap.put(childbean.getJavaField(), childbean.getPic());
 
                     }else {
 
@@ -275,7 +275,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
                                 }
                                 if (picInfos != null && picInfos.size() > 0) {
 
-                                    formPicMap.put(childbean.getFieldName(), picInfos);
+                                    formPicMap.put(childbean.getJavaField(), picInfos);
                                 }
 
 

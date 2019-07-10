@@ -139,7 +139,7 @@ public class SaveResDataAPI implements INetModel {
                 DongTaiFormBean dongTaiFormBean = cgformFieldList.get(i);
 
 
-                List<JDPicInfo> jdPicInfos = formPicMap.get(dongTaiFormBean.getFieldName());
+                List<JDPicInfo> jdPicInfos = formPicMap.get(dongTaiFormBean.getJavaField());
 
                 if (jdPicInfos != null && jdPicInfos.size() > 0) {
                     String picUrl = "";
@@ -166,7 +166,7 @@ public class SaveResDataAPI implements INetModel {
 
                     for (DongTaiFormBean childForm : childFormList) {
 
-                        List<JDPicInfo> childjdPicInfos = formPicMap.get(childForm.getFieldName());
+                        List<JDPicInfo> childjdPicInfos = formPicMap.get(childForm.getJavaField());
 
                         if (childjdPicInfos != null && childjdPicInfos.size() > 0) {
                             String picUrl = "";

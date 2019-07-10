@@ -58,7 +58,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NewAddFormResDataActivity extends StyleAnimActivity  {
+public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
 
     @Override
@@ -147,7 +147,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
             if (formBean.getShowType().equals("image")) {
                 if (formPicMap != null && formPicMap.size() > 0) {
-                    List<JDPicInfo> picInfos = formPicMap.get(formBean.getFieldName());
+                    List<JDPicInfo> picInfos = formPicMap.get(formBean.getJavaField());
                     formBean.setPic(picInfos);
 
                 }
@@ -166,7 +166,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
                     if (childbean.getShowType().equals("image")) {
 
                         if (formPicMap != null && formPicMap.size() > 0) {
-                            List<JDPicInfo> picInfos = formPicMap.get(childbean.getFieldName());
+                            List<JDPicInfo> picInfos = formPicMap.get(childbean.getJavaField());
                             childbean.setPic(picInfos);
 
                         }
@@ -825,15 +825,15 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
             DongTaiFormBean formBean = formBeanList.get(i);
 
-            if (formBean.getFieldName().equals("name")) {
+            if (formBean.getJavaField().equals("name")) {
 
                 resDataBean.setFd_resname(formBean.getPropertyLabel());
             }
-            if (formBean.getFieldName().equals("number")) {
+            if (formBean.getJavaField().equals("number")) {
 
                 resDataBean.setRescode(formBean.getPropertyLabel());
             }
-            if (formBean.getFieldName().equals("location")) {
+            if (formBean.getJavaField().equals("location")) {
 
                 String propertyLabel = formBean.getPropertyLabel();
 
@@ -994,7 +994,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
             DongTaiFormBean formBean = formBeans.get(i);
 
             if (formBean.getPic() != null && formBean.getPic().size() > 0) {
-                formPicMap.put(formBean.getFieldName(), formBean.getPic());
+                formPicMap.put(formBean.getJavaField(), formBean.getPic());
 
             }else {
 
@@ -1016,7 +1016,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
                         }
                         if (picInfos != null && picInfos.size() > 0) {
 
-                            formPicMap.put(formBean.getFieldName(), picInfos);
+                            formPicMap.put(formBean.getJavaField(), picInfos);
                         }
 
 
@@ -1036,7 +1036,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
                     DongTaiFormBean childbean = childList.get(j);
 
                     if (childbean.getPic() != null && childbean.getPic().size() > 0) {
-                        formPicMap.put(childbean.getFieldName(), childbean.getPic());
+                        formPicMap.put(childbean.getJavaField(), childbean.getPic());
 
                     }else {
 
@@ -1058,7 +1058,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
                                 }
                                 if (picInfos != null && picInfos.size() > 0) {
 
-                                    formPicMap.put(childbean.getFieldName(), picInfos);
+                                    formPicMap.put(childbean.getJavaField(), picInfos);
                                 }
 
 
@@ -1122,7 +1122,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
                         for (DongTaiFormBean bean : formBeanList) {
 
-                            if (bean.getFieldName().equals(dongTaiFormBean.getFieldName())) {
+                            if (bean.getJavaField().equals(dongTaiFormBean.getJavaField())) {
                                 bean.setPropertyLabel(dongTaiFormBean.getPropertyLabel());
 
                             }
@@ -1133,7 +1133,7 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
                                 for (DongTaiFormBean child : childList) {
 
-                                    if (child.getFieldName().equals(dongTaiFormBean.getFieldName())) {
+                                    if (child.getJavaField().equals(dongTaiFormBean.getJavaField())) {
                                         child.setPropertyLabel(dongTaiFormBean.getPropertyLabel());
 
                                     }
@@ -1189,9 +1189,9 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
                         for (DongTaiFormBean bean : formBeanList) {
 
-                            if (bean.getFieldName().equals(formBean.getFieldName())) {
+                            if (bean.getJavaField().equals(formBean.getJavaField())) {
                                 bean.setPic(picList);
-                                formPicMap.put(bean.getFieldName(), picList);
+                                formPicMap.put(bean.getJavaField(), picList);
                             }
 
 
@@ -1201,9 +1201,9 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
                                 for (DongTaiFormBean child : childList) {
 
-                                    if (child.getFieldName().equals(formBean.getFieldName())) {
+                                    if (child.getJavaField().equals(formBean.getJavaField())) {
                                         child.setPic(picList);
-                                        formPicMap.put(child.getFieldName(), picList);
+                                        formPicMap.put(child.getJavaField(), picList);
 
                                     }
                                 }
@@ -1263,9 +1263,9 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
                     for (DongTaiFormBean bean1 : formBeanList) {
 
-                        if (bean1.getFieldName().equals(formBean.getFieldName())) {
+                        if (bean1.getJavaField().equals(formBean.getJavaField())) {
                             bean1.setPic(picList);
-                            formPicMap.put(bean1.getFieldName(), picList);
+                            formPicMap.put(bean1.getJavaField(), picList);
 
                         }
 
@@ -1275,9 +1275,9 @@ public class NewAddFormResDataActivity extends StyleAnimActivity  {
 
                             for (DongTaiFormBean child : childList) {
 
-                                if (child.getFieldName().equals(formBean.getFieldName())) {
+                                if (child.getJavaField().equals(formBean.getJavaField())) {
                                     child.setPic(picList);
-                                    formPicMap.put(child.getFieldName(), picList);
+                                    formPicMap.put(child.getJavaField(), picList);
 
                                 }
                             }

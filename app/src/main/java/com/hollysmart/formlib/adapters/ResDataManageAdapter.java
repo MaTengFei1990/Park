@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.apis.GetDictListDataAPI;
+import com.hollysmart.apis.GetResModelAPI;
+import com.hollysmart.beans.DictionaryBean;
+import com.hollysmart.beans.ResModelBean;
+import com.hollysmart.formlib.ResDetailsActivity;
 import com.hollysmart.formlib.apis.ResDataDeleteAPI;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
@@ -157,6 +163,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                                     List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                                             new TypeToken<List<DongTaiFormBean>>() {}.getType());
                                     formBeanList.addAll(dictList);
+                                    comparisForms(mJingDians.get(position),formBeanList);
                                     getFormPicMap(formBeanList);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -247,7 +254,7 @@ public class ResDataManageAdapter extends BaseAdapter {
             DongTaiFormBean formBean = formBeans.get(i);
 
             if (formBean.getPic() != null && formBean.getPic().size() > 0) {
-                formPicMap.put(formBean.getFieldName(), formBean.getPic());
+                formPicMap.put(formBean.getJavaField(), formBean.getPic());
 
             }else {
 
@@ -269,7 +276,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                         }
                         if (picInfos != null && picInfos.size() > 0) {
 
-                            formPicMap.put(formBean.getFieldName(), picInfos);
+                            formPicMap.put(formBean.getJavaField(), picInfos);
                         }
 
 
@@ -289,7 +296,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                     DongTaiFormBean childbean = childList.get(j);
 
                     if (childbean.getPic() != null && childbean.getPic().size() > 0) {
-                        formPicMap.put(childbean.getFieldName(), childbean.getPic());
+                        formPicMap.put(childbean.getJavaField(), childbean.getPic());
 
                     }else {
 
@@ -311,7 +318,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                                 }
                                 if (picInfos != null && picInfos.size() > 0) {
 
-                                    formPicMap.put(childbean.getFieldName(), picInfos);
+                                    formPicMap.put(childbean.getJavaField(), picInfos);
                                 }
 
 
@@ -330,6 +337,60 @@ public class ResDataManageAdapter extends BaseAdapter {
             }
 
         }
+
+    }
+
+
+    private void comparisForms(final ResDataBean resDataBean, final List<DongTaiFormBean> oldFormList) {
+
+
+
+        new GetResModelAPI(userInfo.getAccess_token(), resDataBean.getId(), new GetResModelAPI.GetResModelIF() {
+            @Override
+            public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBen) {
+
+                if (isOk) {//获取到网络数据
+
+                    String getfJsonData = resModelBen.getfJsonData();
+                    Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                    List<DongTaiFormBean>  newFormList = mGson.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {}.getType());
+
+                    comparis(oldFormList, newFormList);
+
+                }
+
+
+            }
+        }).request();
+
+    }
+
+
+    private void comparis(List<DongTaiFormBean> oldFormList, List<DongTaiFormBean> newFormList) {
+
+        if (oldFormList == null || oldFormList.size() == 0) {
+
+            return;
+        }
+        if (newFormList == null || newFormList.size() == 0) {
+
+            return;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
