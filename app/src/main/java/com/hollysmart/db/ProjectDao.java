@@ -1,7 +1,7 @@
 package com.hollysmart.db;
 import android.content.Context;
 
-import com.hollysmart.beans.ProjectBean;
+import com.hollysmart.formlib.beans.ProjectBean;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;

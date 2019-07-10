@@ -25,10 +25,9 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.hollysmart.animtor.KickBackAnimator;
-import com.hollysmart.park.EditPicActivity;
+import com.hollysmart.formlib.activitys.EditPicActivity;
 import com.hollysmart.park.EditTextActivity;
 import com.hollysmart.park.R;
-import com.hollysmart.park.VoiceCallingActivity;
 import com.hollysmart.utils.fastBlur.FastBlur;
 
 import java.util.ArrayList;

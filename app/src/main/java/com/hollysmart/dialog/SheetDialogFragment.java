@@ -37,13 +37,13 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.hollysmart.apis.SaveResDataAPI;
+import com.hollysmart.formlib.apis.SaveResDataAPI;
 import com.hollysmart.apis.UpLoadFormPicAPI;
 import com.hollysmart.apis.UpLoadSoundAPI;
-import com.hollysmart.beans.DongTaiFormBean;
-import com.hollysmart.beans.FormModelBean;
-import com.hollysmart.beans.ProjectBean;
-import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.formlib.beans.DongTaiFormBean;
+import com.hollysmart.formlib.beans.FormModelBean;
+import com.hollysmart.formlib.beans.ProjectBean;
+import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.beans.SoundInfo;
@@ -54,11 +54,11 @@ import com.hollysmart.db.ResModelDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.park.BigPicActivity;
 import com.hollysmart.park.BuildConfig;
-import com.hollysmart.park.Cai_AddPicActivity;
-import com.hollysmart.park.DynamicFormActivity;
-import com.hollysmart.park.Ma_ScanActivity;
+import com.hollysmart.formlib.activitys.Cai_AddPicActivity;
+import com.hollysmart.formlib.activitys.DynamicFormActivity;
+import com.hollysmart.formlib.activitys.Ma_ScanActivity;
 import com.hollysmart.park.R;
-import com.hollysmart.park.RecordListActivity;
+import com.hollysmart.formlib.activitys.RecordListActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.CCM_Bitmap;
 import com.hollysmart.utils.CCM_DateTime;
@@ -82,7 +82,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -145,6 +147,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
 
     private List<SoundInfo> audios=new ArrayList<>();// 当前资源所有的录音
 
+    private HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
 
     private File TempSoundfile;  // 音频的临时文件夹
     private File creenetSoundFile;  // 音频的临时文件夹
@@ -433,6 +436,7 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
                 List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                         new TypeToken<List<DongTaiFormBean>>() {}.getType());
                 formBeanList.addAll(dictList);
+                getFormPicMap(formBeanList);
                 tempformBeanList.addAll(dictList);
                 sureResModelId = resDataBean.getFd_resmodelid();
             } catch (JSONException e) {
@@ -974,10 +978,28 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
             bean.setPic(picList);
             bean.setAudio(soundInfoList);
 
+            getFormPicMap(formBeanList);
 
 
 
-            taskPool.addTask(new SaveResDataAPI(userInfo.getAccess_token(),bean,listener));
+            for (Map.Entry<String, List<JDPicInfo>> entry : formPicMap.entrySet()) {
+                List<JDPicInfo> picInfoList = entry.getValue();
+
+                for (JDPicInfo jdPicInfo : picInfoList) {
+
+                    if (!Utils.isEmpty(jdPicInfo.getFilePath()) && jdPicInfo.getIsAddFlag() != 1&&(Utils.isEmpty(jdPicInfo.getImageUrl()))) {
+
+                        taskPool.addTask(new PicYasuo(jdPicInfo,mContext,listener));
+                        taskPool.addTask(new UpLoadFormPicAPI(userInfo.getAccess_token(), jdPicInfo, listener));
+                    }
+                }
+
+
+            }
+
+
+
+            taskPool.addTask(new SaveResDataAPI(userInfo.getAccess_token(),bean,formPicMap,listener));
 
 
 
@@ -993,6 +1015,100 @@ public class SheetDialogFragment extends BottomSheetDialogFragment {
         taskPool.execute(listener);
 
     }
+
+
+    private void getFormPicMap(List<DongTaiFormBean> formBeans) {
+
+        for (int i = 0; i < formBeans.size(); i++) {
+            DongTaiFormBean formBean = formBeans.get(i);
+
+            if (formBean.getPic() != null && formBean.getPic().size() > 0) {
+                formPicMap.put(formBean.getFieldName(), formBean.getPic());
+
+            }else {
+
+                if (formBean.getShowType().equals("image")) {
+
+                    if (!Utils.isEmpty(formBean.getPropertyLabel())) {
+                        String[] split = formBean.getPropertyLabel().split(",");
+                        List<JDPicInfo> picInfos = new ArrayList<>();
+
+                        for (int k = 0; k < split.length; k++) {
+
+                            JDPicInfo jdPicInfo = new JDPicInfo();
+
+                            jdPicInfo.setImageUrl(split[k]);
+                            jdPicInfo.setIsDownLoad("true");
+                            jdPicInfo.setIsAddFlag(0);
+
+                            picInfos.add(jdPicInfo);
+                        }
+                        if (picInfos != null && picInfos.size() > 0) {
+
+                            formPicMap.put(formBean.getFieldName(), picInfos);
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+
+            if (formBean.getCgformFieldList() != null && formBean.getCgformFieldList().size() > 0) {
+
+                List<DongTaiFormBean> childList = formBean.getCgformFieldList();
+
+                for (int j = 0; j < childList.size(); j++) {
+
+                    DongTaiFormBean childbean = childList.get(j);
+
+                    if (childbean.getPic() != null && childbean.getPic().size() > 0) {
+                        formPicMap.put(childbean.getFieldName(), childbean.getPic());
+
+                    }else {
+
+                        if (childbean.getShowType().equals("image")) {
+
+                            if (!Utils.isEmpty(childbean.getPropertyLabel())) {
+                                String[] split = childbean.getPropertyLabel().split(",");
+                                List<JDPicInfo> picInfos = new ArrayList<>();
+
+                                for (int k = 0; k < split.length; k++) {
+
+                                    JDPicInfo jdPicInfo = new JDPicInfo();
+
+                                    jdPicInfo.setImageUrl(split[k]);
+                                    jdPicInfo.setIsDownLoad("true");
+                                    jdPicInfo.setIsAddFlag(0);
+
+                                    picInfos.add(jdPicInfo);
+                                }
+                                if (picInfos != null && picInfos.size() > 0) {
+
+                                    formPicMap.put(childbean.getFieldName(), picInfos);
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                    }
+
+
+
+                }
+
+            }
+
+        }
+
+    }
+
 
 
     // 数据库操作

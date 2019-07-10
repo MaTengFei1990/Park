@@ -26,7 +26,6 @@
         android:text="编辑"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textColor="#ff5a00"
         android:textSize="15sp" />
 
 

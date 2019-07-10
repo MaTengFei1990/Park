@@ -3,7 +3,7 @@ package com.hollysmart.db;
 import android.content.Context;
 
 import com.hollysmart.beans.LuXianInfo;
-import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.formlib.beans.ResDataBean;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 

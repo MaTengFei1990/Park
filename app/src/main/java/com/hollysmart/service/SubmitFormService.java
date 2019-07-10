@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.hollysmart.apis.SaveResDataAPI;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.hollysmart.formlib.apis.SaveResDataAPI;
 import com.hollysmart.apis.UpLoadFormPicAPI;
 import com.hollysmart.apis.UpLoadSoundAPI;
 import com.hollysmart.apis.UserLoginAPI;
+import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.beans.JDPicInfo;
-import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.beans.SoundInfo;
 import com.hollysmart.db.JDPicDao;
 import com.hollysmart.db.JDSoundDao;
@@ -24,12 +28,17 @@ import com.hollysmart.utils.taskpool.TaskPool;
 import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +65,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
     private TaskPool taskPool;
     private UserInfo userInfoBean;
 
+    private HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
     @Override
     public void onCreate() {
         super.onCreate();
@@ -116,10 +126,11 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
             bean.setPic(picList);
             bean.setAudio(soundInfoList);
 
+            getFormPicMap(bean);
 
 
 
-            taskPool.addTask(new SaveResDataAPI( UserToken.getUserToken().getFormToken(),bean,this));
+            taskPool.addTask(new SaveResDataAPI( UserToken.getUserToken().getFormToken(),bean,formPicMap,this));
 
 
 
@@ -160,7 +171,7 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
 
 
 
-            taskPool.addTask(new SaveResDataAPI( UserToken.getUserToken().getFormToken(),bean,this));
+            taskPool.addTask(new SaveResDataAPI( UserToken.getUserToken().getFormToken(),bean,formPicMap,this));
 
 
 
@@ -169,6 +180,122 @@ public class SubmitFormService extends Service implements OnNetRequestListener, 
     }
 
 
+    private void getFormPicMap(ResDataBean resDataBean) {
+
+        String formData = resDataBean.getFormData();
+
+        List<DongTaiFormBean> formBeanList = new ArrayList<>();
+
+        try {
+            JSONObject jsonObject = null;
+            jsonObject = new JSONObject(formData);
+            Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+            List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                    new TypeToken<List<DongTaiFormBean>>() {}.getType());
+            formBeanList.addAll(dictList);
+            getFormPicMap(formBeanList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+    }
+
+
+
+
+    private void getFormPicMap(List<DongTaiFormBean> formBeans) {
+
+        for (int i = 0; i < formBeans.size(); i++) {
+            DongTaiFormBean formBean = formBeans.get(i);
+
+            if (formBean.getPic() != null && formBean.getPic().size() > 0) {
+                formPicMap.put(formBean.getFieldName(), formBean.getPic());
+
+            }else {
+
+                if (formBean.getShowType().equals("image")) {
+
+                    if (!Utils.isEmpty(formBean.getPropertyLabel())) {
+                        String[] split = formBean.getPropertyLabel().split(",");
+                        List<JDPicInfo> picInfos = new ArrayList<>();
+
+                        for (int k = 0; k < split.length; k++) {
+
+                            JDPicInfo jdPicInfo = new JDPicInfo();
+
+                            jdPicInfo.setImageUrl(split[k]);
+                            jdPicInfo.setIsDownLoad("true");
+
+                            picInfos.add(jdPicInfo);
+                        }
+                        if (picInfos != null && picInfos.size() > 0) {
+
+                            formPicMap.put(formBean.getFieldName(), picInfos);
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+
+            if (formBean.getCgformFieldList() != null && formBean.getCgformFieldList().size() > 0) {
+
+                List<DongTaiFormBean> childList = formBean.getCgformFieldList();
+
+                for (int j = 0; j < childList.size(); j++) {
+
+                    DongTaiFormBean childbean = childList.get(j);
+
+                    if (childbean.getPic() != null && childbean.getPic().size() > 0) {
+                        formPicMap.put(childbean.getFieldName(), childbean.getPic());
+
+                    }else {
+
+                        if (childbean.getShowType().equals("image")) {
+
+                            if (!Utils.isEmpty(childbean.getPropertyLabel())) {
+                                String[] split = childbean.getPropertyLabel().split(",");
+                                List<JDPicInfo> picInfos = new ArrayList<>();
+
+                                for (int k = 0; k < split.length; k++) {
+
+                                    JDPicInfo jdPicInfo = new JDPicInfo();
+
+                                    jdPicInfo.setImageUrl(split[k]);
+                                    jdPicInfo.setIsDownLoad("true");
+
+                                    picInfos.add(jdPicInfo);
+                                }
+                                if (picInfos != null && picInfos.size() > 0) {
+
+                                    formPicMap.put(childbean.getFieldName(), picInfos);
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                    }
+
+
+
+                }
+
+            }
+
+        }
+
+    }
 
 
 

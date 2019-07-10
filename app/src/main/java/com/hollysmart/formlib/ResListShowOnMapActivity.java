@@ -1,13 +1,14 @@
 package com.hollysmart.formlib;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -34,12 +35,14 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.hollysmart.formlib.apis.GetNetResListAPI;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
-import com.hollysmart.formlib.apis.SaveResRouateAPI;
-import com.hollysmart.beans.GPS;
+import com.hollysmart.formlib.beans.DongTaiFormBean;
+import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.LatLngToJL;
-import com.hollysmart.beans.LuXianInfo;
 import com.hollysmart.beans.PointInfo;
 import com.hollysmart.formlib.beans.ProjectBean;
 import com.hollysmart.formlib.beans.ResDataBean;
@@ -47,18 +50,18 @@ import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.main.MainPresenter;
 import com.hollysmart.main.MainView;
+import com.hollysmart.formlib.activitys.NewAddFormResDataActivity;
 import com.hollysmart.park.R;
-import com.hollysmart.formlib.activitys.ResDataManageActivity;
-import com.hollysmart.formlib.activitys.TaskTrackActivity;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.CCM_DateTime;
 import com.hollysmart.utils.CCM_Delay;
-import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
-import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.value.Values;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.Serializable;
@@ -69,7 +72,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnClickListener, MainView {
+public class ResListShowOnMapActivity extends StyleAnimActivity implements View.OnClickListener, MainView {
 
 
     private Context context;
@@ -84,7 +87,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
     @Override
     public int layoutResID() {
-        return R.layout.activity_list_show_on_map;
+        return R.layout.activity_res_list_show_on_map;
     }
 
 
@@ -321,10 +324,8 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
         Mlog.d("该点以显示");
         if (spotEditFlag) {
             if (mIndex != -1) {
-                Intent data = new Intent(mContext, ResDetailsActivity.class);
-                data.putExtra("resDataBean", resDatalist.get(mIndex));
-                data.putExtra("index", mIndex);
-                startActivity(data);
+                startFormDetailsActivity(resDatalist.get(mIndex));
+
             }
         }
         if (mIndex != marker.getZIndex()) {
@@ -349,20 +350,16 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
                         if (isOk) {
 
-                            Intent data = new Intent(mContext, ResDetailsActivity.class);
-                            data.putExtra("resDataBean", resDatalist.get(mIndex));
-                            data.putExtra("index", mIndex);
-                            startActivity(data);
+                            startFormDetailsActivity(resDatalist.get(mIndex));
+
                         }
 
                     }
                 }).request();
 
             } else {
-                Intent data = new Intent(mContext, ResDetailsActivity.class);
-                data.putExtra("resDataBean", resDatalist.get(mIndex));
-                data.putExtra("index", mIndex);
-                startActivity(data);
+                startFormDetailsActivity(resDatalist.get(mIndex));
+
             }
 
 
@@ -378,14 +375,6 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
     @Override
     public void onMapClick(LatLng arg0) {
-//        if (spotEditFlag) {
-//            if (mIndex != -1) {
-//                Intent data = new Intent(mContext, ResDetailsActivity.class);
-//                data.putExtra("resDataBean", resDatalist.get(mIndex));
-//                data.putExtra("index", mIndex);
-//                startActivity(data);
-//            }
-//        }
     }
 
     @Override
@@ -410,27 +399,27 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
     @Override
     public void onMapStatusChange(MapStatus arg0) {
 
-        zoom = arg0.zoom;
-
-        if (zoom > 15) {
-            if (!showzhiShiPai) {
-                showzhiShiPai=true;
-                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0) );
-                mainPresenter.showJuLiFlag(luxianpointsList,new LatLng(0, 0) );
-
-                initResDataList(projectBean.getId());
-            }
-
-        } else {
-            if (showzhiShiPai) {
-                showzhiShiPai = false;
-                mBaiduMap.clear();
-                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0));
-                initResDataList(projectBean.getId());
-            }
-        }
-
-        mainPresenter.drawRange(projectBean.getfRange());
+//        zoom = arg0.zoom;
+//
+//        if (zoom > 15) {
+//            if (!showzhiShiPai) {
+//                showzhiShiPai=true;
+//                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0) );
+//                mainPresenter.showJuLiFlag(luxianpointsList,new LatLng(0, 0) );
+//
+//                initResDataList(projectBean.getId());
+//            }
+//
+//        } else {
+//            if (showzhiShiPai) {
+//                showzhiShiPai = false;
+//                mBaiduMap.clear();
+//                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0));
+//                initResDataList(projectBean.getId());
+//            }
+//        }
+//
+//        mainPresenter.drawRange(projectBean.getfRange());
 
 
     }
@@ -516,6 +505,164 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
     }
 
 
+    private void startFormDetailsActivity(final ResDataBean showResData) {
+
+        final Intent intent = new Intent(context, NewAddFormResDataActivity.class);
+        final String formData = showResData.getFormData();
+        final List<DongTaiFormBean> formBeanList = new ArrayList<>();
+
+        final HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
+
+        formBeanList.clear();
+
+        if (Utils.isEmpty(formData)) {
+
+            new ResDataGetAPI(userInfo.getAccess_token(), showResData, new ResDataGetAPI.ResDataDeleteIF() {
+                @Override
+                public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+
+                    if (isOk) {
+                        String formData = resDataBen.getFormData();
+                        try {
+                            JSONObject jsonObject = null;
+                            jsonObject = new JSONObject(formData);
+                            Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                            List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                                    new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                            formBeanList.addAll(dictList);
+                            getFormPicMap(formBeanList,formPicMap);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        intent.putExtra("formBeanList", (Serializable) formBeanList);
+                        intent.putExtra("resDataBean", showResData);
+                        intent.putExtra("formPicMap", (Serializable) formPicMap);
+                        Activity activity = (Activity) context;
+                        activity.startActivityForResult(intent, 4);
+
+                    }
+
+                }
+            }).request();
+
+        } else {
+            try {
+                JSONObject jsonObject = null;
+                jsonObject = new JSONObject(formData);
+                Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                        new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                formBeanList.addAll(dictList);
+                getFormPicMap(formBeanList,formPicMap);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            intent.putExtra("formBeanList", (Serializable) formBeanList);
+            intent.putExtra("resDataBean",showResData);
+            intent.putExtra("formPicMap", (Serializable) formPicMap);
+            Activity activity = (Activity) context;
+            activity.startActivityForResult(intent, 4);
+        }
+    }
+
+
+
+
+    private void getFormPicMap(List<DongTaiFormBean> formBeans, HashMap<String, List<JDPicInfo>> formPicMap) {
+
+        for (int i = 0; i < formBeans.size(); i++) {
+            DongTaiFormBean formBean = formBeans.get(i);
+
+            if (formBean.getPic() != null && formBean.getPic().size() > 0) {
+                formPicMap.put(formBean.getFieldName(), formBean.getPic());
+
+            }else {
+
+                if (formBean.getShowType().equals("image")) {
+
+                    if (!Utils.isEmpty(formBean.getPropertyLabel())) {
+                        String[] split = formBean.getPropertyLabel().split(",");
+                        List<JDPicInfo> picInfos = new ArrayList<>();
+
+                        for (int k = 0; k < split.length; k++) {
+
+                            JDPicInfo jdPicInfo = new JDPicInfo();
+
+                            jdPicInfo.setImageUrl(split[k]);
+                            jdPicInfo.setIsDownLoad("true");
+                            jdPicInfo.setIsAddFlag(0);
+
+                            picInfos.add(jdPicInfo);
+                        }
+                        if (picInfos != null && picInfos.size() > 0) {
+
+                            formPicMap.put(formBean.getFieldName(), picInfos);
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+
+            if (formBean.getCgformFieldList() != null && formBean.getCgformFieldList().size() > 0) {
+
+                List<DongTaiFormBean> childList = formBean.getCgformFieldList();
+
+                for (int j = 0; j < childList.size(); j++) {
+
+                    DongTaiFormBean childbean = childList.get(j);
+
+                    if (childbean.getPic() != null && childbean.getPic().size() > 0) {
+                        formPicMap.put(childbean.getFieldName(), childbean.getPic());
+
+                    }else {
+
+                        if (childbean.getShowType().equals("image")) {
+
+                            if (!Utils.isEmpty(childbean.getPropertyLabel())) {
+                                String[] split = childbean.getPropertyLabel().split(",");
+                                List<JDPicInfo> picInfos = new ArrayList<>();
+
+                                for (int k = 0; k < split.length; k++) {
+
+                                    JDPicInfo jdPicInfo = new JDPicInfo();
+
+                                    jdPicInfo.setImageUrl(split[k]);
+                                    jdPicInfo.setIsDownLoad("true");
+                                    jdPicInfo.setIsAddFlag(0);
+
+                                    picInfos.add(jdPicInfo);
+                                }
+                                if (picInfos != null && picInfos.size() > 0) {
+
+                                    formPicMap.put(childbean.getFieldName(), picInfos);
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                    }
+
+
+
+                }
+
+            }
+
+        }
+
+    }
+
+
 
 
 
@@ -539,43 +686,10 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
             case R.id.imagbtn_zoomOut:
                 mainPresenter.ZoomChange(false);
                 break;
-            case R.id.bn_all:
-                Intent intent2 = new Intent(context, ResDataManageActivity.class);
-                intent2.putExtra("projectBean", projectBean);
-                startActivityForResult(intent2, 2);
-                break;
-            case R.id.bn_more:
-                mainPresenter.showMoreDialog(context,projectBean);
-                break;
-            case R.id.imagbtn_startOrContinue:
-                startOrPause();
-                break;
-            case R.id.imagbtn_end:
-                saveRoutes();
-                break;
-            case R.id.imagbtn_route:
-                Intent intent = new Intent(context, TaskTrackActivity.class);
-                intent.putExtra("resmodelid", "0");
-                intent.putExtra("TaskId", projectBean.getId());
-                startActivityForResult(intent,3);
-                break;
         }
     }
 
 
-    private void startOrPause() {
-
-        if (isNewLuXian) {    //新路线
-            isNewLuXian = !isNewLuXian;
-        }
-        route_OnOff=!route_OnOff;
-        if (route_OnOff) {
-            imagbtn_startOrContinue.setImageResource(R.mipmap.zanting);
-        } else {
-            imagbtn_startOrContinue.setImageResource(R.mipmap.kaishi);
-
-        }
-    }
 
 
     /**
@@ -587,39 +701,6 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
     private boolean isNewLuXian = true;   //true 新路线   false原路线
 
 
-    /***
-     * 保存轨迹线路
-     */
-    private void saveRoutes() {
-        LuXianInfo info = mainPresenter.saveRoutes("0",projectBean,luxianpointsList, context);
-        route_OnOff = false;
-        isNewLuXian = true;
-        if (info != null) {
-            new SaveResRouateAPI(mContext,userInfo.getAccess_token(), info, new OnNetRequestListener() {
-                @Override
-                public void onFinish() {
-
-                }
-
-                @Override
-                public void OnNext() {
-
-                }
-
-                @Override
-                public void OnResult(boolean isOk, String msg, Object object) {
-                    if (isOk) {
-                        Utils.showDialog(mContext, "轨迹保存成功");
-                    }
-
-                }
-            }).request();
-
-        }
-
-
-
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -630,139 +711,6 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        resDatalist = new ArrayList<>();
-        mBaiduMap.clear();
-        mBaiduMap.hideInfoWindow();
-        mainPresenter.drawRange(projectBean.getfRange());
-        switch (requestCode) {
-            case 2:
-                initResDataList(projectBean.getId());
-                if (resultCode == 1) {
-                    mIndex = data.getIntExtra("index",-1);
-
-                    ResDataBean resDataBean = (ResDataBean) data.getSerializableExtra("resDataBean");
-
-
-                    LatLng latLng = new LatLng(new Double(resDataBean.getLatitude()), new Double(resDataBean.getLongitude()));
-
-                    MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(latLng);
-                    mBaiduMap.animateMapStatus(u);
-
-                    if (resDataBean.getFormData() == null) {
-
-
-                        new ResDataGetAPI(userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
-                            @Override
-                            public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
-
-                                if (isOk) {
-
-
-                                }
-
-                            }
-                        }).request();
-
-                    } else {
-
-                    }
-
-
-
-
-
-
-
-
-                } else if (resultCode == 2) {
-                }
-                break;
-            case 3:
-                initResDataList(projectBean.getId());
-                if (resultCode == 3) {
-
-
-                    List<LuXianInfo> routes = (List<LuXianInfo>) data.getSerializableExtra("routes");
-
-
-                    if (routes != null && routes.size() > 0) {
-                        for(int i=0;i<routes.size();i++) {
-                            LuXianInfo luXianInfo = routes.get(i);
-                            String xianluDian = luXianInfo.getLineCoordinates();
-                            luxianpointsList.clear();
-
-
-
-                            String[] lines = xianluDian.split(" ");
-
-                            for(int j=0;j<lines.length;j++) {
-
-                                String[] point = lines[j].split(",");
-
-
-                                PointInfo pointInfo = new PointInfo();
-
-
-                                GPS Gcj02_gps = GPSConverterUtils.gcj02_To_Bd09(new Double(point[1]), new Double(point[0]));
-
-                                pointInfo.setLongitude(Gcj02_gps.getLon());
-                                pointInfo.setLatitude(Gcj02_gps.getLat());
-                                pointInfo.setTime(point[3]);
-
-                                luxianpointsList.add(pointInfo);
-
-
-                            }
-
-                            mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0));
-                            mainPresenter.showJuLiFlag(luxianpointsList,new LatLng(0, 0) );
-                            mainPresenter.lineShowOnCenter(luxianpointsList,new LatLng(0, 0));
-                        }
-
-
-                    }
-
-                }
-                break;
-
-            case 5:
-
-                if (resultCode == 3) {
-                    ResDataBean resDataBean = (ResDataBean) data.getSerializableExtra("resDataBean");
-
-
-                    if (projectBean.getfTaskmodel().contains(resDataBean.getFd_resmodelid())) {
-
-
-                        if (dingWeiDian == null) {
-                            return;
-                        }
-                        OverlayOptions ooA = new MarkerOptions().position(dingWeiDian).icon(bdA).zIndex(resDatalist.size());
-                        Marker mMarker = (Marker) (mBaiduMap.addOverlay(ooA));
-
-                        mIndex = resDatalist.size();
-                        mMarkers.put(mIndex, mMarker);
-
-                        mainPresenter.getCoordinates(jdFanwei, mIndex);
-                    } else {
-
-
-                        Utils.showDialog(mContext, "该项目下没有该分类;");
-                    }
-
-
-                } else {
-                    if (resultCode == 4) {
-                        Utils.showDialog(mContext, "该项目下没有该分类;");
-                    }
-                }
-                break;
-
-        }
-    }
 
     /***
      * 获取项目下的资源列表

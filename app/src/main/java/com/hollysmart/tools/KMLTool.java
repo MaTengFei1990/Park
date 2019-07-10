@@ -9,7 +9,7 @@ import com.hollysmart.beans.GPS;
 import com.hollysmart.beans.LatLngToJL;
 import com.hollysmart.beans.LuXianInfo;
 import com.hollysmart.beans.PointInfo;
-import com.hollysmart.beans.ResDataBean;
+import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.db.LuXianDao;
 import com.hollysmart.db.ResDataDao;
 import com.hollysmart.utils.CCM_DateTime;

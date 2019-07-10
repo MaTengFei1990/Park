@@ -38,10 +38,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name="com.hollysmart.formlib.ListShowOnMapActivity"></activity>
+        <activity android:name="com.hollysmart.formlib.ResListShowOnMapActivity"></activity>
+        <activity android:name="com.hollysmart.formlib.ListShowOnMapActivity" />
         <activity android:name="com.hollysmart.formlib.ResDetailsActivity" />
         <activity android:name="com.hollysmart.formlib.ResDataListActivity" />
-        <activity android:name=".MapRangeActivity" />
+        <activity android:name="com.hollysmart.formlib.activitys.MapRangeActivity" />
         <activity
             android:name="com.hollysmart.voicecall.VocieCallInCall2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -88,35 +89,35 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".EditPicActivity"
+            android:name="com.hollysmart.formlib.activitys.EditPicActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".Cai_AddPicActivity"
+            android:name="com.hollysmart.formlib.activitys.Cai_AddPicActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ProjectManagerActivity"
+            android:name="com.hollysmart.formlib.activitys.ProjectManagerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ProjectDetails2Activity"
+            android:name="com.hollysmart.formlib.activitys.ProjectDetails2Activity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ResDataManageActivity"
+            android:name="com.hollysmart.formlib.activitys.ResDataManageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".RecordListActivity"
+            android:name="com.hollysmart.formlib.activitys.RecordListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".DynamicFormActivity"
+            android:name="com.hollysmart.formlib.activitys.DynamicFormActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".Ma_ScanActivity"
+            android:name="com.hollysmart.formlib.activitys.Ma_ScanActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
@@ -209,6 +210,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name="com.hollysmart.formlib.activitys.NewAddFormResDataActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>

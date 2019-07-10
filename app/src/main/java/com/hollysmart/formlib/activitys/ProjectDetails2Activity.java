@@ -1,18 +1,20 @@
-package com.hollysmart.formlib;
+package com.hollysmart.formlib.activitys;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,11 +47,10 @@ import com.hollysmart.formlib.beans.ProjectBean;
 import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.UserInfo;
+import com.hollysmart.dialog.SheetDialogFragment;
 import com.hollysmart.main.MainPresenter;
 import com.hollysmart.main.MainView;
 import com.hollysmart.park.R;
-import com.hollysmart.formlib.activitys.ResDataManageActivity;
-import com.hollysmart.formlib.activitys.TaskTrackActivity;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.CCM_DateTime;
@@ -69,8 +70,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnClickListener, MainView {
 
+public class ProjectDetails2Activity extends StyleAnimActivity implements OnClickListener,MainView {
 
     private Context context;
     // 定位相关
@@ -84,7 +85,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
     @Override
     public int layoutResID() {
-        return R.layout.activity_list_show_on_map;
+        return R.layout.activity_project_details2;
     }
 
 
@@ -98,7 +99,9 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
             bn_dingwei.setOnClickListener(this);
             bn_fangda.setOnClickListener(this);
             bn_suoxiao.setOnClickListener(this);
+            bn_add.setOnClickListener(this);
             bn_all.setOnClickListener(this);
+            bn_more.setOnClickListener(this);
             bn_xialu.setOnClickListener(this);
             imagbtn_startOrContinue.setOnClickListener(this);
             bn_jieshu.setOnClickListener(this);
@@ -134,8 +137,27 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
     ImageButton bn_suoxiao;
     @BindView(R.id.imagbtn_route)
     ImageButton bn_xialu;
+    @BindView(R.id.bn_add)
+    LinearLayout bn_add;
     @BindView(R.id.bn_all)
     LinearLayout bn_all;
+    @BindView(R.id.bn_more)
+    LinearLayout bn_more;
+    @BindView(R.id.rl_bottom)
+    RelativeLayout rl_bottom;
+    @Nullable
+    @BindView(R.id.iv_del)
+    ImageView iv_del;
+    @Nullable
+    @BindView(R.id.ll_add_jingdian)
+    LinearLayout ll_add_jingdian;
+    @Nullable
+    @BindView(R.id.ll_add_fenxiang)
+    LinearLayout ll_add_fenxiang;
+    @Nullable
+    @BindView(R.id.panel_card_view)
+    RelativeLayout panel_card_view;
+    @BindView(R.id.image_luyin)
     @Nullable
     ImageView image_luyin;
     @Nullable
@@ -174,6 +196,46 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
         projectBean = (ProjectBean) getIntent().getSerializableExtra("projectBean");
         tv_projectName.setText(projectBean.getfTaskname());
+
+
+        sheetDialogFragment = SheetDialogFragment.getInstance();
+
+        ShowResDataDialog(true,null,false);
+
+        sheetDialogFragment.setSeeBarRangeListener(new SheetDialogFragment.SeeBarRangeListener() {
+            @Override
+            public void onChange(int progress) {
+                mainPresenter.getCoordinates(progress, mIndex);
+            }
+        });
+
+        sheetDialogFragment.setDismissListener(new SheetDialogFragment.DismissListener() {
+            @Override
+            public void dismisse() {
+                rl_bottom.setVisibility(View.VISIBLE);
+                mBaiduMap.clear();
+                mainPresenter.drawRange(projectBean.getfRange());
+                if (mIndex >= resDatalist.size()) {
+                    Mlog.d("还未生成数据库文件");
+
+                    if (mOverlays.get(mIndex) != null) {
+                        mOverlays.get(mIndex).remove();
+                        mOverlays.remove(mIndex);
+                    }
+                    if (mMarkers.get(mIndex) != null) {
+                        mMarkers.get(mIndex).remove();
+                        mMarkers.remove(mIndex);
+                    }
+                    mBaiduMap.hideInfoWindow();
+                    jingdianGone();
+                }
+
+                initResDataList(projectBean.getId());
+
+            }
+        });
+
+
 
 
 
@@ -238,7 +300,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(ProjectDetails2Activity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         }
 
     }
@@ -321,12 +383,15 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
         Mlog.d("该点以显示");
         if (spotEditFlag) {
             if (mIndex != -1) {
-                Intent data = new Intent(mContext, ResDetailsActivity.class);
-                data.putExtra("resDataBean", resDatalist.get(mIndex));
-                data.putExtra("index", mIndex);
-                startActivity(data);
+                if (mOverlays.containsKey(mIndex)) {
+                    mOverlays.get(mIndex).remove();
+                }
+                mMarkers.get(mIndex).remove();
+                mMarkers.remove(mIndex);
+                mBaiduMap.hideInfoWindow();
             }
         }
+        jingdianGone();
         if (mIndex != marker.getZIndex()) {
             mIndex = marker.getZIndex();
             ResDataBean resDataBean = resDatalist.get(mIndex);//要编辑的景点信息；
@@ -349,20 +414,16 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
                         if (isOk) {
 
-                            Intent data = new Intent(mContext, ResDetailsActivity.class);
-                            data.putExtra("resDataBean", resDatalist.get(mIndex));
-                            data.putExtra("index", mIndex);
-                            startActivity(data);
+                            ShowResDataDialog(false, resDataBen, true);
+
                         }
 
                     }
                 }).request();
 
             } else {
-                Intent data = new Intent(mContext, ResDetailsActivity.class);
-                data.putExtra("resDataBean", resDatalist.get(mIndex));
-                data.putExtra("index", mIndex);
-                startActivity(data);
+
+                ShowResDataDialog(false, resDataBean,true);
             }
 
 
@@ -378,14 +439,17 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
     @Override
     public void onMapClick(LatLng arg0) {
-//        if (spotEditFlag) {
-//            if (mIndex != -1) {
-//                Intent data = new Intent(mContext, ResDetailsActivity.class);
-//                data.putExtra("resDataBean", resDatalist.get(mIndex));
-//                data.putExtra("index", mIndex);
-//                startActivity(data);
-//            }
-//        }
+        if (spotEditFlag) {
+            if (mIndex != -1) {
+                if (mOverlays.containsKey(mIndex)) {
+                    mOverlays.get(mIndex).remove();
+                }
+                mMarkers.get(mIndex).remove();
+                mMarkers.remove(mIndex);
+                mBaiduMap.hideInfoWindow();
+            }
+        }
+        jingdianGone();
     }
 
     @Override
@@ -405,6 +469,11 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
         dingWeiDian = new LatLng(arg0.target.latitude,
                 arg0.target.longitude);
 
+
+        if (sheetDialogFragment != null) {
+
+            sheetDialogFragment.setlongitudeAndlatitude(arg0.target.longitude + "", arg0.target.latitude + "");
+        }
     }
 
     @Override
@@ -451,7 +520,10 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
             if (location == null || mMapView == null||locType==BDLocation.TypeServerError||locType==BDLocation.TypeCriteriaException)
                 return;
             if (location.getSatelliteNumber() != -1) {
+                if (sheetDialogFragment != null) {
 
+                    sheetDialogFragment.setlongitudeAndlatitude(location.getLongitude() + "", location.getLatitude() + "");
+                }
             }
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
@@ -466,6 +538,8 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
             if (isFirstLoc) {
                 MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
                 mBaiduMap.animateMapStatus(u);
+
+                sheetDialogFragment.setlongitudeAndlatitude(location.getLongitude() + "", location.getLatitude() + "");
 
                 PointInfo pointInfo = new PointInfo();
                 pointInfo.setLatitude(location.getLatitude());
@@ -538,6 +612,9 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
                 break;
             case R.id.imagbtn_zoomOut:
                 mainPresenter.ZoomChange(false);
+                break;
+            case R.id.bn_add:
+                newAddResData(dingWeiDian);
                 break;
             case R.id.bn_all:
                 Intent intent2 = new Intent(context, ResDataManageActivity.class);
@@ -660,6 +737,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
                                 if (isOk) {
 
+                                    ShowResDataDialog(false, resDataBen, true);
 
                                 }
 
@@ -668,6 +746,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
                     } else {
 
+                        ShowResDataDialog(false, resDataBean,true);
                     }
 
 
@@ -678,6 +757,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
 
                 } else if (resultCode == 2) {
+                    newAddResData(dingWeiDian);
                 }
                 break;
             case 3:
@@ -746,6 +826,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
                         mIndex = resDatalist.size();
                         mMarkers.put(mIndex, mMarker);
 
+                        ShowResDataDialog(false, resDataBean, true);
                         mainPresenter.getCoordinates(jdFanwei, mIndex);
                     } else {
 
@@ -846,10 +927,69 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
     private boolean spotEditFlag = true; // ture 新添加 false 修改
 
+    private SheetDialogFragment sheetDialogFragment;
+
+
+    /***
+     * 显示资源对话框
+     * @param editFlag 新添加ture      修改false
+     * @param resDataBean 新添加null      修改当前的资源实体
+     * @param isShow 是否显示
+     */
+
+    private void ShowResDataDialog(boolean editFlag,ResDataBean resDataBean,boolean isShow) {
+
+        SheetDialogFragment.Builder builder = new SheetDialogFragment.Builder(ProjectDetails2Activity.this);
+        builder.setDingWeiDian(dingWeiDian);
+        builder.setCurrentProJectBean(projectBean);
+        builder.setSportEditFlag(editFlag);
+        if (!editFlag) {
+            builder.setResDataBean(resDataBean);
+        }
+
+        if (isShow) {
+
+            sheetDialogFragment.show(getSupportFragmentManager(), "dialog");
+        }
+
+
+    }
+
+
+
+    // marker点击进人
+    private void clickMarker2Edit(ResDataBean resDataBean ) {
+        ShowResDataDialog(false, resDataBean,true);
+    }
+
+    // 隐藏景点编辑界面
+    private void jingdianGone() {
+        rl_bottom.setVisibility(View.GONE);
+        rl_bottom.setVisibility(View.VISIBLE);
+        mIndex = -1;
+    }
 
 
     private int jdFanwei=10;
 
+
+    /***
+     * 添加资源
+     * @param mLatLng
+     */
+    private void newAddResData(LatLng mLatLng) {
+        if (mLatLng == null) {
+            return;
+        }
+        OverlayOptions ooA = new MarkerOptions().position(mLatLng).icon(bdA).zIndex(resDatalist.size());
+        Marker mMarker = (Marker) (mBaiduMap.addOverlay(ooA));
+
+        mIndex = resDatalist.size();
+        mMarkers.put(mIndex, mMarker);
+
+        mainPresenter.getCoordinates(jdFanwei, mIndex);
+        ShowResDataDialog(true, null,true);
+    }
 
 
     @Override
@@ -898,4 +1038,3 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
     }
 
 }
-
