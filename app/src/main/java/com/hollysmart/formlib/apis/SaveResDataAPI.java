@@ -82,43 +82,6 @@ public class SaveResDataAPI implements INetModel {
             resjson.put("categoryId", resDataBean.getFd_resmodelid());
 
 
-//            JSONArray picArr = new JSONArray();
-
-//            for (int i = 0; i < resDataBean.getPic().size(); i++) {
-//                JSONObject picObj = new JSONObject();
-//                JDPicInfo jdPicInfo = resDataBean.getPic().get(i);
-//
-//                picObj.put("filePath", jdPicInfo.getFilePath());
-//                picObj.put("filename", jdPicInfo.getFilename());
-//                picObj.put("imageUrl", jdPicInfo.getImageUrl());
-//                picObj.put("createdAt", jdPicInfo.getCreatetime());
-//
-//                picArr.put(picObj);
-//
-//            }
-//            resjson.put("pic", picArr);
-//
-//
-//            JSONArray audioArr = new JSONArray();
-//            if (resDataBean.getAudio() != null && resDataBean.getAudio().size() > 0) {
-//
-//                for (int i = 0; i < resDataBean.getAudio().size(); i++) {
-//                    JSONObject audioObj = new JSONObject();
-//                    SoundInfo soundInfo = resDataBean.getAudio().get(i);
-//
-//                    audioObj.put("filePath", soundInfo.getFilePath());
-//                    audioObj.put("audioUrl", soundInfo.getAudioUrl());
-//                    audioObj.put("filename", soundInfo.getFilename());
-//                    audioObj.put("createdAt", soundInfo.getCreatetime());
-//
-//                    audioArr.put(audioObj);
-//
-//                }
-//            }
-//
-//
-//            resjson.put("audio", audioArr);
-
 
             JSONObject formJson = new JSONObject();
             JSONArray formArr = new JSONArray();
@@ -293,37 +256,11 @@ public class SaveResDataAPI implements INetModel {
 
             JSONArray array = formJsonArray;
 
-
-
-
-
-
-
-
-
-
-
-
-//            if (array.length() == 0) {
-//
-//            } else {
             formJson.put("cgformFieldList", array);
-//
-//            }
-
-
-
 
             resjson.put("formModel", formJson);
 
-
-
             outJs.put("fdResData", resjson);
-
-
-
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();

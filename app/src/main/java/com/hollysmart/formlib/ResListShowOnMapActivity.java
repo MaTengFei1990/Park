@@ -38,6 +38,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.beans.GPS;
 import com.hollysmart.formlib.apis.GetNetResListAPI;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
@@ -56,6 +57,7 @@ import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.CCM_DateTime;
 import com.hollysmart.utils.CCM_Delay;
+import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.value.Values;
@@ -399,35 +401,10 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
     @Override
     public void onMapStatusChange(MapStatus arg0) {
 
-//        zoom = arg0.zoom;
-//
-//        if (zoom > 15) {
-//            if (!showzhiShiPai) {
-//                showzhiShiPai=true;
-//                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0) );
-//                mainPresenter.showJuLiFlag(luxianpointsList,new LatLng(0, 0) );
-//
-//                initResDataList(projectBean.getId());
-//            }
-//
-//        } else {
-//            if (showzhiShiPai) {
-//                showzhiShiPai = false;
-//                mBaiduMap.clear();
-//                mainPresenter.drowLine(luxianpointsList,new LatLng(0, 0));
-//                initResDataList(projectBean.getId());
-//            }
-//        }
-//
-//        mainPresenter.drawRange(projectBean.getfRange());
-
 
     }
 
 
-    private float zoom;
-
-    private boolean showzhiShiPai = false;
 
     /**
      * 定位SDK监听函数
@@ -770,8 +747,12 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
 
                 for (int i = 0; i < resDatalist.size(); i++) {
 
-                    LatLng llA = new LatLng(Double.parseDouble(resDatalist.get(i).getLatitude()),
+
+                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
                             Double.parseDouble(resDatalist.get(i).getLongitude()));
+
+                    LatLng llA = new LatLng(gps.getLat(),
+                            gps.getLon());
                     OverlayOptions ooA = new MarkerOptions().position(llA)
                             .icon(bdA).zIndex(i);
                     Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
