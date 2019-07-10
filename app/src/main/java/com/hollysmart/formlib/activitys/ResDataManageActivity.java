@@ -379,29 +379,23 @@ public class ResDataManageActivity extends StyleAnimActivity {
 			}).request();
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == 4) {
+
+			if (resultCode == 1) {
 
 
+				selectDB(projectBean.getId());
 
-
+			}
+		}
+	}
 
 	/**
 	 * 判断用户登录状态，登录获取用户信息

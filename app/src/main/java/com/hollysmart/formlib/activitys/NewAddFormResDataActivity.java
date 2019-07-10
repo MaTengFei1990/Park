@@ -57,6 +57,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -949,8 +951,29 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
                         if (sportEditFlag) {
                             Utils.showDialog(mContext, "新增成功");
 
+                            final Timer t =new Timer();
+                            t.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    setResult(1);
+                                    NewAddFormResDataActivity.this.finish();
+
+                                }
+                                },2000);
+
+
                         } else {
                             Utils.showDialog(mContext, "修改成功");
+
+                            final Timer t =new Timer();
+                            t.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    setResult(1);
+                                    NewAddFormResDataActivity.this.finish();
+
+                                }
+                            },2000);
                         }
                     }
                 } else {
