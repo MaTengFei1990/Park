@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.apis.GetResModelAPI;
 import com.hollysmart.formlib.adapters.ResDataManageAdapter;
 import com.hollysmart.formlib.apis.GetNetResListAPI;
 import com.hollysmart.apis.ResModelListAPI;
@@ -102,9 +103,27 @@ public class ResDataManageActivity extends StyleAnimActivity {
 		mJingDians = new ArrayList<>();
 		projectBean = (ProjectBean) getIntent().getSerializableExtra("projectBean");
 
-		resDataManageAdapter = new ResDataManageAdapter(mContext, mJingDians, picList, soundList, projectBean);
-		lv_jingdian.setAdapter(resDataManageAdapter);
-		selectDB(projectBean.getId());
+		new GetResModelAPI(userInfo.getAccess_token(), projectBean.getfTaskmodel(), new GetResModelAPI.GetResModelIF() {
+			@Override
+			public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBen) {
+
+				if (isOk) {//获取到网络数据
+
+					String getfJsonData = resModelBen.getfJsonData();
+					Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+					List<DongTaiFormBean> newFormList = mGson.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {
+					}.getType());
+
+					resDataManageAdapter = new ResDataManageAdapter(mContext, mJingDians, picList, soundList, projectBean,newFormList);
+					lv_jingdian.setAdapter(resDataManageAdapter);
+					selectDB(projectBean.getId());
+				}
+
+
+			}
+		}).request();
+
+
 	}
 
 	private List<DongTaiFormBean> formBeanList=new ArrayList<>();// 当前资源的动态表单

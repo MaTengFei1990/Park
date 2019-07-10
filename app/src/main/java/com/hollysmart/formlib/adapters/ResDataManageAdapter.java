@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,22 +17,19 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.hollysmart.apis.GetDictListDataAPI;
 import com.hollysmart.apis.GetResModelAPI;
-import com.hollysmart.beans.DictionaryBean;
-import com.hollysmart.beans.ResModelBean;
-import com.hollysmart.formlib.ResDetailsActivity;
-import com.hollysmart.formlib.apis.ResDataDeleteAPI;
-import com.hollysmart.formlib.apis.ResDataGetAPI;
-import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.beans.JDPicInfo;
-import com.hollysmart.formlib.beans.ProjectBean;
-import com.hollysmart.formlib.beans.ResDataBean;
+import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.db.DatabaseHelper;
 import com.hollysmart.db.JDPicDao;
 import com.hollysmart.db.ResDataDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.formlib.activitys.NewAddFormResDataActivity;
+import com.hollysmart.formlib.apis.ResDataDeleteAPI;
+import com.hollysmart.formlib.apis.ResDataGetAPI;
+import com.hollysmart.formlib.beans.DongTaiFormBean;
+import com.hollysmart.formlib.beans.ProjectBean;
+import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.park.R;
 import com.hollysmart.utils.ACache;
 import com.hollysmart.utils.Mlog;
@@ -66,10 +62,11 @@ public class ResDataManageAdapter extends BaseAdapter {
     private Context context;
     private ProjectBean projectBean;
     private List<DongTaiFormBean> formBeanList=new ArrayList<>();// 当前资源的动态表单
+    private List<DongTaiFormBean> newFormList;// 当前资源的动态表单
 
     private HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
 
-    public ResDataManageAdapter(Context context, List<ResDataBean> mJingDians, List<JDPicInfo> picList, List<String> soundList, ProjectBean projectBean) {
+    public ResDataManageAdapter(Context context, List<ResDataBean> mJingDians, List<JDPicInfo> picList, List<String> soundList, ProjectBean projectBean,List<DongTaiFormBean> newFormList) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.picList = picList;
@@ -79,6 +76,7 @@ public class ResDataManageAdapter extends BaseAdapter {
         this.jqId = projectBean.getId();
 
         this.projectBean=projectBean;
+        this.newFormList=newFormList;
         isLogin();
     }
 
@@ -160,10 +158,10 @@ public class ResDataManageAdapter extends BaseAdapter {
                                     JSONObject jsonObject = null;
                                     jsonObject = new JSONObject(formData);
                                     Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-                                    List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                                    List<DongTaiFormBean> oldFormList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                                             new TypeToken<List<DongTaiFormBean>>() {}.getType());
-                                    formBeanList.addAll(dictList);
-                                    comparisForms(mJingDians.get(position),formBeanList);
+                                    List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList);
+                                    formBeanList.addAll(comparis);
                                     getFormPicMap(formBeanList);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -186,9 +184,10 @@ public class ResDataManageAdapter extends BaseAdapter {
                         JSONObject jsonObject = null;
                         jsonObject = new JSONObject(formData);
                         Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-                        List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                        List<DongTaiFormBean> oldFormList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                                 new TypeToken<List<DongTaiFormBean>>() {}.getType());
-                        formBeanList.addAll(dictList);
+                        List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList);
+                        formBeanList.addAll(comparis);
                         getFormPicMap(formBeanList);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -341,55 +340,120 @@ public class ResDataManageAdapter extends BaseAdapter {
     }
 
 
-    private void comparisForms(final ResDataBean resDataBean, final List<DongTaiFormBean> oldFormList) {
+
+    private List<DongTaiFormBean> comparis(List<DongTaiFormBean> oldFormList, List<DongTaiFormBean> newFormList) {
+
+        if (oldFormList == null || oldFormList.size() == 0) {
+
+            return null;
+        }
+        if (newFormList == null || newFormList.size() == 0) {
+
+            return null;
+        }
+
+
+        for (int i = 0; i < oldFormList.size(); i++) {
+
+            DongTaiFormBean oldBean = oldFormList.get(i);
+
+
+            for (int j = 0; j < newFormList.size(); j++) {
+
+                DongTaiFormBean newBean = newFormList.get(j);
+
+
+                if (oldBean.getJavaField().equals(newBean.getJavaField())) {
+
+                    newBean.setPropertyLabel(oldBean.getPropertyLabel());
+
+
+                    if (oldBean.getShowType().equals("list") && newBean.getShowType().equals("switch")) {
+
+                        List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                        List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                        if (oldChildList == null || oldChildList.size() == 0) {
+                            break;
+                        }
+                        if (newchildList == null || newchildList.size() == 0) {
+                            break;
+                        }
+
+                        for (int k = 0; k < oldChildList.size(); k++) {
+
+                            DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                            for (int m = 0; m < newchildList.size(); m++) {
+
+                                DongTaiFormBean newchildBean = newFormList.get(m);
+
+
+                                if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                    newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                }
+
+                            }
+
+
+                        }
+
+                    }
 
 
 
-        new GetResModelAPI(userInfo.getAccess_token(), resDataBean.getId(), new GetResModelAPI.GetResModelIF() {
-            @Override
-            public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBen) {
+                    if (oldBean.getShowType().equals("switch") && newBean.getShowType().equals("switch")) {
 
-                if (isOk) {//获取到网络数据
+                        List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                        List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
 
-                    String getfJsonData = resModelBen.getfJsonData();
-                    Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-                    List<DongTaiFormBean>  newFormList = mGson.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                        if (oldChildList == null || oldChildList.size() == 0) {
+                            break;
+                        }
+                        if (newchildList == null || newchildList.size() == 0) {
+                            break;
+                        }
 
-                    comparis(oldFormList, newFormList);
+                        for (int k = 0; k < oldChildList.size(); k++) {
+
+                            DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                            for (int m = 0; m < newchildList.size(); m++) {
+
+                                DongTaiFormBean newchildBean = newchildList.get(m);
+
+
+                                if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                    newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                }
+
+                            }
+
+
+                        }
+
+                    }
+
+
 
                 }
 
 
+
+
             }
-        }).request();
-
-    }
 
 
-    private void comparis(List<DongTaiFormBean> oldFormList, List<DongTaiFormBean> newFormList) {
-
-        if (oldFormList == null || oldFormList.size() == 0) {
-
-            return;
-        }
-        if (newFormList == null || newFormList.size() == 0) {
-
-            return;
         }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+            return newFormList;
 
 
     }
