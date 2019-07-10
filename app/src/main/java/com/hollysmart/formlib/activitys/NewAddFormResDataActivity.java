@@ -1,5 +1,6 @@
 package com.hollysmart.formlib.activitys;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.apis.SaveInfoAPI;
 import com.hollysmart.formlib.adapters.BiaoGeRecyclerAdapter2;
 import com.hollysmart.apis.GetDictListDataAPI;
 import com.hollysmart.apis.GetResModelAPI;
@@ -801,19 +803,32 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
             case R.id.ib_back:
 
-//                Intent intent2 = new Intent();
-//                resFromBeanLsit.clear();
-//                resFromBeanLsit.addAll(formBeanList);
-//                intent2.putExtra("formBeanList", (Serializable) resFromBeanLsit);
-//
-//                setResult(4, intent2);
-
-                this.finish();
+              showdialogs();
                 break;
 
         }
 
     }
+
+
+    /**
+     * 弹出对话框。
+     */
+    private void showdialogs() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("未保存数据将丢失！");
+        builder.setNegativeButton("继续退出", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                finish();
+
+
+            }
+        });
+        builder.create().show();
+    }
+
 
 
     /**
