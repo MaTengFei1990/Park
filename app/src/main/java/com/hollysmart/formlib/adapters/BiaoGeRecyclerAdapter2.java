@@ -503,6 +503,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView tv_value;
         private TextView tv_tishi;
         private LinearLayout ll_value;
+        private ImageView iv_arrorw;
 
         public DanhangXuanZelistViewHolder(View itemView) {
             super(itemView);
@@ -511,6 +512,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             tv_tishi =  itemView.findViewById(R.id.tv_tishi);
             tv_value =  itemView.findViewById(R.id.tv_value);
             ll_value =  itemView.findViewById(R.id.ll_value);
+            iv_arrorw =  itemView.findViewById(R.id.iv_arrorw);
         }
     }
 
@@ -537,9 +539,11 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (isCheck) {
             holder.ll_value.setEnabled(false);
+            holder.iv_arrorw.setVisibility(View.INVISIBLE);
 
         } else {
             holder.ll_value.setEnabled(true);
+            holder.iv_arrorw.setVisibility(View.VISIBLE);
         }
 
 
@@ -608,6 +612,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView tv_name;
         private TextView tv_value;
         private TextView tv_tishi;
+        private ImageView iv_arrorw;
 //        private LinearLayout ll_value;
 
         public DanhangXuanZeViewHolder(View itemView) {
@@ -616,6 +621,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             tv_name =  itemView.findViewById(R.id.tv_name);
             tv_value =  itemView.findViewById(R.id.tv_value);
             tv_tishi =  itemView.findViewById(R.id.tv_tishi);
+            iv_arrorw =  itemView.findViewById(R.id.iv_arrorw);
 //            ll_value =  itemView.findViewById(R.id.ll_value);
         }
     }
@@ -641,9 +647,11 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (isCheck) {
             holder.tv_value.setEnabled(false);
+            holder.iv_arrorw.setVisibility(View.INVISIBLE);
 
         } else {
             holder.tv_value.setEnabled(true);
+            holder.iv_arrorw.setVisibility(View.VISIBLE);
         }
 
 
@@ -785,6 +793,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         private TextView tv_value;
         private TextView tv_tishi;
         private LinearLayout ll_value;
+        private ImageView iv_arrorw;
 
         public MapContentViewHolder(View itemView) {
             super(itemView);
@@ -793,6 +802,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             tv_value =  itemView.findViewById(R.id.tv_value);
             tv_tishi =  itemView.findViewById(R.id.tv_tishi);
             ll_value =  itemView.findViewById(R.id.ll_value);
+            iv_arrorw =  itemView.findViewById(R.id.iv_arrorw);
         }
     }
 
@@ -821,9 +831,11 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (isCheck) {
             holder.ll_value.setEnabled(false);
+            holder.iv_arrorw.setVisibility(View.INVISIBLE);
 
         } else {
             holder.ll_value.setEnabled(true);
+            holder.iv_arrorw.setVisibility(View.VISIBLE);
         }
         holder.ll_value.setOnClickListener(new View.OnClickListener() {
             @Override
