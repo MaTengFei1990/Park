@@ -699,7 +699,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
     private void imageContent(final ImageContentViewHolder holder, final DongTaiFormBean bean,int position) {
 
         List<JDPicInfo> list = new ArrayList<>();
-        ItemPicAdater itemPicAdater = new ItemPicAdater(mContext, list, bean,picBeannull);
+        ItemPicAdater itemPicAdater = new ItemPicAdater(mContext, list, bean,picBeannull,isCheck);
 
         list.clear();
         List<JDPicInfo> picinfosList = bean.getPic();

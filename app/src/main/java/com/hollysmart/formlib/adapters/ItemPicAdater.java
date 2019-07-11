@@ -36,14 +36,16 @@ public class ItemPicAdater extends LinearLayoutBaseAdapter {
     private List<JDPicInfo> deletPicList = new ArrayList<>();
 
     private DongTaiFormBean bean;
+    private boolean isCheck=false; //是否是查看，true查看，不能编辑；
 
 
-    public ItemPicAdater(Context context, List<JDPicInfo> list, DongTaiFormBean bean,JDPicInfo picBeannull) {
+    public ItemPicAdater(Context context, List<JDPicInfo> list, DongTaiFormBean bean,JDPicInfo picBeannull,boolean isCheck) {
         super(context, list);
         this.context = context;
         this.jdPicslist = list;
         this.contextlist = context;
         this.bean = bean;
+        this.isCheck = isCheck;
     }
 
     @Override
@@ -54,65 +56,71 @@ public class ItemPicAdater extends LinearLayoutBaseAdapter {
         ImageView imageView = convertView.findViewById(R.id.photo);
         ImageView iv_del = convertView.findViewById(R.id.iv_del);
 
-        //当前item要加载的图片路径
-        //使用谷歌官方提供的Glide加载图片
-        if (jdPicInfo.getIsAddFlag() == 1) {
+        if (isCheck) {
             iv_del.setVisibility(View.GONE);
-            if (contextlist != null && imageView != null) {
-                Glide.with(contextlist)
-                        .load(R.mipmap.a_v)
-                        .centerCrop().into(imageView);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            Activity activity = (Activity) context;
-                            activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_CONTACTS);
-                        } else {
-                            Activity activity = (Activity) context;
-                            Intent intent = new Intent(contextlist, Cai_AddPicActivity.class);
-                            intent.putExtra("num", MAXNUM + 1 - jdPicslist.size());
-                            intent.putExtra("bean", bean);
-                            activity.startActivityForResult(intent, 1);
-                        }
-
-                    }
-                });
-            }
-        } else {
-            if (!Utils.isEmpty(jdPicInfo.getImageUrl())) {
-                Glide.with(contextlist)
-                        .load(Values.SERVICE_URL_ADMIN_FORM + jdPicInfo.getImageUrl())
-                        .centerCrop().into(imageView);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(contextlist, BigPicActivity.class);
-                        intent.putExtra("infos", (Serializable) jdPicslist);
-                        intent.putExtra("index", position);
-                        context.startActivity(intent);
-                    }
-                });
-
-            } else {
-                Glide.with(contextlist)
-                        .load(new File(jdPicInfo.getFilePath()))
-                        .centerCrop().into(imageView);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(contextlist, BigPicActivity.class);
-                        intent.putExtra("infos", (Serializable) jdPicslist);
-                        intent.putExtra("index", position);
-                        context.startActivity(intent);
-                    }
-                });
-
-            }
-
+        }else {
+            iv_del.setVisibility(View.VISIBLE);
         }
+
+            //当前item要加载的图片路径
+            //使用谷歌官方提供的Glide加载图片
+            if (jdPicInfo.getIsAddFlag() == 1) {
+                iv_del.setVisibility(View.GONE);
+                if (contextlist != null && imageView != null) {
+                    Glide.with(contextlist)
+                            .load(R.mipmap.a_v)
+                            .centerCrop().into(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                Activity activity = (Activity) context;
+                                activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                            } else {
+                                Activity activity = (Activity) context;
+                                Intent intent = new Intent(contextlist, Cai_AddPicActivity.class);
+                                intent.putExtra("num", MAXNUM + 1 - jdPicslist.size());
+                                intent.putExtra("bean", bean);
+                                activity.startActivityForResult(intent, 1);
+                            }
+
+                        }
+                    });
+                }
+            } else {
+                if (!Utils.isEmpty(jdPicInfo.getImageUrl())) {
+                    Glide.with(contextlist)
+                            .load(Values.SERVICE_URL_ADMIN_FORM + jdPicInfo.getImageUrl())
+                            .centerCrop().into(imageView);
+
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(contextlist, BigPicActivity.class);
+                            intent.putExtra("infos", (Serializable) jdPicslist);
+                            intent.putExtra("index", position);
+                            context.startActivity(intent);
+                        }
+                    });
+
+                } else {
+                    Glide.with(contextlist)
+                            .load(new File(jdPicInfo.getFilePath()))
+                            .centerCrop().into(imageView);
+
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(contextlist, BigPicActivity.class);
+                            intent.putExtra("infos", (Serializable) jdPicslist);
+                            intent.putExtra("index", position);
+                            context.startActivity(intent);
+                        }
+                    });
+
+                }
+
+            }
         iv_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
