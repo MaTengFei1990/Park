@@ -715,12 +715,21 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
         }
         if (listContainNull(list) == null) {
-            list.add(list.size(), picBeannull);
+            if (isCheck) {
+            } else {
+                list.add(list.size(), picBeannull);
+
+            }
 
         } else {
             JDPicInfo jdPicInfo = listContainNull(list);
             list.remove(jdPicInfo);
-            list.add(list.size(), picBeannull);
+
+            if (isCheck) {
+            } else {
+                list.add(list.size(), picBeannull);
+
+            }
 
         }
         holder.ll_jingdian_pic.removeAllViews();
