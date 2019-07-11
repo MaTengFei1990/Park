@@ -20,14 +20,14 @@
             android:text="*"
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
-            android:textColor="@color/heise_text"
+            android:textColor="@color/huise_hint"
             android:textSize="@dimen/text_zhong" />
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/heise_text"
+            android:textColor="@color/huise_hint"
             android:textSize="@dimen/text_zhong" />
 
 
