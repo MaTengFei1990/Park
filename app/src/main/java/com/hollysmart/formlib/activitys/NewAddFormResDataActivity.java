@@ -873,10 +873,10 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
         }
 
+        addDB(resDataBean);
 
         uploadResData(resDataBean.getId());
 
-//        addDB(resDataBean);
 
 
 
@@ -1055,8 +1055,6 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
         };
 
 
-        List<ResDataBean> formBeens = formDao.getUuidDate(uuid);
-        for (ResDataBean bean : formBeens) {
 
             getFormPicMap(formBeanList);
             for (Map.Entry<String, List<JDPicInfo>> entry : formPicMap.entrySet()) {
@@ -1075,12 +1073,10 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
             }
 
 
-
-            taskPool.addTask(new SaveResDataAPI(userInfo.getAccess_token(),bean,formPicMap,listener));
-
+            taskPool.addTask(new SaveResDataAPI(userInfo.getAccess_token(),resDataBean,formPicMap,listener));
 
 
-        }
+
         if (sportEditFlag) {
             lpd.setMessage("正在同步新增的资源,请稍等...");
             lpd.show();
