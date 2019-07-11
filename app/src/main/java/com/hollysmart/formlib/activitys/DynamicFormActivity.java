@@ -175,7 +175,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
 
                                                 }
 
-                                                biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList);
+                                                biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,false);
 
                                                 recy_view.setAdapter(biaoGeRecyclerAdapter);
 
@@ -264,7 +264,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
         }
 
 
-        biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList);
+        biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,false);
         recy_view.setAdapter(biaoGeRecyclerAdapter);
         recy_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -379,7 +379,7 @@ public class DynamicFormActivity extends StyleAnimActivity  {
 
                     }
 
-                    biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList);
+                    biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,false);
 
                     recy_view.setAdapter(biaoGeRecyclerAdapter);
 

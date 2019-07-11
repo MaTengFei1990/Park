@@ -46,15 +46,18 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
     private List<DongTaiFormBean> biaoGeBeanList;
     private TimePickerDialog timePickerDialog;
 
+    private boolean isCheck=false; //是否是查看，true查看，不能编辑；
+
 
     JDPicInfo picBeannull = new JDPicInfo(0, null, null, null, 1, "false");
 
     private HashMap<String, List<DictionaryBean>> map = new HashMap<>();
 
-    public BiaoGeRecyclerAdapter2(Context mContext, List<DongTaiFormBean> biaoGeBeanList) {
+    public BiaoGeRecyclerAdapter2(Context mContext, List<DongTaiFormBean> biaoGeBeanList ,boolean isCheck) {
         this.mContext = mContext;
         mLayoutInflater = LayoutInflater.from(mContext);
         this.biaoGeBeanList = biaoGeBeanList;
+        this.isCheck = isCheck;
         for (DongTaiFormBean bean : biaoGeBeanList) {
             String propertyLabel = bean.getPropertyLabel();
             List<DongTaiFormBean> childlist = bean.getCgformFieldList();
@@ -333,6 +336,13 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
         }
         holder.et_value.clearFocus();
 
+        if (isCheck) {
+            holder.et_value.setEnabled(false);
+
+        } else {
+            holder.et_value.setEnabled(true);
+        }
+
         holder.et_value.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -419,6 +429,13 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             holder.et_value.setText(bean.getPropertyLabel().toString());
         } else {
             holder.et_value.setText("");
+        }
+
+        if (isCheck) {
+            holder.et_value.setEnabled(false);
+
+        } else {
+            holder.et_value.setEnabled(true);
         }
 
 //        if ("email".equals(bean.getExpression())) {
@@ -518,6 +535,13 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             holder.tv_tishi.setVisibility(View.GONE);
         }
 
+        if (isCheck) {
+            holder.ll_value.setEnabled(false);
+
+        } else {
+            holder.ll_value.setEnabled(true);
+        }
+
 
         holder.tv_name.setText(bean.getContent());
         holder.ll_value.setOnClickListener(new View.OnClickListener() {
@@ -613,6 +637,13 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             holder.tv_tishi.setVisibility(View.VISIBLE);
         } else {
             holder.tv_tishi.setVisibility(View.GONE);
+        }
+
+        if (isCheck) {
+            holder.tv_value.setEnabled(false);
+
+        } else {
+            holder.tv_value.setEnabled(true);
         }
 
 
@@ -778,6 +809,13 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         holder.tv_name.setText(bean.getContent());
+
+        if (isCheck) {
+            holder.ll_value.setEnabled(false);
+
+        } else {
+            holder.ll_value.setEnabled(true);
+        }
         holder.ll_value.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -863,6 +901,13 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
 
         holder.tv_name.setText(bean.getContent());
+
+        if (isCheck) {
+            holder.iv_switch.setEnabled(false);
+
+        } else {
+            holder.iv_switch.setEnabled(true);
+        }
         holder.iv_switch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

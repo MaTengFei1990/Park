@@ -1,6 +1,8 @@
 package com.hollysmart.formlib;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.formlib.adapters.BiaoGeRecyclerAdapter2;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.beans.JDPicInfo;
@@ -31,6 +34,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -50,10 +54,7 @@ public class ResDetailsActivity extends StyleAnimActivity {
     ImageView iv_maplsit;
 
     @BindView(R.id.lv_jingdian)
-    ListView lv_jingdian;
-
-    @BindView(R.id.banner)
-    Banner banner;
+    RecyclerView lv_jingdian;
 
 
     private List<JDPicInfo> picList; // 当前景点图片集
@@ -64,6 +65,8 @@ public class ResDetailsActivity extends StyleAnimActivity {
 
     private List<DongTaiFormBean> formBeanList = new ArrayList<>();
 
+    private HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
+
 
     @Override
     public void findView() {
@@ -72,7 +75,7 @@ public class ResDetailsActivity extends StyleAnimActivity {
         iv_maplsit.setOnClickListener(this);
     }
 
-    private FromshowAdapter fromshowAdapter;
+    private BiaoGeRecyclerAdapter2 fromshowAdapter;
 
 
     @Override
@@ -81,8 +84,10 @@ public class ResDetailsActivity extends StyleAnimActivity {
         picList = new ArrayList<>();
         soundList = new ArrayList<>();
         resDataBean = (ResDataBean) getIntent().getSerializableExtra("resDataBean");
-
-        fromshowAdapter = new FromshowAdapter(mContext, formBeanList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //设置布局管理器
+        lv_jingdian.setLayoutManager(layoutManager);
+        fromshowAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,true);
         lv_jingdian.setAdapter(fromshowAdapter);
         selectDB();
 
@@ -123,46 +128,13 @@ public class ResDetailsActivity extends StyleAnimActivity {
 
                                 formBeanList.addAll(dictList);
 
+                                getFormPicMap(formBeanList);
 
-                                for (int i = 0; i < dictList.size(); i++) {
-
-                                    DongTaiFormBean formBean = dictList.get(i);
-
-                                    if (formBean.getCgformFieldList() != null && formBean.getCgformFieldList().size() > 0) {
-
-                                        if (formBean.getPropertyLabel() != null) {
-                                            if (formBean.getPropertyLabel().equals("是") || formBean.getPropertyLabel().equals("1")) {
-
-                                                List<DongTaiFormBean> cgformFieldList = formBean.getCgformFieldList();
-
-                                                formBeanList.addAll(i+1, cgformFieldList);
-                                            }
-
-                                        }
-
-
-
-
-
-                                    }
-                                }
+                                picAdd2From(formPicMap, formBeanList);
 
                                 fromshowAdapter.notifyDataSetChanged();
 
 
-                                banner.setImageLoader(new GlideImageLoader());
-
-                                resDataBean.setPic(resDataBen.getPic());
-
-                                List<JDPicInfo> piclist = resDataBean.getPic();
-
-                                if (piclist != null && piclist.size() > 0) {
-                                    //设置图片集合
-                                    banner.setImages(piclist);
-                                    //banner设置方法全部调用完毕时最后调用
-                                    banner.start();
-
-                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -172,6 +144,175 @@ public class ResDetailsActivity extends StyleAnimActivity {
 
                 }
             }).request();
+
+        } else {
+
+            String formData = resDataBean.getFormData();
+
+            formBeanList.clear();
+            try {
+                if (!Utils.isEmpty(formData)) {
+
+                    JSONObject jsonObject = null;
+                    jsonObject = new JSONObject(formData);
+                    Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                    List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                            new TypeToken<List<DongTaiFormBean>>() {
+                            }.getType());
+
+                    formBeanList.addAll(dictList);
+                    getFormPicMap(formBeanList);
+                    picAdd2From(formPicMap, formBeanList);
+                    fromshowAdapter.notifyDataSetChanged();
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+
+    }
+
+
+
+
+    private void getFormPicMap(List<DongTaiFormBean> formBeans) {
+
+        for (int i = 0; i < formBeans.size(); i++) {
+            DongTaiFormBean formBean = formBeans.get(i);
+
+            if (formBean.getPic() != null && formBean.getPic().size() > 0) {
+                formPicMap.put(formBean.getJavaField(), formBean.getPic());
+
+            }else {
+
+                if (formBean.getShowType().equals("image")) {
+
+                    if (!Utils.isEmpty(formBean.getPropertyLabel())) {
+                        String[] split = formBean.getPropertyLabel().split(",");
+                        List<JDPicInfo> picInfos = new ArrayList<>();
+
+                        for (int k = 0; k < split.length; k++) {
+
+                            JDPicInfo jdPicInfo = new JDPicInfo();
+
+                            jdPicInfo.setImageUrl(split[k]);
+                            jdPicInfo.setIsDownLoad("true");
+                            jdPicInfo.setIsAddFlag(0);
+
+                            picInfos.add(jdPicInfo);
+                        }
+                        if (picInfos != null && picInfos.size() > 0) {
+
+                            formPicMap.put(formBean.getJavaField(), picInfos);
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+
+            if (formBean.getCgformFieldList() != null && formBean.getCgformFieldList().size() > 0) {
+
+                List<DongTaiFormBean> childList = formBean.getCgformFieldList();
+
+                for (int j = 0; j < childList.size(); j++) {
+
+                    DongTaiFormBean childbean = childList.get(j);
+
+                    if (childbean.getPic() != null && childbean.getPic().size() > 0) {
+                        formPicMap.put(childbean.getJavaField(), childbean.getPic());
+
+                    }else {
+
+                        if (childbean.getShowType().equals("image")) {
+
+                            if (!Utils.isEmpty(childbean.getPropertyLabel())) {
+                                String[] split = childbean.getPropertyLabel().split(",");
+                                List<JDPicInfo> picInfos = new ArrayList<>();
+
+                                for (int k = 0; k < split.length; k++) {
+
+                                    JDPicInfo jdPicInfo = new JDPicInfo();
+
+                                    jdPicInfo.setImageUrl(split[k]);
+                                    jdPicInfo.setIsDownLoad("true");
+                                    jdPicInfo.setIsAddFlag(0);
+
+                                    picInfos.add(jdPicInfo);
+                                }
+                                if (picInfos != null && picInfos.size() > 0) {
+
+                                    formPicMap.put(childbean.getJavaField(), picInfos);
+                                }
+
+
+                            }
+
+
+                        }
+
+
+                    }
+
+
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    private void picAdd2From(HashMap<String, List<JDPicInfo>> formPicMap, List<DongTaiFormBean> formBeans) {
+
+        for (int i = 0; i < formBeans.size(); i++) {
+            DongTaiFormBean formBean = formBeans.get(i);
+
+            if (formBean.getShowType().equals("image")) {
+                if (formPicMap != null && formPicMap.size() > 0) {
+                    List<JDPicInfo> picInfos = formPicMap.get(formBean.getJavaField());
+                    formBean.setPic(picInfos);
+
+                }
+
+
+            }
+
+            if (formBean.getCgformFieldList() != null && formBean.getCgformFieldList().size() > 0) {
+
+                List<DongTaiFormBean> childList = formBean.getCgformFieldList();
+
+                for (int j = 0; j < childList.size(); j++) {
+
+                    DongTaiFormBean childbean = childList.get(j);
+
+                    if (childbean.getShowType().equals("image")) {
+
+                        if (formPicMap != null && formPicMap.size() > 0) {
+                            List<JDPicInfo> picInfos = formPicMap.get(childbean.getJavaField());
+                            childbean.setPic(picInfos);
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+
+            }
 
         }
 
