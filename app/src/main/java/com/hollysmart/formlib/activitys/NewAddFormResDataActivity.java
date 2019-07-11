@@ -50,6 +50,8 @@ import com.hollysmart.utils.taskpool.OnNetRequestListener;
 import com.hollysmart.utils.taskpool.TaskPool;
 import com.hollysmart.value.Values;
 
+import org.json.JSONArray;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -871,21 +873,10 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
         }
 
-        FormModelBean formModelBean = new FormModelBean();
-
-        formModelBean.setCgformFieldList(formBeanList);
-
-        resDataBean.setFormModel(formModelBean);
-
-        Gson gson = new Gson();
-        String formBeanStr = gson.toJson(formModelBean);
-
-        resDataBean.setFormData(formBeanStr);
-
-        addDB(resDataBean);
 
         uploadResData(resDataBean.getId());
 
+//        addDB(resDataBean);
 
 
 
@@ -900,6 +891,80 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
     // 数据库操作
     private void addDB(ResDataBean resDataBean) {
+
+
+        for (int i = 0; i < formBeanList.size(); i++) {
+
+            DongTaiFormBean dongTaiFormBean = formBeanList.get(i);
+
+
+            List<JDPicInfo> jdPicInfos = formPicMap.get(dongTaiFormBean.getJavaField());
+
+            if (jdPicInfos != null && jdPicInfos.size() > 0) {
+                String picUrl = "";
+                for (JDPicInfo jdPicInfo : jdPicInfos) {
+
+                    if (!Utils.isEmpty(jdPicInfo.getImageUrl())) {
+
+                        if (Utils.isEmpty(picUrl)) {
+                            picUrl = jdPicInfo.getImageUrl();
+                        } else {
+                            picUrl = picUrl + "," + jdPicInfo.getImageUrl();
+                        }
+
+                    }
+                }
+
+                dongTaiFormBean.setPropertyLabel(picUrl);
+            }
+
+            if (dongTaiFormBean.getCgformFieldList() != null && dongTaiFormBean.getCgformFieldList().size() > 0) {
+
+                List<DongTaiFormBean> childFormList = dongTaiFormBean.getCgformFieldList();
+
+
+                for (DongTaiFormBean childForm : childFormList) {
+
+                    List<JDPicInfo> childjdPicInfos = formPicMap.get(childForm.getJavaField());
+
+                    if (childjdPicInfos != null && childjdPicInfos.size() > 0) {
+                        String picUrl = "";
+                        for (JDPicInfo jdPicInfo : childjdPicInfos) {
+
+                            if (!Utils.isEmpty(jdPicInfo.getImageUrl())) {
+
+                                if (Utils.isEmpty(picUrl)) {
+                                    picUrl = jdPicInfo.getImageUrl();
+                                } else {
+                                    picUrl = picUrl + "," + jdPicInfo.getImageUrl();
+                                }
+
+                            }
+                        }
+
+                        childForm.setPropertyLabel(picUrl);
+                    }
+                }
+
+            }
+
+
+        }
+
+
+        FormModelBean formModelBean = new FormModelBean();
+
+        formModelBean.setCgformFieldList(formBeanList);
+
+        resDataBean.setFormModel(formModelBean);
+
+        Gson gson = new Gson();
+        String formBeanStr = gson.toJson(formModelBean);
+
+        resDataBean.setFormData(formBeanStr);
+
+
+
 
         ResDataDao resDataDao = new ResDataDao(mContext);
 
@@ -956,6 +1021,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
                                 @Override
                                 public void run() {
                                     setResult(1);
+                                    addDB(resDataBean);
                                     NewAddFormResDataActivity.this.finish();
 
                                 }
@@ -970,6 +1036,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
                                 @Override
                                 public void run() {
                                     setResult(1);
+                                    addDB(resDataBean);
                                     NewAddFormResDataActivity.this.finish();
 
                                 }
