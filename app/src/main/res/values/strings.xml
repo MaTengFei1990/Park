@@ -19,7 +19,7 @@
     <string name="project_manager">项目管理</string>
     <string name="new_project">新建项目</string>
     <string name="classify_manager">分类管理</string>
-    <string name="range_select">范围选择</string>
+    <string name="range_select">位置选择</string>
 
 
     <string name="xlistview_header_hint_normal">下拉刷新</string>
