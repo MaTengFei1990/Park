@@ -786,7 +786,7 @@ public class ProjectDetails2Activity extends StyleAnimActivity implements OnClic
                                 PointInfo pointInfo = new PointInfo();
 
 
-                                GPS Gcj02_gps = GPSConverterUtils.gcj02_To_Bd09(new Double(point[1]), new Double(point[0]));
+                                GPS Gcj02_gps = GPSConverterUtils.Gps84_To_bd09(new Double(point[1]), new Double(point[0]));
 
                                 pointInfo.setLongitude(Gcj02_gps.getLon());
                                 pointInfo.setLatitude(Gcj02_gps.getLat());

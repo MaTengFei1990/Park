@@ -42,6 +42,7 @@
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:padding="10dp"
+                android:visibility="gone"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_alignParentRight="true"

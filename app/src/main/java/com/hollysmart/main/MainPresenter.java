@@ -174,12 +174,12 @@ public class MainPresenter {
 
 
     /***
-     * 百度坐标转高德坐标
+     * 百度坐标转gps
      * @param location
      */
 
     private GPS baiDu2GaoDe(BDLocation location) {
-        GPS Gcj02_gps = GPSConverterUtils.bd09_To_Gcj02(location.getLatitude(), location.getLongitude());
+        GPS Gcj02_gps = GPSConverterUtils.bd09_To_Gps84(location.getLatitude(), location.getLongitude());
 
         return Gcj02_gps;
 

@@ -865,6 +865,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
                     resDataBean.setLatitude(gps.getLat() + "");
                     resDataBean.setLongitude(gps.getLon() + "");
                     resDataBean.setFd_resposition(gps.getLat() + "," + gps.getLon());
+                    formBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
                 }
 
 
@@ -883,7 +884,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
     }
 
     private GPS baiDu2GaoDe(double bd_lat, double bd_lon) {
-        GPS Gcj02_gps = GPSConverterUtils.bd09_To_Gcj02(bd_lat, bd_lon);
+        GPS Gcj02_gps = GPSConverterUtils.bd09_To_Gps84(bd_lat, bd_lon);
 
         return Gcj02_gps;
 

@@ -706,7 +706,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
                                 PointInfo pointInfo = new PointInfo();
 
 
-                                GPS Gcj02_gps = GPSConverterUtils.gcj02_To_Bd09(new Double(point[1]), new Double(point[0]));
+                                GPS Gcj02_gps = GPSConverterUtils.Gps84_To_bd09(new Double(point[1]), new Double(point[0]));
 
                                 pointInfo.setLongitude(Gcj02_gps.getLon());
                                 pointInfo.setLatitude(Gcj02_gps.getLat());
@@ -822,10 +822,17 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
 
                 for (int i = 0; i < resDatalist.size(); i++) {
 
-                    LatLng llA = new LatLng(Double.parseDouble(resDatalist.get(i).getLatitude()),
+                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
                             Double.parseDouble(resDatalist.get(i).getLongitude()));
+                    LatLng llA = new LatLng(gps.getLat(),
+                            gps.getLon());
+                    Mlog.d("接收到的Latitude==" + resDatalist.get(i).getLatitude());
+                    Mlog.d("接收到的Long==" + resDatalist.get(i).getLongitude());
+
                     OverlayOptions ooA = new MarkerOptions().position(llA)
                             .icon(bdA).zIndex(i);
+                    Mlog.d("转化后的Latitude==" + llA.latitude);
+                    Mlog.d("转化后的Long==" + llA.longitude);
                     Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
                     mMarkers.put(i, marker);
                     int fanwei = resDatalist.get(i).getScope();
