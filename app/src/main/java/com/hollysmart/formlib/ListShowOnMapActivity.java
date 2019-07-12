@@ -342,7 +342,7 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
                 }
             });
 
-            if (resDataBean.getFormData() == null) {
+            if (resDataBean.getFormData() == null||resDataBean.getFormModel()==null) {
 
 
                 new ResDataGetAPI(userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {

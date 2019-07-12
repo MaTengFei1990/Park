@@ -16,16 +16,21 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 import com.hollysmart.apis.GetResModelAPI;
+import com.hollysmart.apis.ResModelListAPI;
 import com.hollysmart.beans.GPS;
 import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.db.DatabaseHelper;
 import com.hollysmart.db.JDPicDao;
+import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.ResDataDao;
+import com.hollysmart.db.ResModelDao;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.formlib.activitys.NewAddFormResDataActivity;
+import com.hollysmart.formlib.apis.GetNetResListAPI;
 import com.hollysmart.formlib.apis.ResDataDeleteAPI;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
@@ -500,10 +505,13 @@ public class ResDataManageAdapter extends BaseAdapter {
             public void onClick(DialogInterface arg0, int arg1) {
                 delDb(deleteBean);
 
-
                 new ResDataDeleteAPI(userInfo.getAccess_token(), deleteBean, new ResDataDeleteAPI.ResDataDeleteIF() {
                     @Override
                     public void onResDataDeleteResult(boolean isOk, String msg) {
+
+                        if (isOk) {
+                            selectDB(projectBean.getId());
+                        }
 
                     }
                 }).request();
@@ -555,7 +563,6 @@ public class ResDataManageAdapter extends BaseAdapter {
                 }
             }
             Toast.makeText(context, "资源删除成功", Toast.LENGTH_SHORT).show();
-            selectDB(jqId);
 
         } else {
             Toast.makeText(context, "资源删除失败", Toast.LENGTH_SHORT).show();
@@ -632,18 +639,223 @@ public class ResDataManageAdapter extends BaseAdapter {
         }
     }
 
+
+    private List<ResModelBean> resModelList = new ArrayList<ResModelBean>();
     // 查询
-    private void selectDB(String jqId) {
-        Mlog.d("jqId = " + jqId);
-        mJingDians.clear();
+        private void selectDB(final String jqId) {
+            Mlog.d("jqId = " + jqId);
+            mJingDians.clear();
 
-        ResDataDao resDataDao = new ResDataDao(context);
-        List<ResDataBean> resDataBeans = resDataDao.getData(jqId + "");
-        mJingDians.addAll(resDataBeans);
-        notifyDataSetChanged();
+            resModelList.clear();
+
+            String classifyIds = projectBean.getfTaskmodel();
+            if (classifyIds != null) {
+
+                String[] ids = classifyIds.split(",");
+                ResModelDao resModelDao = new ResModelDao(context);
+                for(int i=0;i<ids.length;i++) {
+                    ResModelBean resModelBean = resModelDao.getDatById(ids[i]);
+                    if (resModelBean != null) {
+
+                        resModelList.add(resModelBean);
+                    }
+                }
 
 
-    }
+            }
+
+            if (resModelList == null || resModelList.size() == 0) {
+
+                new ResModelListAPI(userInfo.getAccess_token(), new ResModelListAPI.ResModelListIF() {
+                    @Override
+                    public void onResModelListResult(boolean isOk, List<ResModelBean> projectBeanList) {
+
+                        if (isOk) {
+                            ResModelDao resModelDao = new ResModelDao(context);
+                            resModelList.clear();
+                            resModelList.addAll(projectBeanList);
+                            resModelDao.addOrUpdate(resModelList);
+
+                            ResModelBean resModelBean = resModelList.get(0);
+
+
+                            String formData = resModelBean.getfJsonData();
+                            formBeanList.clear();
+                            try {
+                                Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                                List<DongTaiFormBean> dictList = mGson.fromJson(formData,
+                                        new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                                formBeanList.addAll(dictList);
+                            } catch (JsonIOException e) {
+                                e.printStackTrace();
+                            }
+
+                            JDPicDao jdPicDao = new JDPicDao(context);
+                            for (int i = 0; i < mJingDians.size(); i++) {
+                                ResDataBean resDataBean = mJingDians.get(i);
+
+                                List<JDPicInfo> jdPicInfoList = jdPicDao.getDataByJDId(resDataBean.getId() + "");
+
+                                resDataBean.setJdPicInfos(jdPicInfoList);
+
+                            }
+
+
+                            new GetNetResListAPI(userInfo, projectBean, new GetNetResListAPI.DatadicListIF() {
+                                @Override
+                                public void datadicListResult(boolean isOk, List<ResDataBean> netDataList) {
+
+
+                                    List<String> idList = new ArrayList<>();
+
+                                    for (ResDataBean resDataBean : mJingDians) {
+
+                                        idList.add(resDataBean.getId());
+                                    }
+
+
+                                    if (isOk) {
+                                        if (netDataList != null && netDataList.size() > 0) {
+                                            int j = 0;
+
+                                            for (int i = 0; i < netDataList.size(); i++) {
+
+                                                ResDataBean resDataBean = netDataList.get(i);
+
+                                                if (!idList.contains(resDataBean.getId())) {
+                                                    String fd_resposition = resDataBean.getFd_resposition();
+
+                                                    if (!Utils.isEmpty(fd_resposition)) {
+
+                                                        String[] split = fd_resposition.split(",");
+                                                        resDataBean.setLatitude(split[0]);
+                                                        resDataBean.setLongitude(split[1]);
+
+                                                    }
+
+
+                                                    mJingDians.add(resDataBean);
+
+                                                    j = j + 1;
+
+                                                    projectBean.setNetCount(10);
+                                                }
+                                            }
+
+                                            new ProjectDao(context).addOrUpdate(projectBean);
+                                            ProjectBean dataByID = new ProjectDao(context).getDataByID(projectBean.getId());
+
+                                            dataByID.getNetCount();
+                                        }
+                                    }
+
+
+                                    notifyDataSetChanged();
+
+
+                                }
+                            }).request();
+
+
+                        }
+
+
+                    }
+                }).request();
+
+
+            } else {
+                ResModelBean resModelBean = resModelList.get(0);
+
+
+                String formData = resModelBean.getfJsonData();
+                formBeanList.clear();
+                try {
+                    Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                    List<DongTaiFormBean> dictList = mGson.fromJson(formData,
+                            new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                    formBeanList.addAll(dictList);
+                } catch (JsonIOException e) {
+                    e.printStackTrace();
+                }
+
+
+                ResDataDao resDataDao = new ResDataDao(context);
+                List<ResDataBean> resDataBeans = resDataDao.getData(jqId + "");
+                if (resDataBeans != null && resDataBeans.size() > 0) {
+
+                    mJingDians.addAll(resDataBeans);
+                }
+
+
+                JDPicDao jdPicDao = new JDPicDao(context);
+                for (int i = 0; i < mJingDians.size(); i++) {
+                    ResDataBean resDataBean = mJingDians.get(i);
+
+                    List<JDPicInfo> jdPicInfoList = jdPicDao.getDataByJDId(resDataBean.getId() + "");
+
+                    resDataBean.setJdPicInfos(jdPicInfoList);
+
+                }
+
+
+                new GetNetResListAPI(userInfo, projectBean, new GetNetResListAPI.DatadicListIF() {
+                    @Override
+                    public void datadicListResult(boolean isOk, List<ResDataBean> netDataList) {
+
+
+                        List<String> idList = new ArrayList<>();
+
+                        for (ResDataBean resDataBean : mJingDians) {
+
+                            idList.add(resDataBean.getId());
+                        }
+
+
+                        if (isOk) {
+                            if (netDataList != null && netDataList.size() > 0) {
+                                int j = 0;
+
+                                for (int i = 0; i < netDataList.size(); i++) {
+
+                                    ResDataBean resDataBean = netDataList.get(i);
+
+                                    if (!idList.contains(resDataBean.getId())) {
+                                        String fd_resposition = resDataBean.getFd_resposition();
+
+                                        if (!Utils.isEmpty(fd_resposition)) {
+
+                                            String[] split = fd_resposition.split(",");
+                                            resDataBean.setLatitude(split[0]);
+                                            resDataBean.setLongitude(split[1]);
+
+                                        }
+
+
+                                        mJingDians.add(resDataBean);
+
+                                        j = j + 1;
+
+                                        projectBean.setNetCount(10);
+                                    }
+                                }
+
+                                new ProjectDao(context).addOrUpdate(projectBean);
+                                ProjectBean dataByID = new ProjectDao(context).getDataByID(projectBean.getId());
+
+                                dataByID.getNetCount();
+                            }
+                        }
+
+
+                        notifyDataSetChanged();
+
+
+                    }
+                }).request();
+            }
+
+        }
 
 
     /**
