@@ -347,7 +347,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 //            1：数字 2：英文和数字 3：邮箱 4：电话号码和固话 5：身份证号 6：ip地址 7：邮政编码 8：数字和小数点
 
             if ("1".equals(cgformRuleBean.getType())) {
-                holder.et_value.setInputType( InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                holder.et_value.setInputType( InputType.TYPE_CLASS_NUMBER);
             } else if ("2".equals(cgformRuleBean.getType())) {
                 holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
             } else if ("3".equals(cgformRuleBean.getType())) {
@@ -476,7 +476,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 //            1：数字 2：英文和数字 3：邮箱 4：电话号码和固话 5：身份证号 6：ip地址 7：邮政编码 8：数字和小数点
 
             if ("1".equals(cgformRuleBean.getType())) {
-                holder.et_value.setInputType( InputType.TYPE_NUMBER_VARIATION_NORMAL);
+                holder.et_value.setInputType( InputType.TYPE_CLASS_NUMBER);
             } else if ("2".equals(cgformRuleBean.getType())) {
                 holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
             } else if ("3".equals(cgformRuleBean.getType())) {
