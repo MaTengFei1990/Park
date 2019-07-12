@@ -829,14 +829,6 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
 
         holder.tv_name.setText(bean.getContent());
 
-        if (isCheck) {
-            holder.ll_value.setEnabled(false);
-            holder.iv_arrorw.setVisibility(View.INVISIBLE);
-
-        } else {
-            holder.ll_value.setEnabled(true);
-            holder.iv_arrorw.setVisibility(View.VISIBLE);
-        }
         holder.ll_value.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -845,6 +837,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
                     Intent intent=new Intent(mContext, MapRangeActivity.class);
                     intent.putExtra("falg", bean.getShowType());
                     intent.putExtra("bean", bean);
+                    intent.putExtra("isCheck", isCheck);
                     Activity activity = (Activity) mContext;
                     activity.startActivityForResult(intent,6);
                 }
@@ -852,6 +845,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
                     Intent intent=new Intent(mContext, MapRangeActivity.class);
                     intent.putExtra("falg", bean.getShowType());
                     intent.putExtra("bean", bean);
+                    intent.putExtra("isCheck", isCheck);
                     Activity activity = (Activity) mContext;
                     activity.startActivityForResult(intent,6);
                 }
@@ -859,6 +853,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
                     Intent intent=new Intent(mContext, MapRangeActivity.class);
                     intent.putExtra("falg", bean.getShowType());
                     intent.putExtra("bean", bean);
+                    intent.putExtra("isCheck", isCheck);
                     Activity activity = (Activity) mContext;
                     activity.startActivityForResult(intent,6);
                 }

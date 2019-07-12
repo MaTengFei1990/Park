@@ -15,15 +15,18 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.beans.GPS;
 import com.hollysmart.formlib.adapters.BiaoGeRecyclerAdapter2;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.beans.JDPicInfo;
+import com.hollysmart.formlib.beans.FormModelBean;
 import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.db.UserInfo;
 import com.hollysmart.park.R;
 import com.hollysmart.style.StyleAnimActivity;
 import com.hollysmart.utils.ACache;
+import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.value.Values;
 import com.youth.banner.Banner;
@@ -161,6 +164,7 @@ public class ResDetailsActivity extends StyleAnimActivity {
                             }.getType());
 
                     formBeanList.addAll(dictList);
+                    getwgps2bd(formBeanList);
                     getFormPicMap(formBeanList);
                     picAdd2From(formPicMap, formBeanList);
                     fromshowAdapter.notifyDataSetChanged();
@@ -170,6 +174,34 @@ public class ResDetailsActivity extends StyleAnimActivity {
                 e.printStackTrace();
             }
 
+
+
+        }
+
+
+    }
+
+
+    private void getwgps2bd( List<DongTaiFormBean> formBeanList) {
+        for (int i = 0; i < formBeanList.size(); i++) {
+
+            DongTaiFormBean formBean = formBeanList.get(i);
+
+            if (formBean.getJavaField().equals("location")) {
+
+                String propertyLabel = formBean.getPropertyLabel();
+
+                if (!Utils.isEmpty(propertyLabel)) {
+                    String[] split = propertyLabel.split(",");
+
+                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(split[0]),
+                            Double.parseDouble(split[1]));
+
+                    formBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+                }
+
+
+            }
 
 
         }

@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hollysmart.apis.GetResModelAPI;
+import com.hollysmart.beans.GPS;
 import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.db.DatabaseHelper;
@@ -32,6 +33,7 @@ import com.hollysmart.formlib.beans.ProjectBean;
 import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.park.R;
 import com.hollysmart.utils.ACache;
+import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.value.Values;
@@ -188,6 +190,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                                 new TypeToken<List<DongTaiFormBean>>() {}.getType());
                         List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList);
                         formBeanList.addAll(comparis);
+                        getwgps2bd(formBeanList);
                         getFormPicMap(formBeanList);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -243,6 +246,34 @@ public class ResDataManageAdapter extends BaseAdapter {
         LinearLayout ll_shanchu;
         LinearLayout ll_fenxiang;
         TextView tv_bianji;
+    }
+
+
+    private void getwgps2bd( List<DongTaiFormBean> formBeanList) {
+        for (int i = 0; i < formBeanList.size(); i++) {
+
+            DongTaiFormBean formBean = formBeanList.get(i);
+
+            if (formBean.getJavaField().equals("location")) {
+
+                String propertyLabel = formBean.getPropertyLabel();
+
+                if (!Utils.isEmpty(propertyLabel)) {
+                    String[] split = propertyLabel.split(",");
+
+                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(split[0]),
+                            Double.parseDouble(split[1]));
+
+                    formBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+                }
+
+
+            }
+
+
+        }
+
+
     }
 
 

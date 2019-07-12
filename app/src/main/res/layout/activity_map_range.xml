@@ -130,6 +130,7 @@
 
             <ImageButton
                 android:id="@+id/bn_weixing"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/touming"

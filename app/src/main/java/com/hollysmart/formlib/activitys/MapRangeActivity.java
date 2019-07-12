@@ -74,6 +74,8 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
     private static final int LINE_FLAG = 2;
     private static final int PLANE_FLAG = 3;
 
+    private boolean isCheck;
+
     @Override
     public void findView() {
         findViewById(R.id.iv_back).setOnClickListener(this);
@@ -124,7 +126,7 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
 
 
 
-
+    //是否是查看，true查看，不能编辑
 
     @Override
     public void init() {
@@ -135,6 +137,7 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
 
 
         String falg = getIntent().getStringExtra("falg");
+        isCheck = getIntent().getBooleanExtra("isCheck", false);
         dongTaiFormBean = (DongTaiFormBean) getIntent().getSerializableExtra("bean");
 
         if (falg.equals("marker")) {
@@ -145,6 +148,14 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
         }
         if (falg.equals("line")) {
             flagtype = 2;
+        }
+
+        if (isCheck) {
+            findViewById(R.id.btn_add).setVisibility(View.GONE);
+            findViewById(R.id.btn_chexiao).setVisibility(View.GONE);
+            findViewById(R.id.btn_save).setVisibility(View.GONE);
+            findViewById(R.id.bn_dingwei).setVisibility(View.GONE);
+
         }
 
 

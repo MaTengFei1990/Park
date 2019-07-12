@@ -3,8 +3,11 @@ package com.hollysmart.formlib.apis;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.beans.GPS;
+import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.formlib.beans.FormModelBean;
 import com.hollysmart.formlib.beans.ResDataBean;
+import com.hollysmart.utils.GPSConverterUtils;
 import com.hollysmart.utils.Mlog;
 import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.INetModel;
@@ -14,6 +17,8 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -92,6 +97,10 @@ public class ResDataGetAPI implements INetModel {
 
                         FormModelBean formModel = resDataBean.getFormModel();
 
+
+                        getwgps2bd(formModel);
+
+
                         String s = mGson.toJson(formModel);
                         resDataBean.setFormData(s);
 
@@ -109,6 +118,36 @@ public class ResDataGetAPI implements INetModel {
         });
 
     }
+
+    private void getwgps2bd(FormModelBean formModel) {
+        List<DongTaiFormBean> formBeanList = formModel.getCgformFieldList();
+        for (int i = 0; i < formBeanList.size(); i++) {
+
+            DongTaiFormBean formBean = formBeanList.get(i);
+
+            if (formBean.getJavaField().equals("location")) {
+
+                String propertyLabel = formBean.getPropertyLabel();
+
+                if (!Utils.isEmpty(propertyLabel)) {
+                    String[] split = propertyLabel.split(",");
+
+                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(split[0]),
+                            Double.parseDouble(split[1]));
+
+                    formBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+                }
+
+
+            }
+
+
+        }
+
+
+    }
+
+
 
     public interface ResDataDeleteIF{
         void onResDataDeleteResult(boolean isOk, ResDataBean resDataBean);

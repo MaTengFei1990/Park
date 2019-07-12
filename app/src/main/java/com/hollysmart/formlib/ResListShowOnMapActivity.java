@@ -559,6 +559,7 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                 List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                         new TypeToken<List<DongTaiFormBean>>() {}.getType());
                 formBeanList.addAll(dictList);
+                getwgps2bd(formBeanList);
                 getFormPicMap(formBeanList,formPicMap);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -570,6 +571,33 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
             Activity activity = (Activity) context;
             activity.startActivityForResult(intent, 4);
         }
+    }
+
+    private void getwgps2bd( List<DongTaiFormBean> formBeanList) {
+        for (int i = 0; i < formBeanList.size(); i++) {
+
+            DongTaiFormBean formBean = formBeanList.get(i);
+
+            if (formBean.getJavaField().equals("location")) {
+
+                String propertyLabel = formBean.getPropertyLabel();
+
+                if (!Utils.isEmpty(propertyLabel)) {
+                    String[] split = propertyLabel.split(",");
+
+                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(split[0]),
+                            Double.parseDouble(split[1]));
+
+                    formBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+                }
+
+
+            }
+
+
+        }
+
+
     }
 
 
