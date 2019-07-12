@@ -152,6 +152,7 @@ public class ResDataManageActivity extends StyleAnimActivity {
 
 				intent.putExtra("formBeanList", (Serializable) formBeanList);
 				intent.putExtra("resDataBean",resDataBean);
+				intent.putExtra("sportEditFlag", true);
 				formPicMap.clear();
 				intent.putExtra("formPicMap", (Serializable) formPicMap);
 

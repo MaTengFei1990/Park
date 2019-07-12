@@ -125,6 +125,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
         resDataBean = (ResDataBean) getIntent().getSerializableExtra("resDataBean");
         resFromBeanLsit = (List<DongTaiFormBean>) getIntent().getSerializableExtra("formBeanList");
         formPicMap = (HashMap<String, List<JDPicInfo>>) getIntent().getSerializableExtra("formPicMap");
+        sportEditFlag = getIntent().getBooleanExtra("sportEditFlag", false);
 
         picAdd2From(formPicMap, resFromBeanLsit);
 
