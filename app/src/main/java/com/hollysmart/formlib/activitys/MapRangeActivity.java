@@ -352,7 +352,7 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
 
     private void drawRangeInMap(int type) {
         BitmapDescriptor bitmap = BitmapDescriptorFactory
-                .fromResource(R.mipmap.icon_redpin);
+                .fromResource(R.mipmap.resflag_add);
         mBaiduMap.clear();
 
         if (points == null || points.size() == 0) {
@@ -368,6 +368,9 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
                         .icon(bitmap);
                 //在地图上添加Marker，并显示
                 mBaiduMap.addOverlay(markeroption);
+
+                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(points.get(0));
+                mBaiduMap.animateMapStatus(u);
 
                 break;
             case LINE_FLAG:
@@ -635,8 +638,8 @@ public class MapRangeActivity extends StyleAnimActivity implements View.OnClickL
 
             if (isFirstLoc) {
                 isFirstLoc = false;
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
-                mBaiduMap.animateMapStatus(u);
+//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
+//                mBaiduMap.animateMapStatus(u);
 
                 target = mBaiduMap.getMapStatus().target;
                 System.out.println(target.toString());

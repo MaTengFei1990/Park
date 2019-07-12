@@ -152,6 +152,7 @@ public class ResDataManageActivity extends StyleAnimActivity {
 
 				intent.putExtra("formBeanList", (Serializable) formBeanList);
 				intent.putExtra("resDataBean",resDataBean);
+				formPicMap.clear();
 				intent.putExtra("formPicMap", (Serializable) formPicMap);
 
 				startActivityForResult(intent, 4);

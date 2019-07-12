@@ -730,8 +730,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
                 boolean allEdit = false;
 
-
-                for (DongTaiFormBean dongTaiFormBean : formBeanList) {
+                labe: for (DongTaiFormBean dongTaiFormBean : formBeanList) {
 
                     if (dongTaiFormBean.getFieldMustInput()) {
 
@@ -760,7 +759,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
                     List<DongTaiFormBean> propertys = dongTaiFormBean.getCgformFieldList();
 
-                    if (propertys != null && propertys.size() > 0) {
+                    if ((propertys != null && propertys.size() > 0)&&(!Utils.isEmpty(dongTaiFormBean.getPropertyLabel()) && dongTaiFormBean.getPropertyLabel().equals("1"))) {
 
                         for (DongTaiFormBean dongTaiFormBean1 : propertys) {
 
@@ -772,14 +771,14 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
                                         if (dongTaiFormBean1.getPic() == null || dongTaiFormBean1.getPic().size() == 0) {
                                             allEdit = false;
-                                            break;
+                                            break labe;
                                         }
 
 
                                     }else {
 
                                         allEdit = false;
-                                        break;
+                                        break labe;
 
                                     }
 
