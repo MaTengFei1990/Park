@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,14 +114,7 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
      * 4   动态数组
      * expression
      * ""  无
-     * "year"      年（YYYY）
-     * "date"      日期（YYYY-MM-DD）
-     * "email"     邮箱
-     * "mobile"    手机
-     * "num"       数字
-     * "zipcode"   邮编
-     * "idcard"    身份证
-     * "url"       url
+     *  验证type 1：数字 2：英文和数字 3：邮箱 4：电话号码和固话 5：身份证号 6：ip地址 7：邮政编码 8：数字和小数点
      *
      * @return -1         无
      * 0          单行
@@ -343,6 +337,40 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             holder.et_value.setEnabled(true);
         }
 
+        List<cgformRuleBean> cgformRuleList = bean.getCgformRuleList();
+        Matcher m = null;
+        cgformRuleBean cgformRuleBean = null;
+        if (cgformRuleList != null && cgformRuleList.size() > 0) {
+            cgformRuleBean = cgformRuleList.get(0);
+
+
+//            1：数字 2：英文和数字 3：邮箱 4：电话号码和固话 5：身份证号 6：ip地址 7：邮政编码 8：数字和小数点
+
+            if ("1".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType( InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            } else if ("2".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+            } else if ("3".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            } else if ("4".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            } else if ("5".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+            } else if ("6".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+            } else if ("7".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL );
+            } else if ("8".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType( InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+
+        } else {
+            holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        }
+
+
+
+
         holder.et_value.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -438,57 +466,65 @@ public class BiaoGeRecyclerAdapter2 extends RecyclerView.Adapter<RecyclerView.Vi
             holder.et_value.setEnabled(true);
         }
 
-//        if ("email".equals(bean.getExpression())) {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-//        } else if ("mobile".equals(bean.getExpression())) {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_PHONE);
-//        } else if ("num".equals(bean.getExpression())) {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-//        } else if ("zipcode".equals(bean.getExpression())) {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-//        } else if ("idcard".equals(bean.getExpression())) {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-//        } else if ("url".equals(bean.getExpression())) {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-//        } else {
-//            holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-//        }
+        List<cgformRuleBean> cgformRuleList = bean.getCgformRuleList();
+        Matcher m=null;
+        cgformRuleBean cgformRuleBean=null;
+        if (cgformRuleList != null && cgformRuleList.size() > 0) {
+            cgformRuleBean = cgformRuleList.get(0);
+
+
+//            1：数字 2：英文和数字 3：邮箱 4：电话号码和固话 5：身份证号 6：ip地址 7：邮政编码 8：数字和小数点
+
+            if ("1".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType( InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            } else if ("2".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+            } else if ("3".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+            } else if ("4".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            } else if ("5".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+            } else if ("6".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+            } else if ("7".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL );
+            } else if ("8".equals(cgformRuleBean.getType())) {
+                holder.et_value.setInputType( InputType.TYPE_CLASS_NUMBER |InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+
+        } else {
+            holder.et_value.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        }
 
         holder.et_value.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 Mlog.d("hasFocus = " + hasFocus);
-//                if (!hasFocus) {
-//                    if ("email".equals(bean.getExpression())) {
-//                        if (!Utils.isEmail(bean.getPropertyLabel().toString())) {
-//                            holder.tv_tishi.setText("邮箱格式不正确，请检查");
-//                            holder.tv_tishi.setVisibility(View.VISIBLE);
-//                        } else {
-//                            holder.tv_tishi.setVisibility(View.GONE);
-//                        }
-//                    } else if ("mobile".equals(bean.getExpression())) {
-//                        if (!Utils.checkMobilePhone(bean.getPropertyLabel().toString())) {
-//                            holder.tv_tishi.setText("手机号不正确，请检查");
-//                            holder.tv_tishi.setVisibility(View.VISIBLE);
-//                        } else {
-//                            holder.tv_tishi.setVisibility(View.GONE);
-//                        }
-//                    } else if ("zipcode".equals(bean.getExpression())) {
-//                        if (!Utils.isPostCode(bean.getPropertyLabel().toString())) {
-//                            holder.tv_tishi.setText("邮编不正确，请检查");
-//                            holder.tv_tishi.setVisibility(View.VISIBLE);
-//                        } else {
-//                            holder.tv_tishi.setVisibility(View.GONE);
-//                        }
-//                    } else if ("idcard".equals(bean.getExpression())) {
-//                        if (!Utils.checkIDCard(bean.getPropertyLabel().toString())) {
-//                            holder.tv_tishi.setText("身份证不正确，请检查");
-//                            holder.tv_tishi.setVisibility(View.VISIBLE);
-//                        } else {
-//                            holder.tv_tishi.setVisibility(View.GONE);
-//                        }
-//                    }
-//                }
+
+                List<cgformRuleBean> cgformRuleList = bean.getCgformRuleList();
+                Matcher m=null;
+                cgformRuleBean cgformRuleBean=null;
+                if (cgformRuleList != null && cgformRuleList.size() > 0) {
+                    cgformRuleBean = cgformRuleList.get(0);
+                    String par = cgformRuleBean.getPattern();
+
+                    Pattern p = Pattern.compile(par);
+                    m = p.matcher(bean.getPropertyLabel());
+
+                }
+
+
+                if (!hasFocus&&!Utils.isEmpty(holder.et_value.getText().toString())&&m!=null) {
+
+                    if (!m.matches()) {
+                        holder.et_value.setText("");
+                        holder.et_value.clearFocus();
+                        Utils.showDialog(mContext, cgformRuleBean.getError());
+                    }
+
+
+                }
             }
         });
 
