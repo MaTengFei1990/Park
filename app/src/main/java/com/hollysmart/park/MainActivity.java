@@ -439,6 +439,7 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
         Intent intent = new Intent(mContext, ResDataListActivity.class);
         intent.putExtra("exter", (Serializable) map);
+        intent.putExtra("ischeck", true);
         startActivity(intent);
     }
 
@@ -483,8 +484,9 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         }
 
 
-        Intent intent = new Intent(mContext, ProjectManagerActivity.class);
+        Intent intent = new Intent(mContext, ResDataListActivity.class);
         intent.putExtra("exter", (Serializable) map);
+        intent.putExtra("ischeck", false);
         startActivity(intent);
     }
 

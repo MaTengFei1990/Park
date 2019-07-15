@@ -102,6 +102,8 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
     private ResDataBean resDataBean;
 
+    private boolean ischeck;
+
     @Override
     public void findView() {
         recy_view = findViewById(R.id.recy_view);
@@ -126,6 +128,12 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
         resFromBeanLsit = (List<DongTaiFormBean>) getIntent().getSerializableExtra("formBeanList");
         formPicMap = (HashMap<String, List<JDPicInfo>>) getIntent().getSerializableExtra("formPicMap");
         sportEditFlag = getIntent().getBooleanExtra("sportEditFlag", false);
+        ischeck = getIntent().getBooleanExtra("ischeck", false);
+
+        if (ischeck) {
+            findViewById(R.id.iv_shure).setVisibility(View.GONE);
+
+        }
 
         picAdd2From(formPicMap, resFromBeanLsit);
 
@@ -273,7 +281,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
                                                 }
 
-                                                biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,false);
+                                                biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,ischeck);
 
                                                 recy_view.setAdapter(biaoGeRecyclerAdapter);
 
@@ -362,7 +370,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
         }
 
 
-        biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,false);
+        biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,ischeck);
         recy_view.setAdapter(biaoGeRecyclerAdapter);
         recy_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -663,7 +671,7 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
                     }
 
-                    biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,false);
+                    biaoGeRecyclerAdapter = new BiaoGeRecyclerAdapter2(mContext, formBeanList,ischeck);
 
                     recy_view.setAdapter(biaoGeRecyclerAdapter);
 
@@ -991,8 +999,14 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
 
 
             case R.id.ib_back:
+                if (!ischeck) {
+                    showdialogs();
 
-              showdialogs();
+                } else {
+
+                    finish();
+                }
+
                 break;
 
         }

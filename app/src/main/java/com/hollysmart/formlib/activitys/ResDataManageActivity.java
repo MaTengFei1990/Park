@@ -114,7 +114,7 @@ public class ResDataManageActivity extends StyleAnimActivity {
 					List<DongTaiFormBean> newFormList = mGson.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {
 					}.getType());
 
-					resDataManageAdapter = new ResDataManageAdapter(mContext, mJingDians, picList, soundList, projectBean,newFormList);
+					resDataManageAdapter = new ResDataManageAdapter(mContext, mJingDians, picList, soundList, projectBean,newFormList,false);
 					lv_jingdian.setAdapter(resDataManageAdapter);
 					selectDB(projectBean.getId());
 				}

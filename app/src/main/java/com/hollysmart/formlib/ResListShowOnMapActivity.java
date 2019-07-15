@@ -88,6 +88,8 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
     boolean isFirstLoc = true;// 是否首次定位
     BitmapDescriptor bdA = BitmapDescriptorFactory.fromResource(R.mipmap.resflag_add);
 
+    boolean ischeck =false; //是否只能查看 true  只能查看不能编辑；
+
     @Override
     public int layoutResID() {
         return R.layout.activity_res_list_show_on_map;
@@ -179,6 +181,7 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
         initMap();
 
         projectBean = (ProjectBean) getIntent().getSerializableExtra("projectBean");
+        ischeck = getIntent().getBooleanExtra("ischeck", false);
         tv_projectName.setText(projectBean.getfTaskname());
 
 
@@ -458,8 +461,8 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                     location.getLongitude());
 
             if (isFirstLoc) {
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
-                mBaiduMap.animateMapStatus(u);
+//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
+//                mBaiduMap.animateMapStatus(u);
 
                 PointInfo pointInfo = new PointInfo();
                 pointInfo.setLatitude(location.getLatitude());
@@ -543,6 +546,7 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                         intent.putExtra("formBeanList", (Serializable) formBeanList);
                         intent.putExtra("resDataBean", showResData);
                         intent.putExtra("formPicMap", (Serializable) formPicMap);
+                        intent.putExtra("ischeck", (Serializable) ischeck);
                         Activity activity = (Activity) context;
                         activity.startActivityForResult(intent, 4);
 
@@ -568,6 +572,7 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
             intent.putExtra("formBeanList", (Serializable) formBeanList);
             intent.putExtra("resDataBean",showResData);
             intent.putExtra("formPicMap", (Serializable) formPicMap);
+            intent.putExtra("ischeck",  ischeck);
             Activity activity = (Activity) context;
             activity.startActivityForResult(intent, 4);
         }
@@ -750,6 +755,7 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
      * @param taskid
      */
     private void initResDataList(String taskid) {
+        resDatalist.clear();
         mainPresenter.getAllSpotOfArea(taskid,context, resDatalist);
 
         new GetNetResListAPI(userInfo, projectBean, new GetNetResListAPI.DatadicListIF() {
@@ -799,29 +805,6 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                         dataByID.getNetCount();
                     }
                 }
-
-//                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//                for (int i = 0; i < resDatalist.size(); i++) {
-//                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
-//                            Double.parseDouble(resDatalist.get(i).getLongitude()));
-//
-//                    LatLng llA = new LatLng(gps.getLat(),
-//                            gps.getLon());
-//                    OverlayOptions ooA = new MarkerOptions().position(llA)
-//                            .icon(bdA).zIndex(i);
-//                    Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
-//                    mMarkers.put(i, marker);
-//                    builder.include(llA);
-//                    int fanwei = resDatalist.get(i).getScope();
-//                    mainPresenter.getCoordinates(fanwei, i);
-//                }
-//
-//                LatLngBounds bounds = builder.build();
-//                // 设置显示在屏幕中的地图地理范围
-//                int  Width = mMapView.getWidth();
-//                int height = mMapView.getHeight();
-//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
-//                mBaiduMap.setMapStatus(u);
 
 
                 drowInMap();
@@ -896,8 +879,22 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 4) {
+
+            if (resultCode == 1) {
+                mBaiduMap.clear();
+
+                initResDataList(projectBean.getId());
+
+            }
+
+        }
 
 
+    }
     /**
      * 判断用户登录状态，登录获取用户信息
      */

@@ -73,7 +73,9 @@ public class ResDataManageAdapter extends BaseAdapter {
 
     private HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
 
-    public ResDataManageAdapter(Context context, List<ResDataBean> mJingDians, List<JDPicInfo> picList, List<String> soundList, ProjectBean projectBean,List<DongTaiFormBean> newFormList) {
+    boolean ischeck =false; //是否只能查看 true  只能查看不能编辑；
+
+    public ResDataManageAdapter(Context context, List<ResDataBean> mJingDians, List<JDPicInfo> picList, List<String> soundList, ProjectBean projectBean,List<DongTaiFormBean> newFormList,boolean ischeck) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.picList = picList;
@@ -84,6 +86,7 @@ public class ResDataManageAdapter extends BaseAdapter {
 
         this.projectBean=projectBean;
         this.newFormList=newFormList;
+        this.ischeck=ischeck;
         isLogin();
     }
 
@@ -131,6 +134,15 @@ public class ResDataManageAdapter extends BaseAdapter {
         final LinearLayout ll_fenxiang = holder.ll_fenxiang;
         final LinearLayout ll_shangchuan = holder.ll_shangchuan;
 
+
+        if (ischeck) {
+            mTv_bianji.setVisibility(View.GONE);
+            mLl_bianji.setVisibility(View.GONE);
+            ll_fenxiang.setVisibility(View.GONE);
+            ll_shangchuan.setVisibility(View.GONE);
+
+        }
+
         holder.tv_name.setText(mJingDians.get(position).getFd_resname());
         mTv_bianji.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +189,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                                 intent.putExtra("formBeanList", (Serializable) formBeanList);
                                 intent.putExtra("resDataBean", mJingDians.get(position));
                                 intent.putExtra("formPicMap", (Serializable) formPicMap);
+                                intent.putExtra("ischeck",  ischeck);
                                 Activity activity = (Activity) context;
                                 activity.startActivityForResult(intent, 4);
 
@@ -204,6 +217,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                     intent.putExtra("formBeanList", (Serializable) formBeanList);
                     intent.putExtra("resDataBean", mJingDians.get(position));
                     intent.putExtra("formPicMap", (Serializable) formPicMap);
+                    intent.putExtra("ischeck",  ischeck);
                     Activity activity = (Activity) context;
                     activity.startActivityForResult(intent, 4);
                 }
