@@ -118,7 +118,7 @@ public class ResDataListActivity extends StyleAnimActivity {
                     intent.putExtra("projectBean", projectBean);
                     intent.putExtra("exter", (Serializable) map);
                     intent.putExtra("ischeck", ischeck);
-                    startActivity(intent);
+                    startActivityForResult(intent,6);
                 } else {
                     Utils.showDialog(mContext,"暂无资源列表");
                 }
@@ -458,6 +458,16 @@ public class ResDataListActivity extends StyleAnimActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 4) {
+
+            if (resultCode == 1) {
+
+
+                selectDB(projectBean.getId());
+
+            }
+        }
+        //在地图页面修改了地图修改
+        if (requestCode == 6) {
 
             if (resultCode == 1) {
 

@@ -709,7 +709,12 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
+                if (isRefresh) {
+
+                    setResult(1);
+                }
                 finish();
+
                 break;
             case R.id.bn_weixing:
                 mainPresenter.MapTypeChange();
@@ -878,6 +883,8 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
         super.onDestroy();
     }
 
+    private boolean isRefresh = false;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -888,6 +895,8 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                 mBaiduMap.clear();
 
                 initResDataList(projectBean.getId());
+
+                isRefresh = true;
 
             }
 
