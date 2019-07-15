@@ -167,7 +167,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                                     Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
                                     List<DongTaiFormBean> oldFormList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                                             new TypeToken<List<DongTaiFormBean>>() {}.getType());
-                                    List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList);
+                                    List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList,mJingDians.get(position));
                                     formBeanList.addAll(comparis);
                                     getFormPicMap(formBeanList);
                                 } catch (JSONException e) {
@@ -193,7 +193,7 @@ public class ResDataManageAdapter extends BaseAdapter {
                         Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
                         List<DongTaiFormBean> oldFormList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                                 new TypeToken<List<DongTaiFormBean>>() {}.getType());
-                        List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList);
+                        List<DongTaiFormBean> comparis = comparis(oldFormList, newFormList,mJingDians.get(position));
                         formBeanList.addAll(comparis);
                         getwgps2bd(formBeanList);
                         getFormPicMap(formBeanList);
@@ -376,8 +376,7 @@ public class ResDataManageAdapter extends BaseAdapter {
     }
 
 
-
-    private List<DongTaiFormBean> comparis(List<DongTaiFormBean> oldFormList, List<DongTaiFormBean> newFormList) {
+    private List<DongTaiFormBean> comparis(List<DongTaiFormBean> oldFormList,List<DongTaiFormBean> newFormList, ResDataBean resDataBean) {
 
         if (oldFormList == null || oldFormList.size() == 0) {
 
@@ -388,90 +387,154 @@ public class ResDataManageAdapter extends BaseAdapter {
             return null;
         }
 
+        boolean isNewForm = false;
 
-        for (int i = 0; i < oldFormList.size(); i++) {
+        for (int s = 0; s < oldFormList.size(); s++) {
 
-            DongTaiFormBean oldBean = oldFormList.get(i);
+            DongTaiFormBean formBean = oldFormList.get(s);
 
-
-            for (int j = 0; j < newFormList.size(); j++) {
-
-                DongTaiFormBean newBean = newFormList.get(j);
-
-
-                if (oldBean.getJavaField().equals(newBean.getJavaField())) {
-
-                    newBean.setPropertyLabel(oldBean.getPropertyLabel());
-
-
-                    if (oldBean.getShowType().equals("list") && newBean.getShowType().equals("switch")) {
-
-                        List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
-                        List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
-
-                        if (oldChildList == null || oldChildList.size() == 0) {
-                            break;
-                        }
-                        if (newchildList == null || newchildList.size() == 0) {
-                            break;
-                        }
-
-                        for (int k = 0; k < oldChildList.size(); k++) {
-
-                            DongTaiFormBean oldchildBean = oldChildList.get(k);
+            if (formBean.getJavaField().equals("name")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("number")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("location")) {
+                isNewForm=true;
+            }
+        }
 
 
-                            for (int m = 0; m < newchildList.size(); m++) {
+        if (isNewForm) {
+            return oldFormList;
 
-                                DongTaiFormBean newchildBean = newFormList.get(m);
+        } else {
 
+            for (int i = 0; i < oldFormList.size(); i++) {
 
-                                if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+                DongTaiFormBean oldBean = oldFormList.get(i);
 
-                                    newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
-                                }
+                if (oldBean.getShowType().equals("list") ) {
 
-                            }
+                    List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
 
+                    if (oldChildList != null && oldChildList.size() >0) {
 
+                        if ("是".equals(oldBean.getPropertyLabel())) {
+
+                            oldBean.setPropertyLabel("1");
                         }
 
+                        if ("否".equals(oldBean.getPropertyLabel())) {
+
+                            oldBean.setPropertyLabel("0");
+                        }
                     }
 
 
+                }
 
-                    if (oldBean.getShowType().equals("switch") && newBean.getShowType().equals("switch")) {
+                for (int j = 0; j < newFormList.size(); j++) {
 
-                        List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
-                        List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
-
-                        if (oldChildList == null || oldChildList.size() == 0) {
-                            break;
-                        }
-                        if (newchildList == null || newchildList.size() == 0) {
-                            break;
-                        }
-
-                        for (int k = 0; k < oldChildList.size(); k++) {
-
-                            DongTaiFormBean oldchildBean = oldChildList.get(k);
+                    DongTaiFormBean newBean = newFormList.get(j);
 
 
-                            for (int m = 0; m < newchildList.size(); m++) {
+                    if (oldBean.getJavaField().equals(newBean.getJavaField())) {
 
-                                DongTaiFormBean newchildBean = newchildList.get(m);
+                        newBean.setPropertyLabel(oldBean.getPropertyLabel());
 
 
-                                if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+                        if (oldBean.getShowType().equals("list") && newBean.getShowType().equals("switch")) {
 
-                                    newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newFormList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
                                 }
+
 
                             }
 
+                        }
+
+
+
+                        if (oldBean.getShowType().equals("switch") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newchildList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
 
                         }
 
+
+                    }
+
+                    if (resDataBean != null) {
+
+                        if (newBean.getJavaField().equals("number")) {
+
+                            newBean.setPropertyLabel(resDataBean.getRescode());
+
+                        }
+                        if (newBean.getJavaField().equals("name")) {
+                            newBean.setPropertyLabel(resDataBean.getFd_resname());
+                        }
+                        if (newBean.getJavaField().equals("location")) {
+
+                            GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDataBean.getLatitude()),
+                                    Double.parseDouble(resDataBean.getLongitude()));
+
+                            newBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+
+                        }
                     }
 
 
@@ -479,20 +542,24 @@ public class ResDataManageAdapter extends BaseAdapter {
                 }
 
 
-
-
             }
 
 
         }
+        oldFormList.clear();
+        oldFormList.addAll(newFormList);
+        return oldFormList;
 
 
 
 
-            return newFormList;
 
 
     }
+
+
+
+
 
 
     // 删除

@@ -34,6 +34,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
 import com.hollysmart.formlib.apis.GetNetResListAPI;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.apis.SaveResRouateAPI;
@@ -495,8 +496,8 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
                     location.getLongitude());
 
             if (isFirstLoc) {
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
-                mBaiduMap.animateMapStatus(u);
+//                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
+//                mBaiduMap.animateMapStatus(u);
 
                 PointInfo pointInfo = new PointInfo();
                 pointInfo.setLatitude(location.getLatitude());
@@ -851,24 +852,26 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
                 }
 
 
-                for (int i = 0; i < resDatalist.size(); i++) {
+//                for (int i = 0; i < resDatalist.size(); i++) {
+//
+//                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
+//                            Double.parseDouble(resDatalist.get(i).getLongitude()));
+//                    LatLng llA = new LatLng(gps.getLat(),
+//                            gps.getLon());
+//                    Mlog.d("接收到的Latitude==" + resDatalist.get(i).getLatitude());
+//                    Mlog.d("接收到的Long==" + resDatalist.get(i).getLongitude());
+//
+//                    OverlayOptions ooA = new MarkerOptions().position(llA)
+//                            .icon(bdA).zIndex(i);
+//                    Mlog.d("转化后的Latitude==" + llA.latitude);
+//                    Mlog.d("转化后的Long==" + llA.longitude);
+//                    Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+//                    mMarkers.put(i, marker);
+//                    int fanwei = resDatalist.get(i).getScope();
+//                    mainPresenter.getCoordinates(fanwei, i);
+//                }
 
-                    GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
-                            Double.parseDouble(resDatalist.get(i).getLongitude()));
-                    LatLng llA = new LatLng(gps.getLat(),
-                            gps.getLon());
-                    Mlog.d("接收到的Latitude==" + resDatalist.get(i).getLatitude());
-                    Mlog.d("接收到的Long==" + resDatalist.get(i).getLongitude());
-
-                    OverlayOptions ooA = new MarkerOptions().position(llA)
-                            .icon(bdA).zIndex(i);
-                    Mlog.d("转化后的Latitude==" + llA.latitude);
-                    Mlog.d("转化后的Long==" + llA.longitude);
-                    Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
-                    mMarkers.put(i, marker);
-                    int fanwei = resDatalist.get(i).getScope();
-                    mainPresenter.getCoordinates(fanwei, i);
-                }
+                drowInMap();
 
 
 
@@ -878,6 +881,35 @@ public class ListShowOnMapActivity extends StyleAnimActivity implements View.OnC
         }).request();
 
 
+
+    }
+
+
+
+    private void drowInMap() {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (int i = 0; i < resDatalist.size(); i++) {
+            GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
+                    Double.parseDouble(resDatalist.get(i).getLongitude()));
+
+            LatLng llA = new LatLng(gps.getLat(),
+                    gps.getLon());
+            OverlayOptions ooA = new MarkerOptions().position(llA)
+                    .icon(bdA).zIndex(i);
+            Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+            mMarkers.put(i, marker);
+            builder.include(llA);
+            int fanwei = resDatalist.get(i).getScope();
+            mainPresenter.getCoordinates(fanwei, i);
+        }
+
+        LatLngBounds bounds = builder.build();
+        // 设置显示在屏幕中的地图地理范围
+        int  Width = mMapView.getWidth();
+        int height = mMapView.getHeight();
+        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
+        mBaiduMap.setMapStatus(u);
 
     }
 

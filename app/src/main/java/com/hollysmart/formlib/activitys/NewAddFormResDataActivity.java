@@ -382,6 +382,191 @@ public class  NewAddFormResDataActivity extends StyleAnimActivity  {
     }
 
 
+
+
+
+    private List<DongTaiFormBean>  comparis(List<DongTaiFormBean> oldFormList,List<DongTaiFormBean> newFormList, ResDataBean resDataBean) {
+
+        if (oldFormList == null || oldFormList.size() == 0) {
+
+            return null;
+        }
+        if (newFormList == null || newFormList.size() == 0) {
+
+            return null;
+        }
+
+        boolean isNewForm = false;
+
+        for (int s = 0; s < oldFormList.size(); s++) {
+
+            DongTaiFormBean formBean = oldFormList.get(s);
+
+            if (formBean.getJavaField().equals("name")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("number")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("location")) {
+                isNewForm=true;
+            }
+        }
+
+
+        if (isNewForm) {
+            return oldFormList;
+
+        } else {
+
+            for (int i = 0; i < oldFormList.size(); i++) {
+
+                DongTaiFormBean oldBean = oldFormList.get(i);
+
+                if (oldBean.getShowType().equals("list") ) {
+
+                    List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+
+                    if (oldChildList == null || oldChildList.size() == 0) {
+                        break;
+                    }
+
+                    if ("是".equals(oldBean.getPropertyLabel())) {
+
+                        oldBean.setPropertyLabel("1");
+                    }
+
+                    if ("否".equals(oldBean.getPropertyLabel())) {
+
+                        oldBean.setPropertyLabel("0");
+                    }
+
+                }
+
+                for (int j = 0; j < newFormList.size(); j++) {
+
+                    DongTaiFormBean newBean = newFormList.get(j);
+
+
+                    if (oldBean.getJavaField().equals(newBean.getJavaField())) {
+
+                        newBean.setPropertyLabel(oldBean.getPropertyLabel());
+
+
+                        if (oldBean.getShowType().equals("list") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newFormList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+
+                        if (oldBean.getShowType().equals("switch") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newchildList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                        if (resDataBean != null) {
+
+                            if (newBean.getJavaField().equals("number")) {
+
+                                newBean.setPropertyLabel(resDataBean.getRescode());
+
+                            }
+                            if (newBean.getJavaField().equals("name")) {
+                                newBean.setPropertyLabel(resDataBean.getFd_resname());
+                            }
+                            if (newBean.getJavaField().equals("location")) {
+                                newBean.setPropertyLabel(resDataBean.getLatitude() +","+ resDataBean.getLongitude());
+
+                            }
+                        }
+
+
+
+                    }
+
+
+
+
+                }
+
+
+            }
+
+            oldFormList.clear();
+            oldFormList.addAll(newFormList);
+            return newFormList;
+        }
+
+
+
+
+
+
+
+    }
+
+
+
     /***
      * 获取本地字典数据
      *

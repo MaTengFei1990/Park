@@ -15,8 +15,11 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.apis.GetResModelAPI;
 import com.hollysmart.beans.GPS;
+import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.formlib.adapters.BiaoGeRecyclerAdapter2;
+import com.hollysmart.formlib.adapters.ResDataManageAdapter;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.beans.JDPicInfo;
@@ -110,13 +113,61 @@ public class ResDetailsActivity extends StyleAnimActivity {
     // 查询
     private void selectDB() {
 
-        if (resDataBean.getFormData() == null) {
-            new ResDataGetAPI(userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
-                @Override
-                public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+        new GetResModelAPI(userInfo.getAccess_token(), resDataBean.getFd_resmodelid(), new GetResModelAPI.GetResModelIF() {
+            @Override
+            public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBen) {
 
-                    if (isOk) {
-                        String formData = resDataBen.getFormData();
+                if (isOk) {//获取到网络数据
+
+                    String getfJsonData = resModelBen.getfJsonData();
+                    Gson mGson1 = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                    final List<DongTaiFormBean> newFormList = mGson1.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {
+                    }.getType());
+
+
+                    if (resDataBean.getFormData() == null) {
+                        new ResDataGetAPI(userInfo.getAccess_token(), resDataBean, new ResDataGetAPI.ResDataDeleteIF() {
+                            @Override
+                            public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+
+                                if (isOk) {
+                                    String formData = resDataBen.getFormData();
+
+                                    formBeanList.clear();
+                                    try {
+                                        if (!Utils.isEmpty(formData)) {
+
+                                            JSONObject jsonObject = null;
+                                            jsonObject = new JSONObject(formData);
+                                            Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                                            List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                                                    new TypeToken<List<DongTaiFormBean>>() {
+                                                    }.getType());
+
+                                            formBeanList.addAll(dictList);
+
+                                            comparis(formBeanList, newFormList, resDataBean);
+
+                                            getFormPicMap(formBeanList);
+
+                                            picAdd2From(formPicMap, formBeanList);
+
+                                            fromshowAdapter.notifyDataSetChanged();
+
+
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }
+                        }).request();
+
+                    } else {
+
+                        String formData = resDataBean.getFormData();
 
                         formBeanList.clear();
                         try {
@@ -131,55 +182,222 @@ public class ResDetailsActivity extends StyleAnimActivity {
 
                                 formBeanList.addAll(dictList);
 
+                                comparis(formBeanList, newFormList, resDataBean);
+                                getwgps2bd(formBeanList);
                                 getFormPicMap(formBeanList);
-
                                 picAdd2From(formPicMap, formBeanList);
-
                                 fromshowAdapter.notifyDataSetChanged();
-
 
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
+
+
                     }
 
                 }
-            }).request();
 
-        } else {
 
-            String formData = resDataBean.getFormData();
-
-            formBeanList.clear();
-            try {
-                if (!Utils.isEmpty(formData)) {
-
-                    JSONObject jsonObject = null;
-                    jsonObject = new JSONObject(formData);
-                    Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-                    List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
-                            new TypeToken<List<DongTaiFormBean>>() {
-                            }.getType());
-
-                    formBeanList.addAll(dictList);
-                    getwgps2bd(formBeanList);
-                    getFormPicMap(formBeanList);
-                    picAdd2From(formPicMap, formBeanList);
-                    fromshowAdapter.notifyDataSetChanged();
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+        }).request();
 
 
 
-        }
+
+
 
 
     }
+
+
+    private List<DongTaiFormBean>  comparis(List<DongTaiFormBean> oldFormList,List<DongTaiFormBean> newFormList, ResDataBean resDataBean) {
+
+        if (oldFormList == null || oldFormList.size() == 0) {
+
+            return null;
+        }
+        if (newFormList == null || newFormList.size() == 0) {
+
+            return null;
+        }
+
+        boolean isNewForm = false;
+
+        for (int s = 0; s < oldFormList.size(); s++) {
+
+            DongTaiFormBean formBean = oldFormList.get(s);
+
+            if (formBean.getJavaField().equals("name")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("number")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("location")) {
+                isNewForm=true;
+            }
+        }
+
+
+        if (isNewForm) {
+            return oldFormList;
+
+        } else {
+
+            for (int i = 0; i < oldFormList.size(); i++) {
+
+                DongTaiFormBean oldBean = oldFormList.get(i);
+
+                if (oldBean.getShowType().equals("list") ) {
+
+                    List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+
+                    if (oldChildList != null &&oldChildList.size() > 0) {
+
+                        if ("是".equals(oldBean.getPropertyLabel())) {
+
+                            oldBean.setPropertyLabel("1");
+                        }
+
+                        if ("否".equals(oldBean.getPropertyLabel())) {
+
+                            oldBean.setPropertyLabel("0");
+                        }
+                    }
+
+
+                }
+
+                for (int j = 0; j < newFormList.size(); j++) {
+
+                    DongTaiFormBean newBean = newFormList.get(j);
+
+
+                    if (oldBean.getJavaField().equals(newBean.getJavaField())) {
+
+                        newBean.setPropertyLabel(oldBean.getPropertyLabel());
+
+
+                        if (oldBean.getShowType().equals("list") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newFormList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+
+                        if (oldBean.getShowType().equals("switch") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newchildList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                    }
+                    if (resDataBean != null) {
+
+                        if (newBean.getJavaField().equals("number")) {
+
+                            newBean.setPropertyLabel(resDataBean.getRescode());
+
+                        }
+                        if (newBean.getJavaField().equals("name")) {
+                            newBean.setPropertyLabel(resDataBean.getFd_resname());
+                        }
+                        if (newBean.getJavaField().equals("location")) {
+
+                            GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDataBean.getLatitude()),
+                                    Double.parseDouble(resDataBean.getLongitude()));
+
+                            newBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+
+                        }
+                    }
+
+
+
+
+                }
+
+
+            }
+
+            oldFormList.clear();
+            oldFormList.addAll(newFormList);
+            return newFormList;
+        }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
 
 
     private void getwgps2bd( List<DongTaiFormBean> formBeanList) {
