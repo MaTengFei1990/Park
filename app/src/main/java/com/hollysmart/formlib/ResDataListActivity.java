@@ -113,15 +113,15 @@ public class ResDataListActivity extends StyleAnimActivity {
                 finish();
                 break;
             case R.id.iv_maplsit:
-                if (projectBean != null) {
-                    Intent intent = new Intent(mContext, ResListShowOnMapActivity.class);
-                    intent.putExtra("projectBean", projectBean);
-                    intent.putExtra("exter", (Serializable) map);
-                    intent.putExtra("ischeck", ischeck);
-                    startActivityForResult(intent,6);
-                } else {
-                    Utils.showDialog(mContext,"暂无资源列表");
-                }
+//                if (projectBean != null) {
+                    Intent mapintent = new Intent(mContext, ResListShowOnMapActivity.class);
+                mapintent.putExtra("projectBean", projectBean);
+                mapintent.putExtra("exter", (Serializable) map);
+                mapintent.putExtra("ischeck", ischeck);
+                    startActivityForResult(mapintent,6);
+//                } else {
+//                    Utils.showDialog(mContext,"暂无资源列表");
+//                }
                 break;
 
             case R.id.bn_add:

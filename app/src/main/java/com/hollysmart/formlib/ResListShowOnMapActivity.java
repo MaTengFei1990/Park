@@ -39,7 +39,9 @@ import com.baidu.mapapi.model.LatLngBounds;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.hollysmart.apis.GetResModelAPI;
 import com.hollysmart.beans.GPS;
+import com.hollysmart.beans.ResModelBean;
 import com.hollysmart.formlib.apis.GetNetResListAPI;
 import com.hollysmart.formlib.apis.ResDataGetAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
@@ -181,23 +183,27 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
         initMap();
 
         projectBean = (ProjectBean) getIntent().getSerializableExtra("projectBean");
-        ischeck = getIntent().getBooleanExtra("ischeck", false);
-        tv_projectName.setText(projectBean.getfTaskname());
+
+        if (projectBean != null) {
+
+            ischeck = getIntent().getBooleanExtra("ischeck", false);
+            tv_projectName.setText(projectBean.getfTaskname());
 
 
+            mBaiduMap.clear();
+            mBaiduMap.hideInfoWindow();
+
+            mMarkers = new HashMap<Integer, Marker>();
+            mOverlays = new HashMap<Integer, Overlay>();
+
+            resDatalist = new ArrayList<ResDataBean>();
 
 
-        mBaiduMap.clear();
-        mBaiduMap.hideInfoWindow();
-
-        mMarkers = new HashMap<Integer, Marker>();
-        mOverlays = new HashMap<Integer, Overlay>();
-
-        resDatalist = new ArrayList<ResDataBean>();
+            mainPresenter.drawRange(projectBean.getfRange());
+            initResDataList(projectBean.getId());
 
 
-        mainPresenter.drawRange(projectBean.getfRange());
-        initResDataList(projectBean.getId());
+        }
 
     }
 
@@ -413,28 +419,31 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
     public void onMapLoaded() {
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (int i = 0; i < resDatalist.size(); i++) {
-            GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
-                    Double.parseDouble(resDatalist.get(i).getLongitude()));
+        if (resDatalist != null && resDatalist.size() > 0) {
+            for (int i = 0; i < resDatalist.size(); i++) {
+                GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDatalist.get(i).getLatitude()),
+                        Double.parseDouble(resDatalist.get(i).getLongitude()));
 
-            LatLng llA = new LatLng(gps.getLat(),
-                    gps.getLon());
-            OverlayOptions ooA = new MarkerOptions().position(llA)
-                    .icon(bdA).zIndex(i);
-            Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
-            mMarkers.put(i, marker);
-            builder.include(llA);
-            int fanwei = resDatalist.get(i).getScope();
-            mainPresenter.getCoordinates(fanwei, i);
+                LatLng llA = new LatLng(gps.getLat(),
+                        gps.getLon());
+                OverlayOptions ooA = new MarkerOptions().position(llA)
+                        .icon(bdA).zIndex(i);
+                Marker marker = (Marker) (mBaiduMap.addOverlay(ooA));
+                mMarkers.put(i, marker);
+                builder.include(llA);
+                int fanwei = resDatalist.get(i).getScope();
+                mainPresenter.getCoordinates(fanwei, i);
+            }
+
+            LatLngBounds bounds = builder.build();
+            // 设置显示在屏幕中的地图地理范围
+            int  Width = mMapView.getWidth();
+            int height = mMapView.getHeight();
+            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
+            mBaiduMap.setMapStatus(u);
         }
-
-        LatLngBounds bounds = builder.build();
-        // 设置显示在屏幕中的地图地理范围
-        int  Width = mMapView.getWidth();
-        int height = mMapView.getHeight();
-        MapStatusUpdate u = MapStatusUpdateFactory.newLatLngBounds(bounds, Width, height);
-        mBaiduMap.setMapStatus(u);
     }
+
 
 
     /**
@@ -463,6 +472,12 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
             if (isFirstLoc) {
 //                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
 //                mBaiduMap.animateMapStatus(u);
+                if (projectBean == null||(resDatalist==null||resDatalist.size()==0)) {
+                    MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(mLatLng);
+                    mBaiduMap.animateMapStatus(u);
+                }
+
+
 
                 PointInfo pointInfo = new PointInfo();
                 pointInfo.setLatitude(location.getLatitude());
@@ -515,22 +530,64 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
 
     private void startFormDetailsActivity(final ResDataBean showResData) {
 
-        final Intent intent = new Intent(context, NewAddFormResDataActivity.class);
-        final String formData = showResData.getFormData();
-        final List<DongTaiFormBean> formBeanList = new ArrayList<>();
 
-        final HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
 
-        formBeanList.clear();
+        new GetResModelAPI(userInfo.getAccess_token(), showResData.getFd_resmodelid(), new GetResModelAPI.GetResModelIF() {
+            @Override
+            public void ongetResModelIFResult(boolean isOk, ResModelBean projectBeanList) {
 
-        if (Utils.isEmpty(formData)) {
 
-            new ResDataGetAPI(userInfo.getAccess_token(), showResData, new ResDataGetAPI.ResDataDeleteIF() {
-                @Override
-                public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+                if (isOk) {
 
-                    if (isOk) {
-                        String formData = resDataBen.getFormData();
+                    String getfJsonData = projectBeanList.getfJsonData();
+                    Gson mGson1 = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                    final List<DongTaiFormBean> newFormList = mGson1.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {
+                    }.getType());
+
+
+
+                    final Intent intent = new Intent(context, NewAddFormResDataActivity.class);
+                    final String formData = showResData.getFormData();
+                    final List<DongTaiFormBean> formBeanList = new ArrayList<>();
+
+                    final HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<>();
+
+                    formBeanList.clear();
+
+                    if (Utils.isEmpty(formData)) {
+
+                        new ResDataGetAPI(userInfo.getAccess_token(), showResData, new ResDataGetAPI.ResDataDeleteIF() {
+                            @Override
+                            public void onResDataDeleteResult(boolean isOk, ResDataBean resDataBen) {
+
+                                if (isOk) {
+                                    String formData = resDataBen.getFormData();
+                                    try {
+                                        JSONObject jsonObject = null;
+                                        jsonObject = new JSONObject(formData);
+                                        Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                                        List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
+                                                new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                                        formBeanList.addAll(dictList);
+                                        comparis(formBeanList, newFormList, showResData);
+                                        getFormPicMap(formBeanList,formPicMap);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    intent.putExtra("formBeanList", (Serializable) formBeanList);
+                                    intent.putExtra("resDataBean", showResData);
+                                    intent.putExtra("formPicMap", (Serializable) formPicMap);
+                                    intent.putExtra("ischeck", (Serializable) ischeck);
+                                    Activity activity = (Activity) context;
+                                    activity.startActivityForResult(intent, 4);
+
+                                }
+
+                            }
+                        }).request();
+
+                    } else {
                         try {
                             JSONObject jsonObject = null;
                             jsonObject = new JSONObject(formData);
@@ -538,45 +595,224 @@ public class ResListShowOnMapActivity extends StyleAnimActivity implements View.
                             List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
                                     new TypeToken<List<DongTaiFormBean>>() {}.getType());
                             formBeanList.addAll(dictList);
+
+                            comparis(formBeanList, newFormList, showResData);
+                            getwgps2bd(formBeanList);
                             getFormPicMap(formBeanList,formPicMap);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         intent.putExtra("formBeanList", (Serializable) formBeanList);
-                        intent.putExtra("resDataBean", showResData);
+                        intent.putExtra("resDataBean",showResData);
                         intent.putExtra("formPicMap", (Serializable) formPicMap);
-                        intent.putExtra("ischeck", (Serializable) ischeck);
+                        intent.putExtra("ischeck",  ischeck);
                         Activity activity = (Activity) context;
                         activity.startActivityForResult(intent, 4);
-
                     }
 
+
                 }
-            }).request();
+            }
+        }).request();
+
+
+
+
+    }
+
+
+
+    private List<DongTaiFormBean>  comparis(List<DongTaiFormBean> oldFormList,List<DongTaiFormBean> newFormList, ResDataBean resDataBean) {
+
+        if (oldFormList == null || oldFormList.size() == 0) {
+
+            return null;
+        }
+        if (newFormList == null || newFormList.size() == 0) {
+
+            return null;
+        }
+
+        boolean isNewForm = false;
+
+        for (int s = 0; s < oldFormList.size(); s++) {
+
+            DongTaiFormBean formBean = oldFormList.get(s);
+
+            if (formBean.getJavaField().equals("name")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("number")) {
+                isNewForm=true;
+            }
+            if (formBean.getJavaField().equals("location")) {
+                isNewForm=true;
+            }
+        }
+
+
+        if (isNewForm) {
+            return oldFormList;
 
         } else {
-            try {
-                JSONObject jsonObject = null;
-                jsonObject = new JSONObject(formData);
-                Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-                List<DongTaiFormBean> dictList = mGson.fromJson(jsonObject.getString("cgformFieldList"),
-                        new TypeToken<List<DongTaiFormBean>>() {}.getType());
-                formBeanList.addAll(dictList);
-                getwgps2bd(formBeanList);
-                getFormPicMap(formBeanList,formPicMap);
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+            for (int i = 0; i < oldFormList.size(); i++) {
+
+                DongTaiFormBean oldBean = oldFormList.get(i);
+
+                if (oldBean.getShowType().equals("list") ) {
+
+                    List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+
+                    if (oldChildList != null &&oldChildList.size() > 0) {
+
+                        if ("是".equals(oldBean.getPropertyLabel())) {
+
+                            oldBean.setPropertyLabel("1");
+                        }
+
+                        if ("否".equals(oldBean.getPropertyLabel())) {
+
+                            oldBean.setPropertyLabel("0");
+                        }
+                    }
+
+
+                }
+
+                for (int j = 0; j < newFormList.size(); j++) {
+
+                    DongTaiFormBean newBean = newFormList.get(j);
+
+
+                    if (oldBean.getJavaField().equals(newBean.getJavaField())) {
+
+                        newBean.setPropertyLabel(oldBean.getPropertyLabel());
+
+
+                        if (oldBean.getShowType().equals("list") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newFormList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+
+                        if (oldBean.getShowType().equals("switch") && newBean.getShowType().equals("switch")) {
+
+                            List<DongTaiFormBean> oldChildList = oldBean.getCgformFieldList();
+                            List<DongTaiFormBean> newchildList = newBean.getCgformFieldList();
+
+                            if (oldChildList == null || oldChildList.size() == 0) {
+                                break;
+                            }
+                            if (newchildList == null || newchildList.size() == 0) {
+                                break;
+                            }
+
+                            for (int k = 0; k < oldChildList.size(); k++) {
+
+                                DongTaiFormBean oldchildBean = oldChildList.get(k);
+
+
+                                for (int m = 0; m < newchildList.size(); m++) {
+
+                                    DongTaiFormBean newchildBean = newchildList.get(m);
+
+
+                                    if (oldchildBean.getJavaField().equals(newchildBean.getJavaField())) {
+
+                                        newchildBean.setPropertyLabel(oldchildBean.getPropertyLabel());
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+                    }
+                    if (resDataBean != null) {
+
+                        if (newBean.getJavaField().equals("number")) {
+
+                            newBean.setPropertyLabel(resDataBean.getRescode());
+
+                        }
+                        if (newBean.getJavaField().equals("name")) {
+                            newBean.setPropertyLabel(resDataBean.getFd_resname());
+                        }
+                        if (newBean.getJavaField().equals("location")) {
+
+                            GPS gps = GPSConverterUtils.Gps84_To_bd09(Double.parseDouble(resDataBean.getLatitude()),
+                                    Double.parseDouble(resDataBean.getLongitude()));
+
+                            newBean.setPropertyLabel(gps.getLat() + "," + gps.getLon());
+
+                        }
+                    }
+
+
+
+
+                }
+
+
             }
 
-            intent.putExtra("formBeanList", (Serializable) formBeanList);
-            intent.putExtra("resDataBean",showResData);
-            intent.putExtra("formPicMap", (Serializable) formPicMap);
-            intent.putExtra("ischeck",  ischeck);
-            Activity activity = (Activity) context;
-            activity.startActivityForResult(intent, 4);
+            oldFormList.clear();
+            oldFormList.addAll(newFormList);
+            return newFormList;
         }
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
 
     private void getwgps2bd( List<DongTaiFormBean> formBeanList) {
         for (int i = 0; i < formBeanList.size(); i++) {
