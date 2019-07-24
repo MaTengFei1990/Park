@@ -40,7 +40,6 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name="com.hollysmart.formlib.ResListShowOnMapActivity"></activity>
         <activity android:name="com.hollysmart.formlib.ListShowOnMapActivity" />
-        <activity android:name="com.hollysmart.formlib.ResDetailsActivity" />
         <activity android:name="com.hollysmart.formlib.ResDataListActivity" />
         <activity android:name="com.hollysmart.formlib.activitys.MapRangeActivity" />
         <activity
@@ -55,11 +54,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".VoiceCallInCallActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".VoiceCallingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />

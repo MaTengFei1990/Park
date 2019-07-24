@@ -127,7 +127,8 @@ public class VoiceCallInComingActivity extends Activity {
 		else if (mElapsedTime != null) {
 			mElapsedTime.stop();
 		}
-		
+
+
 		super.onDestroy();
 	}
 	private KeyguardManager km;

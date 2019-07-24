@@ -62,13 +62,13 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_zhong"
             android:textColor="@color/text_hei"
             android:padding="10dp"
-            android:lineSpacingMultiplier="1.5"
-            android:text="关于统计2019年元宵节期间全市公园风景区灯会等文化活动的通知"/>
+            android:lineSpacingMultiplier="1.5"/>
 
     </LinearLayout>
 

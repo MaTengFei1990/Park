@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -61,6 +62,7 @@ import com.hollysmart.apis.UpdateInfoAPI;
 import com.hollysmart.apis.UploadAvatarPicAPI;
 import com.hollysmart.apis.UploadParkCoverPicAPI;
 import com.hollysmart.apis.UserLoginAPI;
+import com.hollysmart.beans.CallUserBean;
 import com.hollysmart.beans.PicBean;
 import com.hollysmart.conference.MyCallListener;
 import com.hollysmart.db.UserInfo;
@@ -93,6 +95,9 @@ import com.umeng.socialize.UMShareAPI;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -101,6 +106,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -537,48 +543,62 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
      * @param url
      */
     private void chat(WebView webView, String url) {
+        String chatId = "";
+        String taskname = "";
 
-        String[] shareids = url.split("chat.html\\?");
-        if (shareids!=null&&shareids.length>1) {
+//        chat.html?uname=东城区|朝阳区&uid=8020|8022&taskname=test注册风景区
+        List<CallUserBean> localList = new ArrayList<>();
 
-            shareimgUrl = shareids[1];
-        }
+        String[] chat = url.split("chat.html\\?");
+        if (chat!=null&&chat.length>1) {
 
-        webView.evaluateJavascript("javascript:app.gettoken()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                if (!Utils.isEmpty(value)) {
-                    String substring = value.substring(1, value.length() - 1);
-                    String token = "Bearer " + substring;
-                    UserToken.getUserToken().setToken(token);
+            chatId = chat[1];
 
-                    new UpdateDeviceTokenAPI(App_Cai.deviceToken, new UpdateDeviceTokenAPI.UpdateDeviceTokenIF() {
-                        @Override
-                        public void updateDeviceTokenResult(boolean isOk) {
 
-                        }
-                    }).request();
+            String[] split = chatId.split("&");
+
+            if (split.length == 3) {
+                String[] unames = split[0].split("=")[1].split("\\|");
+                String[] uIds = split[1].split("=")[1].split("\\|");
+                try {
+                    taskname =URLDecoder.decode(split[2].split("=")[1],"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
 
-               buttomDialogView.show();
+                if (unames.length > 0) {
+
+                    for (int i = 0; i < unames.length; i++) {
+                        try {
+                            CallUserBean callUserBean = new CallUserBean();
+                            callUserBean.setUid(uIds[i]);
+                            callUserBean.setUname( URLDecoder.decode(unames[i],"UTF-8"));
+                            localList.add(callUserBean);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+
+
+                }
 
 
             }
-        });
 
-        String num1 = "8016";
-        String num2 = "8018";
 
-        GQTHelper.getInstance().getCallEngine().makeCall(CallType.CONFERENCE, num1+" "+num2);
+
+        }
 
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, VoiceCallInCallActivity.class);
         Bundle bundle = new Bundle();
-        intent.putExtra("num1", num1);
-        intent.putExtra("num2", num2);
+        intent.putExtra("localList", (Serializable) localList);
+        intent.putExtra("taskname", taskname);
         intent.putExtras(bundle);
         startActivity(intent);
-        this.finish();
 
     }
 
@@ -679,8 +699,13 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
      * @param webView
      * @param url
      */
+    String voicepwd = "";
+    String voiceuser = "";
+
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void loginok(WebView webView, String url) {
+
         webView.evaluateJavascript("javascript:app.loginInfo()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
@@ -692,6 +717,60 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                 } else {
                     roleid = 1;
                 }
+
+                try {
+                    Mlog.d("loginInfo = " + value);
+                    JSONObject jsonObject = new JSONObject(value);
+
+
+                    if (value.contains("voicepwd")) {
+                        voicepwd  = jsonObject.getString("voicepwd");
+                    }
+                    if (value.contains("voiceuser")) {
+
+                        voiceuser = jsonObject.getString("voiceuser");
+
+                    }
+
+
+                    registerEngine = GQTHelper.getInstance().getRegisterEngine();
+
+
+                    if (!Utils.isEmpty(voicepwd) &&! Utils.isEmpty(voiceuser)) {
+
+                        registerEngine.unRegister();
+
+                        registerEngine.initRegisterInfo(voiceuser, voiceuser, Values.SERVICE_URL_VOICE, Values.SERVICE_URL_VOICE_PORT, null);
+
+                        registerEngine.register(MainActivity.this, new RegisterListener() {
+                            @Override
+                            public void onRegisterSuccess() {
+                                Mlog.d("registerEngine.register--------onRegisterSuccess==");
+                            }
+
+                            @Override
+                            public void onRegisterFailded(String s) {
+
+                                Mlog.d("registerEngine.register--------onRegisterFailded==" + s);
+
+                            }
+                        });
+                        GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
+
+                    }
+
+
+                    callEngine = GQTHelper.getInstance().getCallEngine();
+
+                    GQTHelper.getInstance().getSetEngine().setOutGroupOnCallClosed(true);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
             }
         });
         webView.evaluateJavascript("javascript:app.getLoginInfo()", new ValueCallback<String>() {
@@ -755,34 +834,8 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         });
 
 
-        registerEngine = GQTHelper.getInstance().getRegisterEngine();
 
-        if (!registerEngine.isRegister()) {
 
-            registerEngine.initRegisterInfo("8017", "8017", "39.106.172.189", 7080, null);
-
-            registerEngine.register(MainActivity.this, new RegisterListener() {
-                @Override
-                public void onRegisterSuccess() {
-                    Mlog.d("registerEngine.register--------onRegisterSuccess==");
-                }
-
-                @Override
-                public void onRegisterFailded(String s) {
-
-                    Mlog.d("registerEngine.register--------onRegisterFailded==" + s);
-
-                }
-            });
-            GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
-
-            callEngine = GQTHelper.getInstance().getCallEngine();
-
-        } else {
-            callEngine = GQTHelper.getInstance().getCallEngine();
-        }
-
-        GQTHelper.getInstance().getSetEngine().setOutGroupOnCallClosed(true);
 
 
 
@@ -1528,8 +1581,15 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
     private void myPermission() {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CALL_PHONE,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         } else {
             CreateDir();
         }

@@ -40,6 +40,7 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
 
     @Override
     public void findView() {
+        registerReceiver(br, new IntentFilter("com.gqt.hangup"));
         nummber = (TextView) this.findViewById(R.id.callnum);
         hangupLine = (LinearLayout) findViewById(R.id.hangupline);
         mElapsedTime = (Chronometer) findViewById(R.id.elapsedTime);
@@ -48,52 +49,8 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
        String num= getIntent().getStringExtra("num");
         nummber.setText(num);
 
-//        mAudioModeGroup = (RadioGroup)findViewById(R.id.audiomode);
-//        switch (GQTHelper.getInstance().getCallEngine().getAudioMode()) {
-//            case HOOK:
-//                mAudioModeGroup.check(R.id.hook);
-//                break;
-//            case SPEAKER:
-//                mAudioModeGroup.check(R.id.speaker);
-//                break;
-//            case BLUETOOTH:
-//                mAudioModeGroup.check(R.id.bluetooth);
-//                break;
-//
-//            default:
-//                break;
-//        }
         silence = (LinearLayout) this.findViewById(R.id.jingyin);
         hangupLine.setOnClickListener(btnoutendlistener);
-//        mAudioModeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(RadioGroup arg0, int arg1) {
-//                // TODO Auto-generated method stub
-//                switch (arg1) {
-//                    case R.id.hook:
-//                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.HOOK);
-//                        break;
-//                    case R.id.speaker:
-//                        new Thread(){
-//
-//                            @Override
-//                            public void run() {
-//                                // TODO Auto-generated method stub
-//                                super.run();
-//                                GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
-//                            }
-//                        }.start();
-//                        break;
-//                    case R.id.bluetooth:
-//                        if(MyBluetoothManager.getInstance(VocieCallInCall2Activity.this).isconnect())
-//                            GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.BLUETOOTH);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        });
     }
 
 
@@ -101,21 +58,11 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
 
     @Override
     public void init() {
-//        String callnumber = new SharedPreferenceTools(this).getValues();
-//        Log.v("huangfujian", "callnumber=" + callnumber);
-//        nummber.setText(callnumber);
-        registerReceiver(br, new IntentFilter("com.gqt.hangup"));
+
         if (mElapsedTime != null) {
             mElapsedTime.setBase(SystemClock.elapsedRealtime());
             mElapsedTime.start();
         }
-//        silence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView,
-//                                         boolean isChecked) {
-//                GQTHelper.getInstance().getCallEngine().mute();
-//            }
-//        });
     }
 
 
@@ -125,10 +72,8 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
     private TextView nummber;
     LinearLayout hangupLine;
     Chronometer mElapsedTime;
-//    ToggleButton silence;
     LinearLayout silence;
     private int flag = 1;
-    RadioGroup mAudioModeGroup;
 
 
     private BroadcastReceiver br = new BroadcastReceiver() {
@@ -136,7 +81,7 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if ("com.gqt.hangup".equals(intent.getAction())) {
-                VocieCallInCall2Activity.this.finish();
+//                VocieCallInCall2Activity.this.finish();
             }
         }
     };

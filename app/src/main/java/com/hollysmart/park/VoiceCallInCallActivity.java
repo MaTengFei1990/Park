@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,16 +18,26 @@ import android.view.ViewGroup;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gqt.bean.AudioMode;
 import com.gqt.bean.CallType;
 import com.gqt.helper.GQTHelper;
+import com.hollysmart.beans.CallUserBean;
+import com.hollysmart.conference.MyCallListener;
 import com.hollysmart.style.StyleAnimActivity;
+import com.hollysmart.tools.SharedPreferenceTools;
+import com.hollysmart.utils.Mlog;
+import com.hollysmart.utils.Utils;
+import com.hollysmart.videocall.MonitorServer;
 import com.hollysmart.views.CircleView;
+import com.hollysmart.voicecall.VoiceCallOutGoingActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class VoiceCallInCallActivity extends StyleAnimActivity {
 
@@ -44,16 +56,19 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
 
     private RecyclerView recy_view;
     private LocalAdapter localAdapter;
-    private List<Object> localList = new ArrayList<>();
+    private List<CallUserBean> localList = new ArrayList<>();
 
     private ImageView iv_chat_jingyin;
     private ImageView iv_chat_mianti;
+
+    private TextView tv_title;
 
     private Chronometer mElapsedTime;
 
     private boolean isPackerLoad=false;
     private boolean isSelence=false;
 
+    boolean isAddressBook = false;
     @Override
     public int layoutResID() {
         return R.layout.activity_voice_call_in_call;
@@ -72,6 +87,7 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
         iv_chat_jingyin=findViewById(R.id.iv_chat_jingyin);
         iv_chat_mianti=findViewById(R.id.iv_chat_mianti);
         mElapsedTime = findViewById(R.id.elapsedTime);
+        tv_title = findViewById(R.id.tv_title);
 
         recy_view = findViewById(R.id.recy_view);
 
@@ -84,21 +100,39 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            String number1 = bundle.getString("num1");
-            String number2 = bundle.getString("num2");
-//            if (!TextUtils.isEmpty(number1)) {
-//                tv1.setText(number1);
-//            }
-//            if (!TextUtils.isEmpty(number2)) {
-//               TextView = tv2.setText(number2);
-//            }
+            List<CallUserBean> lolList = (List<CallUserBean>) bundle.getSerializable("localList");
+            String taskname = bundle.getString("taskname");
+            tv_title.setText(taskname);
+
+            localList.addAll(lolList);
+
+
+            String CallNums = "";
+
+            if (localList != null && localList.size() > 0) {
+
+                for (int i = 0; i < localList.size(); i++) {
+
+                    if (i == 0) {
+                        CallNums = localList.get(i).getUid();
+                    } else {
+                        CallNums = CallNums + " " + localList.get(i).getUid();
+                    }
+                }
+
+
+            }
+
+
+//            GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
+
+            GQTHelper.getInstance().getCallEngine().makeCall(CallType.CONFERENCE, CallNums);
+
+
+
         }
 
 
-        localList.add(new Object());
-        localList.add(new Object());
-        localList.add(new Object());
-        localList.add(new Object());
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this );
@@ -221,7 +255,7 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
 
     public class LocalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private List<Object> localList ;
+        private List<CallUserBean> localList ;
         private Context context;
 
         int[] colors = new int[]{
@@ -231,15 +265,8 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                 getResources().getColor(R.color.heise),
                 getResources().getColor(R.color.bg_lan2)
         };
-        String[] strings = new String[]{
-                "朝",
-                "海",
-                "丰",
-                "石",
-                "门"
-        };
 
-        public LocalAdapter(Context context,List<Object> localList ) {
+        public LocalAdapter(Context context,List<CallUserBean> localList ) {
             this.context = context;
             this.localList = localList;
         }
@@ -252,11 +279,11 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+            CallUserBean callUserBean = localList.get(position);
 
 
             final Holder holder1= (Holder)holder;
-            holder1.cirview.setCenterText(strings[position]);
+            holder1.cirview.setCenterText(callUserBean.getUname());
             holder1.cirview.setCircleColor(colors[position]);
 
 
