@@ -23,6 +23,7 @@ import com.gqt.bean.CallType;
 import com.gqt.helper.GQTHelper;
 import com.hollysmart.beans.CallUserBean;
 import com.hollysmart.style.StyleAnimActivity;
+import com.hollysmart.utils.Utils;
 import com.hollysmart.views.CircleView;
 
 import java.util.ArrayList;
@@ -159,6 +160,53 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                 this.finish();
 
                 break;
+//            case R.id.spaker:
+//
+//                if (isPackerLoad) {
+//
+//                    iv_chat_mianti.setImageResource(R.mipmap.chat_video_mianti_img_normal);
+//
+//                } else {
+//
+//                    iv_chat_mianti.setImageResource(R.mipmap.chat_video_mianti_img_select);
+//
+//                }
+//                isPackerLoad = !isPackerLoad;
+//
+//                new Thread(){
+//
+//                    @Override
+//                    public void run() {
+//                        // TODO Auto-generated method stub
+//                        super.run();
+//                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+//                    }
+//                }.start();
+//                break;
+//            case R.id.ll_jingyin:
+//
+//                if (isSelence) {
+//
+//                    iv_chat_jingyin.setImageResource(R.mipmap.chat_video_jingyin_img_normal);
+//
+//                } else {
+//
+//                    iv_chat_jingyin.setImageResource(R.mipmap.chat_video_jingyin_img_select);
+//
+//                }
+//                isSelence = !isSelence;
+//
+//                new Thread(){
+//
+//                    @Override
+//                    public void run() {
+//                        // TODO Auto-generated method stub
+//                        super.run();
+//                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+//                    }
+//                }.start();
+//                break;
+
             case R.id.spaker:
 
                 if (isPackerLoad) {
@@ -205,6 +253,7 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                     }
                 }.start();
                 break;
+
 
         }
 
@@ -270,7 +319,13 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
 
 
             final Holder holder1= (Holder)holder;
-            holder1.cirview.setCenterText(callUserBean.getUname());
+            String uname = callUserBean.getUname();
+            if (!Utils.isEmpty(uname)) {
+                String substring = uname.substring(0, 1);
+
+                holder1.cirview.setCenterText(substring);
+
+            }
             holder1.cirview.setCircleColor(colors[position]);
 
 

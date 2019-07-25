@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,21 +39,29 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
         return R.layout.activity_vocie_call_in_call2;
     }
 
+    private ImageView iv_chat_jingyin;
+    private ImageView iv_chat_mianti;
+
     @Override
     public void findView() {
         registerReceiver(br, new IntentFilter("com.gqt.hangup"));
         nummber = (TextView) this.findViewById(R.id.callnum);
         hangupLine = (LinearLayout) findViewById(R.id.hangupline);
         mElapsedTime = (Chronometer) findViewById(R.id.elapsedTime);
-        findViewById(R.id.speaker).setOnClickListener(this);
+        findViewById(R.id.spaker).setOnClickListener(this);
         findViewById(R.id.jingyin).setOnClickListener(this);
        String num= getIntent().getStringExtra("num");
         nummber.setText(num);
 
         silence = (LinearLayout) this.findViewById(R.id.jingyin);
         hangupLine.setOnClickListener(btnoutendlistener);
+
+        iv_chat_jingyin=findViewById(R.id.iv_chat_jingyin);
+        iv_chat_mianti=findViewById(R.id.iv_chat_mianti);
     }
 
+    private boolean isPackerLoad=false;
+    private boolean isSelence=false;
 
 
 
@@ -112,10 +121,39 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
     public void onClick(View v) {
         // TODO Auto-generated method stub
         switch (v.getId()) {
-            case R.id.speaker:
+//            case R.id.speaker:
+//
+//
+//                GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.HOOK);
+//
+//                new Thread(){
+//
+//                    @Override
+//                    public void run() {
+//                        // TODO Auto-generated method stub
+//                        super.run();
+//                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+//                    }
+//                }.start();
+//                break;
+//
+//            case R.id.jingyin:
+//                GQTHelper.getInstance().getCallEngine().mute();
+//                break;
 
 
-                GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.HOOK);
+            case R.id.spaker:
+
+                if (isPackerLoad) {
+
+                    iv_chat_mianti.setImageResource(R.mipmap.chat_video_mianti_img_normal);
+
+                } else {
+
+                    iv_chat_mianti.setImageResource(R.mipmap.chat_video_mianti_img_select);
+
+                }
+                isPackerLoad = !isPackerLoad;
 
                 new Thread(){
 
@@ -127,9 +165,28 @@ public class VocieCallInCall2Activity extends StyleAnimActivity {
                     }
                 }.start();
                 break;
-
             case R.id.jingyin:
-                GQTHelper.getInstance().getCallEngine().mute();
+
+                if (isSelence) {
+
+                    iv_chat_jingyin.setImageResource(R.mipmap.chat_video_jingyin_img_normal);
+
+                } else {
+
+                    iv_chat_jingyin.setImageResource(R.mipmap.chat_video_jingyin_img_select);
+
+                }
+                isSelence = !isSelence;
+
+                new Thread(){
+
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        super.run();
+                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+                    }
+                }.start();
                 break;
 
         }

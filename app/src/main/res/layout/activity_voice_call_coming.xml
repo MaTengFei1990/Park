@@ -39,7 +39,6 @@
             android:layout_marginTop="50dp"
             android:scaleType="fitXY"
             android:gravity="center_horizontal"
-            android:text="xxx"
             android:textColor="#ffffff"
             android:textSize="24dp" />
         <TextView
@@ -50,7 +49,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:scaleType="fitXY"
-            android:text="xxx"
             android:gravity="center_horizontal"
             android:textColor="#ffffff"
             android:textSize="24dp" />
@@ -62,7 +60,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:scaleType="fitXY"
-            android:text="xxx"
             android:gravity="center_horizontal"
             android:textColor="#ffffff"
             android:textSize="24dp" />

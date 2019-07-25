@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String TABLE_NAME = "data.db";
     public static final String LUXIAN_NAME="luxian";
 
@@ -63,8 +63,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             switch (i) {
                 case 1://数据库版本1 升级到 版本2
                     //对table 增加字段
-                    sql1 = "alter table tb_form add code text";
-//                        getDao(FormBean.class).executeRawNoArgs(sql1);
+                    try {
+                        TableUtils.createTable(connectionSource, VoiceInfoBean.class);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 2://数据库版本2 升级到 版本3
                     Mlog.d("数据库字段升级  2  -  3");

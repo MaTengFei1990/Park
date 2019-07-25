@@ -77,7 +77,7 @@ public class VoiceCallComingActivity extends StyleAnimActivity {
         wakeAndUnlock(true);
         number = getIntent().getStringExtra("num");
         name = getIntent().getStringExtra("name");
-        nummber.setText(name + "   " + number);
+        nummber.setText(name);
         Log.v("huangfujian", "number=" + number);
         new SharedPreferenceTools(this).putValues(number);
         calltitle.setText("是否接收语音呼入");

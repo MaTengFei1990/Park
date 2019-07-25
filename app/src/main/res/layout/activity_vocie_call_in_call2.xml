@@ -80,7 +80,9 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
+
                 <ImageView
+                    android:id="@+id/iv_chat_jingyin"
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:src="@mipmap/chat_video_jingyin_img_normal" />
@@ -124,7 +126,7 @@
 
 
             <LinearLayout
-                android:id="@+id/speaker"
+                android:id="@+id/spaker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
@@ -132,6 +134,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/iv_chat_mianti"
                     android:layout_width="68dp"
                     android:layout_height="68dp"
                     android:src="@mipmap/chat_video_mianti_img_normal" />
@@ -158,6 +161,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="26dp"
             android:text="30:22"
+            android:visibility="gone"
             android:textColor="#ffffff"
             android:textSize="16dp" />
 
