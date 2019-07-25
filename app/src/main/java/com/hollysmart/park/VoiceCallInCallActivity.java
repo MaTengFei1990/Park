@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,25 +17,16 @@ import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gqt.bean.AudioMode;
 import com.gqt.bean.CallType;
 import com.gqt.helper.GQTHelper;
 import com.hollysmart.beans.CallUserBean;
-import com.hollysmart.conference.MyCallListener;
 import com.hollysmart.style.StyleAnimActivity;
-import com.hollysmart.tools.SharedPreferenceTools;
-import com.hollysmart.utils.Mlog;
-import com.hollysmart.utils.Utils;
-import com.hollysmart.videocall.MonitorServer;
 import com.hollysmart.views.CircleView;
-import com.hollysmart.voicecall.VoiceCallOutGoingActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class VoiceCallInCallActivity extends StyleAnimActivity {
 
@@ -123,8 +112,6 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
 
             }
 
-
-//            GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
 
             GQTHelper.getInstance().getCallEngine().makeCall(CallType.CONFERENCE, CallNums);
 

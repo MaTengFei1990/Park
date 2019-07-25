@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.hollysmart.beans.DictionaryBean;
 import com.hollysmart.beans.JDPicInfo;
 import com.hollysmart.beans.LuXianInfo;
+import com.hollysmart.beans.VoiceInfoBean;
 import com.hollysmart.formlib.beans.ProjectBean;
 import com.hollysmart.formlib.beans.ResDataBean;
 import com.hollysmart.beans.ResModelBean;
@@ -47,6 +48,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, ResModelBean.class);
             TableUtils.createTable(connectionSource, SoundInfo.class);
             TableUtils.createTable(connectionSource, DictionaryBean.class);
+            TableUtils.createTable(connectionSource, VoiceInfoBean.class);
             Mlog.d("创建表完成");
         } catch (SQLException e) {
             e.printStackTrace();

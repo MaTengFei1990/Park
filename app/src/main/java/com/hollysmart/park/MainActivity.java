@@ -64,8 +64,10 @@ import com.hollysmart.apis.UploadParkCoverPicAPI;
 import com.hollysmart.apis.UserLoginAPI;
 import com.hollysmart.beans.CallUserBean;
 import com.hollysmart.beans.PicBean;
+import com.hollysmart.beans.VoiceInfoBean;
 import com.hollysmart.conference.MyCallListener;
 import com.hollysmart.db.UserInfo;
+import com.hollysmart.db.VoiceInfoDao;
 import com.hollysmart.dialog.ButtomDialogView;
 import com.hollysmart.formlib.ResDataListActivity;
 import com.hollysmart.formlib.activitys.Cai_AddPicActivity;
@@ -733,36 +735,16 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                     }
 
 
-                    registerEngine = GQTHelper.getInstance().getRegisterEngine();
+                    VoiceInfoBean voiceInfoBean = new VoiceInfoBean();
 
+                    voiceInfoBean.setId(1);
+                    voiceInfoBean.setUserName(voiceuser);
+                    voiceInfoBean.setUserPasWord(voicepwd);
 
-                    if (!Utils.isEmpty(voicepwd) &&! Utils.isEmpty(voiceuser)) {
+                    VoiceInfoDao voiceInfoDao = new VoiceInfoDao(mContext);
+                    voiceInfoDao.addOrUpdate(voiceInfoBean);
 
-                        registerEngine.unRegister();
-
-                        registerEngine.initRegisterInfo(voiceuser, voiceuser, Values.SERVICE_URL_VOICE, Values.SERVICE_URL_VOICE_PORT, null);
-
-                        registerEngine.register(MainActivity.this, new RegisterListener() {
-                            @Override
-                            public void onRegisterSuccess() {
-                                Mlog.d("registerEngine.register--------onRegisterSuccess==");
-                            }
-
-                            @Override
-                            public void onRegisterFailded(String s) {
-
-                                Mlog.d("registerEngine.register--------onRegisterFailded==" + s);
-
-                            }
-                        });
-                        GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
-
-                    }
-
-
-                    callEngine = GQTHelper.getInstance().getCallEngine();
-
-                    GQTHelper.getInstance().getSetEngine().setOutGroupOnCallClosed(true);
+                    regitsterVoiceIP();
 
 
                 } catch (JSONException e) {
@@ -834,12 +816,56 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         });
 
 
-
-
-
-
-
         webView.loadUrl(url);
+    }
+
+
+
+
+    private void regitsterVoiceIP() {
+        VoiceInfoDao voiceInfoDao = new VoiceInfoDao(this);
+
+
+        VoiceInfoBean latestBean = voiceInfoDao.getLatestBean();
+
+        if (latestBean != null) {
+
+            registerEngine = GQTHelper.getInstance().getRegisterEngine();
+
+
+            if (!Utils.isEmpty(latestBean.getUserName()) &&! Utils.isEmpty(latestBean.getUserPasWord())) {
+
+                GQTHelper.getInstance().quit();
+
+                registerEngine.unRegister();
+
+                registerEngine.initRegisterInfo(latestBean.getUserName(), latestBean.getUserPasWord(), Values.SERVICE_URL_VOICE, Values.SERVICE_URL_VOICE_PORT, null);
+
+                registerEngine.register(MainActivity.this, new RegisterListener() {
+                    @Override
+                    public void onRegisterSuccess() {
+                        Mlog.d("registerEngine.register--------onRegisterSuccess==");
+                    }
+
+                    @Override
+                    public void onRegisterFailded(String s) {
+
+                        Mlog.d("registerEngine.register--------onRegisterFailded==" + s);
+
+                    }
+                });
+                GQTHelper.getInstance().getCallEngine().registerCallListener(new MyCallListener(callHander));
+
+            }
+
+
+            callEngine = GQTHelper.getInstance().getCallEngine();
+
+            GQTHelper.getInstance().getSetEngine().setOutGroupOnCallClosed(true);
+
+        }
+
+
     }
 
     /***
@@ -1664,6 +1690,10 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
     @Override
     public void onResume() {
         super.onResume();
+
+
+
+        regitsterVoiceIP();
     }
 
 
