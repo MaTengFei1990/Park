@@ -164,25 +164,25 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
             switch (msg.what) {
 
                 case 0://incall
-                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+//                    Utils.showToast(mContext,"msg.what=====" + msg.what);
                     Mlog.d( "callHander--------msg.what=="+msg.what );
                     if (msg.arg1 == CallType.VIDEOCALL || msg.arg1 == CallType.UPLOADVIDEO || msg.arg1 == CallType.TRANSCRIBE || msg.arg1 == CallType.MONITORVIDEO || msg.arg1 == CallType.DISPATCH) {
                     } else if (msg.arg1 == CallType.VOICECALL) {
                         sendBroadcast(new Intent("com.gqt.accept"));
                     } else if (msg.arg1 == CallType.CONFERENCE) {
-                        Toast.makeText(MainActivity.this, "conference incall", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainActivity.this, "conference incall", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case 1:
                     Mlog.d( "callHander--------msg.what=="+msg.what );
                     stopService(new Intent(MainActivity.this, MonitorServer.class));
-                    Toast.makeText(MainActivity.this, "state idle", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "state idle", Toast.LENGTH_SHORT).show();
                     sendBroadcast(new Intent("com.gqt.hangup"));
                     break;
                 //呼出trt312
                 case 2:
                     Mlog.d( "callHander--------msg.what=="+msg.what );
-                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+//                    Utils.showToast(mContext,"msg.what=====" + msg.what);
 
                     Map<String, String> member = null;
                     String mname = "";
@@ -205,7 +205,7 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                 //呼入
                 case 3:
                     Mlog.d( "callHander--------msg.what=="+msg.what );
-                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+//                    Utils.showToast(mContext,"msg.what=====" + msg.what);
                     String name = msg.getData().getString("name");
                     String num = msg.getData().getString("num");
                     if (msg.arg1 == CallType.VOICECALL) {
@@ -218,8 +218,8 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                     }
                     break;
                 case 99:
-                    Utils.showToast(mContext,"msg.what=====" + msg.what);
-                    Toast.makeText(MainActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
+//                    Utils.showToast(mContext,"msg.what=====" + msg.what);
+//                    Toast.makeText(MainActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
                     break;
                 case 98:
                     switch ((Integer) msg.obj) {
