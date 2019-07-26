@@ -226,7 +226,13 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                     public void run() {
                         // TODO Auto-generated method stub
                         super.run();
-                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+                        if (isPackerLoad) {
+                            GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
+
+                        } else {
+
+                            GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.HOOK);
+                        }
                     }
                 }.start();
                 break;
@@ -243,15 +249,8 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                 }
                 isSelence = !isSelence;
 
-                new Thread(){
+                GQTHelper.getInstance().getCallEngine().mute();
 
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        super.run();
-                        GQTHelper.getInstance().getCallEngine().setAudioConnectMode(AudioMode.SPEAKER);
-                    }
-                }.start();
                 break;
 
 
