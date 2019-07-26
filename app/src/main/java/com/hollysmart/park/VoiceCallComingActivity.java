@@ -1,12 +1,16 @@
 package com.hollysmart.park;
 
+import android.Manifest;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -90,6 +94,19 @@ public class VoiceCallComingActivity extends StyleAnimActivity {
         if (mElapsedTime != null) {
             mElapsedTime.setBase(SystemClock.elapsedRealtime());
             mElapsedTime.start();
+        }
+
+
+        //检测是否有录音权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, "默认无录音权限");
+            if (Build.VERSION.SDK_INT >= 23) {
+                Log.i(TAG, "系统版本不低于android6.0 ，需要动态申请权限");
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1001);
+            }
+        } else {
+            Log.i(TAG, "默认有录音权限");
         }
     }
 

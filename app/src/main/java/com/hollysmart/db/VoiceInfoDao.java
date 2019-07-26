@@ -71,6 +71,16 @@ public class VoiceInfoDao {
         return null;
 
     }
+    public VoiceInfoBean clearData(){
+
+        try {
+           voiceInfoDao.deleteBuilder().delete();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
 
 
 

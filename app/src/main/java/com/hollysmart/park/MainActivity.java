@@ -148,7 +148,7 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         public void onReceive(Context arg0, Intent intent) {
             // TODO Auto-generated method stub
             if("com.gqt.loginout".equals(intent.getAction())){
-                MainActivity.this.finish();
+//                MainActivity.this.finish();
             }
         }
 
@@ -404,6 +404,9 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         } else if (url.contains("resource.html?")) {
             startResourceListActivity(url);
 
+        } else if (url.contains("xx.html?loginout")) {
+            loginOut();
+
         } else {
             webView.loadUrl(url);
 
@@ -411,6 +414,17 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
 
     }
+
+    private void loginOut() {
+
+        GQTHelper.getInstance().quit();
+
+        VoiceInfoDao voiceInfoDao = new VoiceInfoDao(this);
+        voiceInfoDao.clearData();
+
+
+    }
+
     /**
      * 进入资源列表页面;
      */
@@ -545,41 +559,56 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
      * @param url
      */
     private void chat(WebView webView, String url) {
-        String chatId = "";
-        String taskname = "";
+
+
+        //检测是否有录音权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            Mlog.d("Main", "默认无录音权限");
+            if (Build.VERSION.SDK_INT >= 23) {
+                Mlog.d("Main", "系统版本不低于android6.0 ，需要动态申请权限");
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 1001);
+            }
+        } else {
+            Mlog.d("Main", "默认有录音权限");
+            String chatId = "";
+            String taskname = "";
 
 //        chat.html?uname=东城区|朝阳区&uid=8020|8022&taskname=test注册风景区
-        List<CallUserBean> localList = new ArrayList<>();
+            List<CallUserBean> localList = new ArrayList<>();
 
-        String[] chat = url.split("chat.html\\?");
-        if (chat!=null&&chat.length>1) {
+            String[] chat = url.split("chat.html\\?");
+            if (chat!=null&&chat.length>1) {
 
-            chatId = chat[1];
+                chatId = chat[1];
 
 
-            String[] split = chatId.split("&");
+                String[] split = chatId.split("&");
 
-            if (split.length == 3) {
-                String[] unames = split[0].split("=")[1].split("\\|");
-                String[] uIds = split[1].split("=")[1].split("\\|");
-                try {
-                    taskname =URLDecoder.decode(split[2].split("=")[1],"UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                if (split.length == 3) {
+                    String[] unames = split[0].split("=")[1].split("\\|");
+                    String[] uIds = split[1].split("=")[1].split("\\|");
+                    try {
+                        taskname =URLDecoder.decode(split[2].split("=")[1],"UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
 
-                if (unames.length > 0) {
+                    if (unames.length > 0) {
 
-                    for (int i = 0; i < unames.length; i++) {
-                        try {
-                            CallUserBean callUserBean = new CallUserBean();
-                            callUserBean.setUid(uIds[i]);
-                            callUserBean.setUname( URLDecoder.decode(unames[i],"UTF-8"));
-                            localList.add(callUserBean);
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+                        for (int i = 0; i < unames.length; i++) {
+                            try {
+                                CallUserBean callUserBean = new CallUserBean();
+                                callUserBean.setUid(uIds[i]);
+                                callUserBean.setUname( URLDecoder.decode(unames[i],"UTF-8"));
+                                localList.add(callUserBean);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+
+
+
                         }
-
 
 
                     }
@@ -588,19 +617,17 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
                 }
 
 
+
             }
 
-
-
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, VoiceCallInCallActivity.class);
+            Bundle bundle = new Bundle();
+            intent.putExtra("localList", (Serializable) localList);
+            intent.putExtra("taskname", taskname);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
-
-        Intent intent = new Intent();
-        intent.setClass(MainActivity.this, VoiceCallInCallActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtra("localList", (Serializable) localList);
-        intent.putExtra("taskname", taskname);
-        intent.putExtras(bundle);
-        startActivity(intent);
 
     }
 
@@ -835,7 +862,6 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
             if (!Utils.isEmpty(latestBean.getUserName()) &&! Utils.isEmpty(latestBean.getUserPasWord())) {
 
-                GQTHelper.getInstance().quit();
 
                 registerEngine.unRegister();
 
@@ -1608,11 +1634,13 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.CALL_PHONE,
                     Manifest.permission.READ_PHONE_STATE,
                     Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
