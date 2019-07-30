@@ -405,7 +405,7 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
             startResourceListActivity(url);
 
         } else if (url.contains("xx.html?loginout")) {
-            loginOut();
+            loginOut(url);
 
         } else {
             webView.loadUrl(url);
@@ -415,12 +415,14 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
     }
 
-    private void loginOut() {
+    private void loginOut(String url) {
 
         GQTHelper.getInstance().quit();
 
         VoiceInfoDao voiceInfoDao = new VoiceInfoDao(this);
         voiceInfoDao.clearData();
+
+        webView.loadUrl(url);
 
 
     }

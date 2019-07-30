@@ -6,8 +6,8 @@ android {
         applicationId "com.hollysmart.park"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 33
-        versionName "1.0.33"
+        versionCode 34
+        versionName "1.0.34"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true

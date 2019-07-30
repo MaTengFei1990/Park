@@ -325,7 +325,8 @@ public class VoiceCallInCallActivity extends StyleAnimActivity {
                 holder1.cirview.setCenterText(substring);
 
             }
-            holder1.cirview.setCircleColor(colors[position]);
+            int i = position % 5;
+            holder1.cirview.setCircleColor(colors[i]);
 
 
         }
