@@ -19,9 +19,11 @@ import com.hollysmart.db.ProjectDao;
 import com.hollysmart.db.ResDataDao;
 import com.hollysmart.db.ResModelDao;
 import com.hollysmart.db.UserInfo;
+import com.hollysmart.dialog.LoadingProgressDialog;
 import com.hollysmart.formlib.activitys.NewAddFormResDataActivity;
 import com.hollysmart.formlib.adapters.ResDataManageAdapter;
 import com.hollysmart.formlib.apis.GetNetResListAPI;
+import com.hollysmart.formlib.apis.SaveResTaskAPI;
 import com.hollysmart.formlib.apis.getResTaskListAPI;
 import com.hollysmart.formlib.beans.DongTaiFormBean;
 import com.hollysmart.formlib.beans.ProjectBean;
@@ -79,13 +81,16 @@ public class ResDataListActivity extends StyleAnimActivity {
 
     private List<ResDataBean> mJingDians;
     private ResDataManageAdapter resDataManageAdapter;
-    Map<String, String> map = new HashMap<String , String>();
+    Map<String, String> map = new HashMap<String, String>();
     private HashMap<String, List<JDPicInfo>> formPicMap = new HashMap<String, List<JDPicInfo>>();
 
-    boolean ischeck =false; //是否只能查看 true  只能查看不能编辑；
+    boolean ischeck = false; //是否只能查看 true  只能查看不能编辑；
 
     private List<ResModelBean> resModelList = new ArrayList<ResModelBean>();
-    private List<DongTaiFormBean> formBeanList=new ArrayList<>();// 当前资源的动态表单
+    private List<DongTaiFormBean> formBeanList = new ArrayList<>();// 当前资源的动态表单
+
+    private LoadingProgressDialog lpd;
+
     @Override
     public void init() {
         isLogin();
@@ -94,17 +99,20 @@ public class ResDataListActivity extends StyleAnimActivity {
         mJingDians = new ArrayList<>();
 
 
-
         map = (Map<String, String>) getIntent().getSerializableExtra("exter");
 
         ischeck = getIntent().getBooleanExtra("ischeck", false);
-
-        if (ischeck) {
-            bn_add.setVisibility(View.GONE);
-
-        }
-
+        setLpd();
         selectDB();
+    }
+
+
+
+    private void setLpd() {
+        lpd = new LoadingProgressDialog();
+        lpd.setMessage("正在保存，请稍等...");
+        lpd.create(this, lpd.STYLE_SPINNER);
+        lpd.setCancelable(false);
     }
 
     public void onClick(View v) {
@@ -113,15 +121,11 @@ public class ResDataListActivity extends StyleAnimActivity {
                 finish();
                 break;
             case R.id.iv_maplsit:
-//                if (projectBean != null) {
-                    Intent mapintent = new Intent(mContext, ResListShowOnMapActivity.class);
+                Intent mapintent = new Intent(mContext, ResListShowOnMapActivity.class);
                 mapintent.putExtra("projectBean", projectBean);
                 mapintent.putExtra("exter", (Serializable) map);
                 mapintent.putExtra("ischeck", ischeck);
-                    startActivityForResult(mapintent,6);
-//                } else {
-//                    Utils.showDialog(mContext,"暂无资源列表");
-//                }
+                startActivityForResult(mapintent, 6);
                 break;
 
             case R.id.bn_add:
@@ -138,7 +142,7 @@ public class ResDataListActivity extends StyleAnimActivity {
                 resDataBean.setFd_resmodelname(resModelList.get(0).getfModelName());
 
                 intent.putExtra("formBeanList", (Serializable) formBeanList);
-                intent.putExtra("resDataBean",resDataBean);
+                intent.putExtra("resDataBean", resDataBean);
                 intent.putExtra("sportEditFlag", true);
                 formPicMap.clear();
                 intent.putExtra("formPicMap", (Serializable) formPicMap);
@@ -153,64 +157,100 @@ public class ResDataListActivity extends StyleAnimActivity {
     private void selectDB() {
         mJingDians.clear();
         if (map != null && map.size() > 0) {
+            lpd.setMessage("请求数据中...请稍后");
+            lpd.show();
+            if (ischeck) {
+                bn_add.setVisibility(View.GONE);
 
-            new getResTaskListAPI(userInfo.getAccess_token(), map.get("id"), 10000, new getResTaskListAPI.ResTaskListIF() {
-                @Override
-                public void onResTaskListResult(boolean isOk, List<ProjectBean> projectBeanList, int count) {
+                getResTaskById();
 
-                    if (isOk) {
-                        if (projectBeanList != null && projectBeanList.size() > 0) {
+            } else {
 
-                            projectBean = projectBeanList.get(0);
+                createResTask();
 
-                            new GetResModelAPI(userInfo.getAccess_token(), projectBean.getfTaskmodel(), new GetResModelAPI.GetResModelIF() {
-                                @Override
-                                public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBen) {
+            }
 
-                                    if (isOk) {//获取到网络数据
-
-                                        ResModelDao resModelDao = new ResModelDao(mContext);
-                                        resModelDao.addOrUpdate(resModelBen);
-                                        String getfJsonData = resModelBen.getfJsonData();
-                                        Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
-                                        List<DongTaiFormBean> newFormList = mGson.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {
-                                        }.getType());
-
-                                        resDataManageAdapter = new ResDataManageAdapter(mContext, mJingDians, picList, soundList, projectBean,newFormList,ischeck);
-                                        lv_jingdian.setAdapter(resDataManageAdapter);
-                                        selectDB(projectBean.getId());
-
-                                    }
-
-
-                                }
-                            }).request();
-
-
-
-                        }
-
-
-
-
-                    }
-
-                }
-            }).request();
 
         }
 
 
-
-
-
-
     }
 
+    private void createResTask() {
+        map.toString();
+
+        ProjectBean newprojectBean = new ProjectBean();
+
+        newprojectBean.setRemarks("");
+        newprojectBean.setfTaskname(map.get("name"));
+        newprojectBean.setfTaskmodel(map.get("type"));
+        newprojectBean.setfBegindate(map.get("btime"));
+        newprojectBean.setfEnddate(map.get("etime"));
+        newprojectBean.setfState("2");
+        newprojectBean.setfRange("");
+        newprojectBean.setId(map.get("id"));
+        newprojectBean.setfOfficeId(userInfo.getOffice().getId());
+        newprojectBean.setfTaskmodelnames(map.get("typename"));
+        newprojectBean.setfDescription("");
 
 
+        new SaveResTaskAPI(userInfo.getAccess_token(), newprojectBean, new SaveResTaskAPI.SaveResTaskIF() {
+            @Override
+            public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean1) {
+
+                if (isOk) {
+
+                    getResTaskById();
+
+                }
+
+            }
+        }).request();
+    }
+
+    private void getResTaskById() {
+        new getResTaskListAPI(userInfo.getAccess_token(), map.get("id"), 10000, new getResTaskListAPI.ResTaskListIF() {
+            @Override
+            public void onResTaskListResult(boolean isOk, List<ProjectBean> projectBeanList, int count) {
+
+                if (isOk) {
+                    if (projectBeanList != null && projectBeanList.size() > 0) {
+
+                        projectBean = projectBeanList.get(0);
+
+                        new GetResModelAPI(userInfo.getAccess_token(), projectBean.getfTaskmodel(), new GetResModelAPI.GetResModelIF() {
+                            @Override
+                            public void ongetResModelIFResult(boolean isOk, ResModelBean resModelBen) {
+
+                                if (isOk) {//获取到网络数据
+                                    lpd.cancel();
+
+                                    ResModelDao resModelDao = new ResModelDao(mContext);
+                                    resModelDao.addOrUpdate(resModelBen);
+                                    String getfJsonData = resModelBen.getfJsonData();
+                                    Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
+                                    List<DongTaiFormBean> newFormList = mGson.fromJson(getfJsonData, new TypeToken<List<DongTaiFormBean>>() {
+                                    }.getType());
+
+                                    resDataManageAdapter = new ResDataManageAdapter(mContext, mJingDians, picList, soundList, projectBean, newFormList, ischeck);
+                                    lv_jingdian.setAdapter(resDataManageAdapter);
+                                    selectDB(projectBean.getId());
+
+                                }
 
 
+                            }
+                        }).request();
+
+
+                    }
+
+
+                }
+
+            }
+        }).request();
+    }
 
 
     // 查询
@@ -225,7 +265,7 @@ public class ResDataListActivity extends StyleAnimActivity {
 
             String[] ids = classifyIds.split(",");
             ResModelDao resModelDao = new ResModelDao(mContext);
-            for(int i=0;i<ids.length;i++) {
+            for (int i = 0; i < ids.length; i++) {
                 ResModelBean resModelBean = resModelDao.getDatById(ids[i]);
                 if (resModelBean != null) {
 
@@ -256,7 +296,8 @@ public class ResDataListActivity extends StyleAnimActivity {
                         try {
                             Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
                             List<DongTaiFormBean> dictList = mGson.fromJson(formData,
-                                    new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                                    new TypeToken<List<DongTaiFormBean>>() {
+                                    }.getType());
                             formBeanList.addAll(dictList);
                         } catch (JsonIOException e) {
                             e.printStackTrace();
@@ -345,7 +386,8 @@ public class ResDataListActivity extends StyleAnimActivity {
             try {
                 Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create();
                 List<DongTaiFormBean> dictList = mGson.fromJson(formData,
-                        new TypeToken<List<DongTaiFormBean>>() {}.getType());
+                        new TypeToken<List<DongTaiFormBean>>() {
+                        }.getType());
                 formBeanList.addAll(dictList);
             } catch (JsonIOException e) {
                 e.printStackTrace();
@@ -430,7 +472,6 @@ public class ResDataListActivity extends StyleAnimActivity {
     }
 
 
-
     /**
      * 判断用户登录状态，登录获取用户信息
      */
@@ -477,7 +518,6 @@ public class ResDataListActivity extends StyleAnimActivity {
             }
         }
     }
-
 
 
 }

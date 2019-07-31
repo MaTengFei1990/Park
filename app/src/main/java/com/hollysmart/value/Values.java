@@ -6,15 +6,15 @@ import android.os.Environment;
 
 public class Values {
 
-//	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处  正式
-//	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处  正式
+	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_test/xx.html";     // 公园处  正式
+	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_test/";     //公园处  正式
 
-	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_beta/xx.html";     // 公园处 测试
-	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_beta/";     //公园处 测试
+//	public static final String SERVIXE_SHOUYE = "https://gy.bjylfw.cn:8010/parkapp_beta/xx.html";     // 公园处 测试
+//	public static final String SERVICE_URL = "https://gy.bjylfw.cn:8010/parkapi_beta/";     //公园处 测试
 
 	//集成表单需要的接口；
-//	public static final String SERVICE_URL_FORM = "http://gy.bjylfw.cn:443";//正式
-	public static final String SERVICE_URL_FORM = "http://gy.bjylfw.cn:8012";//测试
+	public static final String SERVICE_URL_FORM = "http://gy.bjylfw.cn:443";//正式
+//	public static final String SERVICE_URL_FORM = "http://gy.bjylfw.cn:8012";//测试
 	public static final String SERVICE_URL_ADMIN_FORM = SERVICE_URL_FORM + "/admin";//
 
 	public static final String SERVICE_URL_VOICE = "39.106.172.189";//
