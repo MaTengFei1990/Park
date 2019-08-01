@@ -246,6 +246,8 @@ public class ResDataListActivity extends StyleAnimActivity {
                     }
 
 
+                } else {
+                    lpd.cancel();
                 }
 
             }

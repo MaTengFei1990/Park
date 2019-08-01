@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="51dp"
     android:background="@color/baise"
     android:paddingLeft="10dp"
+    android:paddingBottom="2dp"
     android:paddingRight="10dp">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/huise_hint" />
     
     
     
@@ -125,5 +133,9 @@
                 android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
+
+
+
+
 
 </RelativeLayout>
