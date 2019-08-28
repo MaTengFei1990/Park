@@ -64,7 +64,7 @@ public class getResTaskListAPI implements INetModel {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                sheBeiListIF.onResTaskListResult(false, null,0);
+                sheBeiListIF.onResTaskListResult(false, null,0,"连接失败");
             }
 
             @Override
@@ -86,13 +86,13 @@ public class getResTaskListAPI implements INetModel {
                             projectBean1.setUserinfoid(UserToken.getUserToken().getToken());
                         }
 
-                        sheBeiListIF.onResTaskListResult(true, projectBeanList,projectBeanList.size());
+                        sheBeiListIF.onResTaskListResult(true, projectBeanList,projectBeanList.size(),jsonObject.getString("msg"));
                     }else {
-                        sheBeiListIF.onResTaskListResult(false, null,0);
+                        sheBeiListIF.onResTaskListResult(false, null,0,jsonObject.getString("msg"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    sheBeiListIF.onResTaskListResult(false, null,0);
+                    sheBeiListIF.onResTaskListResult(false, null,0,"");
                 }
 
             }
@@ -101,7 +101,7 @@ public class getResTaskListAPI implements INetModel {
     }
 
     public interface ResTaskListIF{
-        void onResTaskListResult(boolean isOk, List<ProjectBean> projectBeanList, int count);
+        void onResTaskListResult(boolean isOk, List<ProjectBean> projectBeanList, int count,String msg);
     }
 
 }

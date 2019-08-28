@@ -680,7 +680,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
 
     @Override
-    public void onResTaskListResult(boolean isOk, List<ProjectBean> projectList,int count) {
+    public void onResTaskListResult(boolean isOk, List<ProjectBean> projectList,int count,String msg) {
 
         if (isOk && projectList != null) {
             allCount = count;
@@ -694,10 +694,16 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
             if (projectShowList.size() == currentCount) {
                 isLoadMore = false;
 
-            } else{
+            } else {
                 pageNo++;
             }
             notifyDataChange(CurrentState);
+        } else {
+
+            if (!isOk) {
+                Utils.showDialog(mContext, msg);
+
+            }
         }
 
 

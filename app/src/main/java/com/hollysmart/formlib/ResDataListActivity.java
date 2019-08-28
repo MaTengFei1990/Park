@@ -211,7 +211,7 @@ public class ResDataListActivity extends StyleAnimActivity {
     private void getResTaskById() {
         new getResTaskListAPI(userInfo.getAccess_token(), map.get("id"),map.get("unitid"), 10000, new getResTaskListAPI.ResTaskListIF() {
             @Override
-            public void onResTaskListResult(boolean isOk, List<ProjectBean> projectBeanList, int count) {
+            public void onResTaskListResult(boolean isOk, List<ProjectBean> projectBeanList, int count,String msg) {
 
                 if (isOk) {
                     if (projectBeanList != null && projectBeanList.size() > 0) {
@@ -248,6 +248,11 @@ public class ResDataListActivity extends StyleAnimActivity {
 
                 } else {
                     lpd.cancel();
+                    if (!Utils.isEmpty(msg)) {
+                        Utils.showDialog(mContext,msg);
+                    }
+                    findViewById(R.id.bn_add).setBackgroundColor(getResources().getColor(R.color.hui_q));
+                    findViewById(R.id.bn_add).setEnabled(false);
                 }
 
             }
