@@ -66,7 +66,7 @@ public class VoiceCallInComingActivity extends Activity {
     	nummber.setText(name);
     	Log.v("huangfujian","number="+number);
     	new SharedPreferenceTools(this).putValues(number);
-    	calltitle.setText("ÊÇ·ñ½ÓÊÕÓïÒôºôÈë");
+    	calltitle.setText("æ˜¯å¦æ¥æ”¶è¯­éŸ³å‘¼å…¥");
     	registerReceiver(br, new IntentFilter("com.gqt.accept"));
     	registerReceiver(br, new IntentFilter("com.gqt.hangup"));
     	registerReceiver(br, new IntentFilter("com.gqt.groupIncoming"));
@@ -139,18 +139,18 @@ public class VoiceCallInComingActivity extends Activity {
 	       if(bolean){
 	              pm=(PowerManager) getSystemService(Context.POWER_SERVICE);
 	 	          wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "bright");
-	              //µãÁÁÆÁÄ»
+	              //ç‚¹äº®å±å¹•
 	              wl.acquire();
-	              //µÃµ½¼üÅÌËø¹ÜÀíÆ÷¶ÔÏó
+	              //å¾—åˆ°é”®ç›˜é”ç®¡ç†å™¨å¯¹è±¡
 	              km= (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
 	              kl = km.newKeyguardLock("unLock");	 
-	              //½âËø
+	              //è§£é”
 	              kl.disableKeyguard();
 	       }else{
-	              //ËøÆÁ
+	              //é”å±
 	              kl.reenableKeyguard();
 	             
-	              //ÊÍ·ÅwakeLock£¬¹ØµÆ
+	              //é‡Šæ”¾wakeLockï¼Œå…³ç¯
 	              wl.release();
 	       }	      
 	}

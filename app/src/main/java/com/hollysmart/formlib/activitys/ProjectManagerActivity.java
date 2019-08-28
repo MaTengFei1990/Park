@@ -123,7 +123,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                     isRefresh = true;
                     allprojectList.clear();
                     projectItemAdapter.notifyDataSetChanged();
-                    new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"), pageNo, ProjectManagerActivity.this).request();
+                    new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),map.get("unitid"), pageNo, ProjectManagerActivity.this).request();
 
                 } else {
                     swipe.setRefreshing(false);
@@ -156,7 +156,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
 
     private void nextPage() {
         if (isLoadMore) {
-            new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,this).request();
+            new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),map.get("unitid"),pageNo,this).request();
         }
 
 
@@ -205,7 +205,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
             public void onSaveResTaskResult(boolean isOk, ProjectBean projectBean) {
 
                 if (isOk) {
-                    new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),pageNo,ProjectManagerActivity.this).request();
+                    new getResTaskListAPI( userInfo.getAccess_token(),map.get("id"),map.get("unitid"),pageNo,ProjectManagerActivity.this).request();
 
                 }
 
@@ -771,7 +771,7 @@ public class ProjectManagerActivity extends StyleAnimActivity implements TextCli
                         isRefresh = true;
                         allprojectList.clear();
                         projectItemAdapter.notifyDataSetChanged();
-                        new getResTaskListAPI(userInfo.getAccess_token(), map.get("id"),pageNo, ProjectManagerActivity.this).request();
+                        new getResTaskListAPI(userInfo.getAccess_token(), map.get("id"),map.get("unitid"),pageNo, ProjectManagerActivity.this).request();
 
                     } else {
                         swipe.setRefreshing(false);

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hollysmart.formlib.beans.ProjectBean;
 import com.hollysmart.utils.Mlog;
+import com.hollysmart.utils.Utils;
 import com.hollysmart.utils.taskpool.INetModel;
 import com.hollysmart.value.UserToken;
 import com.hollysmart.value.Values;
@@ -33,11 +34,13 @@ public class getResTaskListAPI implements INetModel {
     private int pageNo;
     private String  token;
     private String fdTaskId;
+    private String fOfficeId;
 
-    public getResTaskListAPI(String token,String fdTaskId,int pageNo, ResTaskListIF sheBeiListIF) {
+    public getResTaskListAPI(String token,String fdTaskId,String fOfficeId,int pageNo, ResTaskListIF sheBeiListIF) {
         this.pageNo = pageNo;
         this.token = token;
         this.fdTaskId = fdTaskId;
+        this.fOfficeId = fOfficeId;
         this.sheBeiListIF = sheBeiListIF;
     }
 
@@ -46,6 +49,10 @@ public class getResTaskListAPI implements INetModel {
         JSONObject object = new JSONObject();
         try {
             object.put("fdTaskId", fdTaskId);
+
+            if (!Utils.isEmpty(fOfficeId)) {
+                object.put("fOfficeId", fOfficeId);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -72,7 +72,6 @@ import com.hollysmart.dialog.ButtomDialogView;
 import com.hollysmart.formlib.ResDataListActivity;
 import com.hollysmart.formlib.activitys.Cai_AddPicActivity;
 import com.hollysmart.formlib.activitys.EditPicActivity;
-import com.hollysmart.formlib.activitys.ProjectManagerActivity;
 import com.hollysmart.imgdownLoad.DownLoadImageService;
 import com.hollysmart.imgdownLoad.ImageDownLoadCallBack;
 import com.hollysmart.popuwindow.MoreWindow;
@@ -434,14 +433,19 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
     private void startResourceListActivity(String url) {
 
         String[] scada = url.split("resource.html\\?");
+
         Map<String, String> map = new HashMap<String , String>();
         if (scada!=null&&scada.length>1) {
 
-            if (scada.length > 0) {
+            String[] valuse = scada[1].split("&");
 
-                for (int i = 1; i < scada.length; i++) {
 
-                    String s = scada[i];
+
+            if (valuse.length > 0) {
+
+                for (int i = 0; i < valuse.length; i++) {
+
+                    String s = valuse[i];
 
                     String[] split = s.split("=");
                     try {

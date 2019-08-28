@@ -6,8 +6,8 @@ android {
         applicationId "com.hollysmart.park"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 34
-        versionName "1.0.34"
+        versionCode 35
+        versionName "1.0.35"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -55,6 +55,14 @@ android {
             keyPassword "park123"
         }
     }
+
+
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
 }
 
 dependencies {

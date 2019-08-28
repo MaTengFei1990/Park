@@ -171,7 +171,7 @@ public class VoiceCallInCallActivity extends Activity implements OnClickListener
 		numTxt = (EditText) findViewById(R.id.p_digits);
 		numTxt.setText("");
 		numTxt.setCursorVisible(false);
-		// ÉèÖÃÎÄ±¾¿òÊäÈë×ÖÊýÉÏÏÞ£»
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ£ï¿½
 		numTxt.setFilters(new InputFilter[] { new InputFilter.LengthFilter(1000) });
 		numTxt.setDrawingCacheEnabled(true);
 		//
@@ -210,7 +210,7 @@ public class VoiceCallInCallActivity extends Activity implements OnClickListener
 		btnmi = (ImageButton) findViewById(R.id.pmi);
 		btnmi.setOnClickListener(this);
 
-		// É¾³ý
+		// ???
 		btndel = (ImageButton) findViewById(R.id.pdel);
 		btndel.setOnClickListener(this);
 
@@ -329,7 +329,7 @@ public class VoiceCallInCallActivity extends Activity implements OnClickListener
 	}
 
 
-	// °´Å¥ÊÂ¼þ´¥·¢ÊÖ¶¯µ÷ÓÃ´Ë·½·¨
+	// ?????????????????????
 	public void downKey(String key) {
 		numTxt.setGravity(Gravity.CENTER);
 		numTxt.setText(numTxt.getText().toString().trim() + key);
@@ -400,7 +400,7 @@ public class VoiceCallInCallActivity extends Activity implements OnClickListener
 		}
 		if (numTxt.getText().toString().trim().length() <= 0) {
 			numTxt.setCursorVisible(false);
-			numTxt.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);// GQTÓ¢ÎÄ°æ
+			numTxt.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);// GQT????
 																		// 2014-8-28
 		}
 	}
