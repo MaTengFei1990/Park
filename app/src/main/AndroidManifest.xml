@@ -38,7 +38,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name="com.hollysmart.formlib.ResListShowOnMapActivity"></activity>
+        <activity android:name=".WebviewActivity"></activity>
+        <activity android:name="com.hollysmart.formlib.ResListShowOnMapActivity" />
         <activity android:name="com.hollysmart.formlib.ListShowOnMapActivity" />
         <activity android:name="com.hollysmart.formlib.ResDataListActivity" />
         <activity android:name="com.hollysmart.formlib.activitys.MapRangeActivity" />

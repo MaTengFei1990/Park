@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -15,10 +16,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,11 +36,20 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
@@ -1505,6 +1518,128 @@ public class MainActivity extends StyleAnimActivity implements UpDateVersionAPI.
 
             }
         });
+
+
+
+        SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+
+        String yinSizhengCe = sp.getString("yszc", null);
+
+
+        if (Utils.isEmpty(yinSizhengCe)) {
+
+
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View layout =  inflater.inflate(R.layout.dialog_layout_yinsizhengce, null);
+            //新建对话框对象
+            Dialog mDialog= new AlertDialog.Builder(this).create();
+            mDialog.setCancelable(false);
+            mDialog.show();
+            // 设置弹出框的透明度
+
+            //欢迎使用北京公园在线，为了加强对您个人信息的保护，根据最新法律法规要求，我们更新了隐私政策，以向您说明我们在收集和使用您的相关个人信息时的处理规则。请您仔细阅读并确认北京公园在线“服务协议”及“隐私政策”，我们将严格按照前述协议，为您提供更好的服务。如您同意前述协议，请点击“同意”并开始使用我们的产品和服务，我们尽全力保护您的个人信息安全。
+
+            WindowManager.LayoutParams params = mDialog.getWindow().getAttributes();
+            params.width = 950;
+            mDialog.getWindow().setAttributes(params);
+            mDialog.getWindow().setContentView(layout);
+
+            Window dialogWindow = mDialog.getWindow();
+            dialogWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            TextView tv_content = layout.findViewById(R.id.tv_content);
+
+
+
+
+            String string = "欢迎使用北京公园在线，为了加强对您个人信息的保护，根据最新法律法规要求，我们更新了隐私政策，以向您说明我们在收集和使用您的相关个人信息时的处理规则。请您仔细阅读并确认北京公园在线“服务协议”及“隐私政策”，我们将严格按照前述协议，为您提供更好的服务。如您同意前述协议，请点击“同意”并开始使用我们的产品和服务，我们尽全力保护您的个人信息安全。";
+            String key1 = "“服务协议”";
+            String key2 = "“隐私政策”";
+            int index1 = string.indexOf(key1);
+            int index2 = string.indexOf(key2);
+
+
+            //需要显示的字串
+            SpannableString spannedString = new SpannableString(string);
+            //设置点击字体颜色
+            ForegroundColorSpan colorSpan1 = new ForegroundColorSpan(getResources().getColor(R.color.hongse_text));
+            spannedString.setSpan(colorSpan1, index1, index1 + key1.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(getResources().getColor(R.color.hongse_text));
+            spannedString.setSpan(colorSpan2, index2, index2 + key2.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            //设置点击字体大小
+            AbsoluteSizeSpan sizeSpan1 = new AbsoluteSizeSpan(16, true);
+            spannedString.setSpan(sizeSpan1, index1, index1 + key1.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            AbsoluteSizeSpan sizeSpan2 = new AbsoluteSizeSpan(16, true);
+            spannedString.setSpan(sizeSpan2, index2, index2 + key2.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            //设置点击事件
+            ClickableSpan clickableSpan1 = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, WebviewActivity.class);
+                    intent.putExtra("type", "fuWu");
+                    startActivity(intent);
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    //点击事件去掉下划线
+                    ds.setUnderlineText(false);
+                }
+            };
+            spannedString.setSpan(clickableSpan1, index1, index1 + key1.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+            ClickableSpan clickableSpan2 = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, WebviewActivity.class);
+                    intent.putExtra("type", "yinSi");
+                    startActivity(intent);
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    //点击事件去掉下划线
+                    ds.setUnderlineText(false);
+                }
+            };
+            spannedString.setSpan(clickableSpan2, index2, index2 + key2.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+            //设置点击后的颜色为透明，否则会一直出现高亮
+            tv_content.setHighlightColor(Color.TRANSPARENT);
+            //开始响应点击事件
+            tv_content.setMovementMethod(LinkMovementMethod.getInstance());
+
+            tv_content.setText(spannedString);
+
+
+
+
+
+
+
+
+            layout.findViewById(R.id.btn_agree).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
+                    sp.edit()
+                            .putString("yszc", "setting")
+                            .apply();
+
+                    mDialog.cancel();
+                }
+            });
+            layout.findViewById(R.id.tv_notAgree).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+
+                }
+            });
+        }
+
+
 
     }
 

@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+android {
+
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+}
+ext {
+    isLibrary = true
+    pomArtifactId = "WheelPicker"
+    pomDescription = "wheel picker for android, include date picker, time picker, option picker, address picker, etc."
+}
+
+dependencies {
+    compile project(':library:Common')
+}

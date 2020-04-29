@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@drawable/bottomsheel_shape_bg_write"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/heise_text"
+        android:padding="5dp"
+        android:textSize="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="10dp"
+        android:text="用户隐私政策更新"
+
+        />
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/heise_text"
+        android:padding="5dp"
+        android:textSize="@dimen/text_zhong"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:lineSpacingMultiplier="1.1"
+        android:text="欢迎使用北京绿地，为了加强对您个人信息的保护，根据最新法律法规要求，我们更新了隐私政策，以向您说明我们在收集和使用您的相关个人信息时的处理规则。请您仔细阅读并确认北京绿地“服务协议”及“隐私政策”，我们将严格按照前述协议，为您提供更好的服务。如您同意前述协议，请点击“同意”并开始使用我们的产品和服务，我们尽全力保护您的个人信息安全。"
+
+        />
+
+    <Button
+        android:id="@+id/btn_agree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bottomsheel_shape_bg_red"
+        android:text="同  意"
+        android:textColor="@color/baise"
+        android:textSize ="@dimen/text_zhong" />
+    <TextView
+        android:id="@+id/tv_notAgree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:text="不同意"
+        android:gravity="center"
+        android:textColor="@color/huise_text"
+        android:textSize="@dimen/text_zhong" />
+
+</LinearLayout>
